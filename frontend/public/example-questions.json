@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "question": "Welcher Befehl listet alle Dateien in einem Verzeichnis (inkl. versteckter) auf?",
+    "options": ["ls", "ls -a", "dir /a", "find ."],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": 2,
+    "question": "Was ist die hexadezimale Darstellung der Dezimalzahl 255?",
+    "options": ["0xEE", "0xFF", "0x100", "0xFE"],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": 3,
+    "question": "Was steht OSI-Schicht 3 für?",
+    "options": [
+      "Physikalische Schicht",
+      "Sicherungsschicht",
+      "Vermittlungsschicht",
+      "Transportschicht"
+    ],
+    "correctAnswerIndex": 2
+  },
+  {
+    "id": 4,
+    "question": "Welches Protokoll verwendet standardmäßig Port 443?",
+    "options": ["HTTP", "FTP", "HTTPS", "SSH"],
+    "correctAnswerIndex": 2
+  },
+  {
+    "id": 5,
+    "question": "Was ist der Standardwert von `position` in CSS?",
+    "options": ["relative", "absolute", "fixed", "static"],
+    "correctAnswerIndex": 3
+  }
+]
