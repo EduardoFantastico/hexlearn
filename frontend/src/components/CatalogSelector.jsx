@@ -1,6 +1,6 @@
 /**
  * CatalogSelector
- * Shows all uploaded catalogs as selectable cards.
+ * Shows all uploaded catalogs as selectable cards with accuracy badges.
  * The user can toggle multiple catalogs and then start the quiz.
  */
 export default function CatalogSelector({
@@ -9,8 +9,25 @@ export default function CatalogSelector({
   onToggle,
   onStart,
   onAddMore,
+  stats = {},
 }) {
   const canStart = selectedIds.length > 0;
+
+  /** Compute accuracy for a catalog based on stored stats. Returns null when no data exists. */
+  function catalogAccuracy(catalog) {
+    let totalCorrect = 0;
+    let totalAttempts = 0;
+    for (const q of catalog.questions) {
+      const id = String(q.id ?? q.question);
+      const s = stats[id];
+      if (s) {
+        totalCorrect += s.correct;
+        totalAttempts += s.correct + s.wrong;
+      }
+    }
+    if (totalAttempts === 0) return null;
+    return Math.round((totalCorrect / totalAttempts) * 100);
+  }
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-4">
@@ -24,6 +41,15 @@ export default function CatalogSelector({
       <ul className="flex flex-col gap-3">
         {catalogs.map((catalog) => {
           const selected = selectedIds.includes(catalog.name);
+          const accuracy = catalogAccuracy(catalog);
+          const accuracyColor =
+            accuracy === null
+              ? "text-slate-500"
+              : accuracy >= 70
+                ? "text-emerald-400"
+                : accuracy >= 40
+                  ? "text-amber-400"
+                  : "text-red-400";
           return (
             <li key={catalog.name}>
               <button
@@ -43,9 +69,17 @@ export default function CatalogSelector({
                   <span className="font-semibold text-base">
                     {catalog.name}
                   </span>
-                  <span className="text-xs text-slate-400">
-                    {catalog.questions.length} Fragen
-                  </span>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span>{catalog.questions.length} Fragen</span>
+                    {accuracy !== null && (
+                      <>
+                        <span className="text-slate-600">·</span>
+                        <span className={`font-semibold ${accuracyColor}`}>
+                          {accuracy} % korrekt
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
                 <span
                   className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selected ? "border-violet-400 bg-violet-500" : "border-slate-600"}`}
