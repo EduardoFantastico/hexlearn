@@ -1,7 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import FileUploader from "./components/FileUploader";
 import CatalogSelector from "./components/CatalogSelector";
 import QuizCard from "./components/QuizCard";
+import Results from "./components/Results";
 
 /**
  * App modes:
@@ -67,11 +69,6 @@ export default function App() {
     setMode("result");
   }
 
-  const score = useMemo(() => {
-    return answers.filter((ans, i) => ans === questions[i]?.correctAnswerIndex)
-      .length;
-  }, [answers, questions]);
-
   function handleRestart() {
     setCurrentIndex(0);
     setAnswers([]);
@@ -102,91 +99,83 @@ export default function App() {
         )}
       </header>
 
-      <main className="flex-1 flex flex-col justify-center py-8">
-        {mode === "upload" && (
-          <section className="flex flex-col items-center gap-8 px-4">
-            <div className="text-center">
-              <h1 className="text-3xl font-extrabold text-slate-100">
-                Lerne mit deinen eigenen Fragen
-              </h1>
-              <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto">
-                Lade eine JSON-Datei mit Fragen hoch und starte sofort ein Quiz.
-              </p>
-            </div>
-            <FileUploader onCatalogAdded={handleCatalogAdded} />
-          </section>
-        )}
-
-        {mode === "select" && (
-          <section>
-            <CatalogSelector
-              catalogs={catalogs}
-              selectedIds={selectedIds}
-              onToggle={handleToggleCatalog}
-              onStart={handleStartQuiz}
-              onAddMore={() => setMode("upload")}
-            />
-          </section>
-        )}
-
-        {mode === "quiz" && questions[currentIndex] && (
-          <section>
-            <QuizCard
-              question={questions[currentIndex]}
-              index={currentIndex}
-              total={questions.length}
-              onNext={handleNext}
-              onFinish={handleFinish}
-            />
-          </section>
-        )}
-
-        {mode === "result" && (
-          <section className="flex flex-col items-center gap-6 px-4 text-center max-w-md mx-auto w-full">
-            <div className="bg-slate-800 border border-slate-700 rounded-3xl px-8 py-10 w-full shadow-xl shadow-slate-950/60 flex flex-col items-center gap-4">
-              <span className="text-5xl">
-                {score === questions.length
-                  ? "🏆"
-                  : score >= questions.length / 2
-                    ? "👍"
-                    : "📚"}
-              </span>
-              <h2 className="text-2xl font-extrabold text-slate-100">
-                Quiz beendet!
-              </h2>
-              <p className="text-slate-300 text-base">
-                Du hast{" "}
-                <span className="text-violet-400 font-bold">{score}</span> von{" "}
-                <span className="font-bold">{questions.length}</span> Fragen
-                richtig beantwortet.
-              </p>
-              <div className="w-full bg-slate-700 rounded-full h-3 mt-2">
-                <div
-                  className="bg-violet-500 h-3 rounded-full transition-all duration-700"
-                  style={{ width: `${(score / questions.length) * 100}%` }}
-                />
+      <main className="flex-1 flex flex-col justify-center py-8 overflow-hidden">
+        <AnimatePresence mode="wait">
+          {mode === "upload" && (
+            <motion.section
+              key="upload"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-col items-center gap-8 px-4"
+            >
+              <div className="text-center">
+                <h1 className="text-3xl font-extrabold text-slate-100">
+                  Lerne mit deinen eigenen Fragen
+                </h1>
+                <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto">
+                  Lade eine JSON-Datei mit Fragen hoch und starte sofort ein
+                  Quiz.
+                </p>
               </div>
-              <p className="text-slate-400 text-sm">
-                {Math.round((score / questions.length) * 100)} % korrekt
-              </p>
-            </div>
+              <FileUploader onCatalogAdded={handleCatalogAdded} />
+            </motion.section>
+          )}
 
-            <div className="flex flex-col gap-3 w-full">
-              <button
-                onClick={handleStartQuiz}
-                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-base transition-colors shadow-lg shadow-violet-900/40"
-              >
-                Nochmal spielen
-              </button>
-              <button
-                onClick={handleRestart}
-                className="w-full py-3 rounded-2xl border-2 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-300 font-medium text-sm transition-colors"
-              >
-                Katalog-Auswahl ändern
-              </button>
-            </div>
-          </section>
-        )}
+          {mode === "select" && (
+            <motion.section
+              key="select"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <CatalogSelector
+                catalogs={catalogs}
+                selectedIds={selectedIds}
+                onToggle={handleToggleCatalog}
+                onStart={handleStartQuiz}
+                onAddMore={() => setMode("upload")}
+              />
+            </motion.section>
+          )}
+
+          {mode === "quiz" && questions[currentIndex] && (
+            <motion.section
+              key={`quiz-${currentIndex}`}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
+            >
+              <QuizCard
+                question={questions[currentIndex]}
+                index={currentIndex}
+                total={questions.length}
+                onNext={handleNext}
+                onFinish={handleFinish}
+              />
+            </motion.section>
+          )}
+
+          {mode === "result" && (
+            <motion.section
+              key="result"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <Results
+                questions={questions}
+                answers={answers}
+                onPlayAgain={handleStartQuiz}
+                onChangeCatalogs={handleRestart}
+              />
+            </motion.section>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

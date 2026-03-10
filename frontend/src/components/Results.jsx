@@ -1,0 +1,163 @@
+import { motion } from "framer-motion";
+
+/**
+ * Results
+ * Shows the final score and a review list of all wrong answers.
+ */
+export default function Results({
+  questions,
+  answers,
+  onPlayAgain,
+  onChangeCatalogs,
+}) {
+  const total = questions.length;
+  const score = answers.filter(
+    (ans, i) => ans === questions[i]?.correctAnswerIndex,
+  ).length;
+  const pct = Math.round((score / total) * 100);
+  const wrongItems = questions
+    .map((q, i) => ({ q, chosen: answers[i] }))
+    .filter(({ q, chosen }) => chosen !== q.correctAnswerIndex);
+
+  const emoji =
+    score === total ? "🏆" : pct >= 70 ? "👍" : pct >= 40 ? "📚" : "💪";
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.07 } },
+  };
+  const item = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="flex flex-col gap-6 w-full max-w-md mx-auto px-4"
+    >
+      {/* Score card */}
+      <div className="bg-slate-800 border border-slate-700 rounded-3xl px-8 py-10 flex flex-col items-center gap-4 shadow-xl shadow-slate-950/60 text-center">
+        <span className="text-5xl">{emoji}</span>
+        <h2 className="text-2xl font-extrabold text-slate-100">
+          Quiz beendet!
+        </h2>
+
+        {/* Percentage ring-like display */}
+        <div className="flex flex-col items-center gap-1 w-full">
+          <span className="text-4xl font-extrabold text-violet-400">
+            {pct} %
+          </span>
+          <p className="text-slate-400 text-sm">
+            {score} von {total} Fragen richtig beantwortet
+          </p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full bg-slate-700 rounded-full h-3 mt-1">
+          <motion.div
+            className={`h-3 rounded-full ${pct >= 70 ? "bg-emerald-500" : pct >= 40 ? "bg-amber-400" : "bg-red-500"}`}
+            initial={{ width: 0 }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          />
+        </div>
+      </div>
+
+      {/* Wrong answers review */}
+      {wrongItems.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest px-1">
+            Falsch beantwortet ({wrongItems.length})
+          </h3>
+          <motion.ul
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="flex flex-col gap-3"
+          >
+            {wrongItems.map(({ q, chosen }, idx) => (
+              <motion.li
+                key={q.id ?? idx}
+                variants={item}
+                className="bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 flex flex-col gap-3"
+              >
+                <p className="text-slate-200 text-sm font-medium leading-snug">
+                  {q.question}
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {/* Wrong chosen answer */}
+                  <div className="flex items-start gap-2 text-xs">
+                    <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-red-900/50 border border-red-600 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-2.5 w-2.5 text-red-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-red-400">
+                      <span className="font-semibold">Deine Antwort: </span>
+                      {q.options[chosen] ?? "—"}
+                    </span>
+                  </div>
+                  {/* Correct answer */}
+                  <div className="flex items-start gap-2 text-xs">
+                    <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-emerald-900/50 border border-emerald-600 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-2.5 w-2.5 text-emerald-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-emerald-400">
+                      <span className="font-semibold">Richtig: </span>
+                      {q.options[q.correctAnswerIndex]}
+                    </span>
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </div>
+      )}
+
+      {wrongItems.length === 0 && (
+        <p className="text-center text-emerald-400 text-sm font-medium">
+          Perfekt! Alle Fragen richtig beantwortet. 🎉
+        </p>
+      )}
+
+      {/* Action buttons */}
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={onPlayAgain}
+          className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+        >
+          Nochmal spielen
+        </button>
+        <button
+          onClick={onChangeCatalogs}
+          className="w-full py-3 rounded-2xl border-2 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+        >
+          Katalog-Auswahl ändern
+        </button>
+      </div>
+    </motion.div>
+  );
+}
