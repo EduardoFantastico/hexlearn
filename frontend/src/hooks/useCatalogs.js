@@ -64,6 +64,16 @@ export function useCatalogs() {
     [setCatalogs],
   );
 
+  /** Update an existing catalog's name and questions by id. */
+  const updateCatalog = useCallback(
+    (id, { name, questions }) => {
+      setCatalogs((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, name, questions } : c)),
+      );
+    },
+    [setCatalogs],
+  );
+
   /** Clear all catalogs. */
   const clearCatalogs = useCallback(() => {
     setCatalogs([]);
@@ -79,6 +89,7 @@ export function useCatalogs() {
   return {
     catalogs: sorted,
     addCatalog,
+    updateCatalog,
     markUsed,
     removeCatalog,
     clearCatalogs,
