@@ -47,19 +47,19 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+    <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
       {/* Row header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-700/50">
         <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-violet-900/50 text-violet-400 text-xs font-bold">
           {index + 1}
         </span>
-        <span className="flex-1 text-sm text-slate-400 truncate min-w-0">
+        <span className="flex-1 text-sm text-slate-600 dark:text-slate-400 truncate min-w-0">
           {question.question.trim() || "Neue Frage"}
         </span>
         <button
           type="button"
           onClick={() => setCollapsed((c) => !c)}
-          className="p-1 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-700 transition-colors"
+          className="p-1 rounded-lg text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           aria-label={collapsed ? "Aufklappen" : "Einklappen"}
         >
           {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
@@ -83,7 +83,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
               Fragetext
             </label>
             <textarea
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
               rows={2}
               placeholder="Wie lautet die Frage?"
               value={question.question}
@@ -97,7 +97,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">
               Antwortoptionen{" "}
-              <span className="font-normal text-slate-600">
+              <span className="font-normal text-slate-500 dark:text-slate-600">
                 · Richtige anklicken
               </span>
             </label>
@@ -124,7 +124,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                   </button>
                   <input
                     type="text"
-                    className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                     placeholder={`Option ${String.fromCharCode(65 + oi)}`}
                     value={opt}
                     onChange={(e) => {
@@ -182,12 +182,12 @@ function CatalogEditor({ initial, onSave, onCancel }) {
         <button
           type="button"
           onClick={onCancel}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="Abbrechen"
         >
           <ArrowLeft size={16} />
         </button>
-        <h2 className="text-lg font-bold text-slate-100 flex-1">
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex-1">
           {initial ? "Katalog bearbeiten" : "Neuer Katalog"}
         </h2>
         {initial && (
@@ -200,8 +200,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
                 questions,
               })
             }
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-800 transition-colors"
-            title="Als JSON exportieren"
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <Download size={16} />
           </button>
@@ -213,7 +212,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
             canSave
               ? "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/40"
-              : "bg-slate-800 text-slate-600 cursor-not-allowed"
+              : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
           }`}
         >
           <Save size={14} />
@@ -228,7 +227,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
         </label>
         <input
           type="text"
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors font-semibold"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors font-semibold"
           placeholder="z.B. JavaScript Grundlagen"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -266,7 +265,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
         <button
           type="button"
           onClick={handleAddQuestion}
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border-2 border-dashed border-slate-700 text-sm text-slate-500 hover:border-violet-600 hover:text-violet-400 transition-colors"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-sm text-slate-500 hover:border-violet-600 hover:text-violet-400 transition-colors"
         >
           <Plus size={15} />
           Weitere Frage hinzufügen
@@ -316,12 +315,12 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={onBack}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="Zurück"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-xl font-bold text-slate-100 flex-1">
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex-1">
           Kataloge verwalten
         </h1>
         <button
@@ -340,7 +339,7 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
           animate={{ opacity: 1, y: 0 }}
           className="text-center py-16"
         >
-          <p className="font-semibold text-slate-400 mb-1">
+          <p className="font-semibold text-slate-600 dark:text-slate-400 mb-1">
             Keine Kataloge vorhanden
           </p>
           <p className="text-sm text-slate-600">
@@ -366,17 +365,17 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
               hidden: { opacity: 0, y: 10 },
               show: { opacity: 1, y: 0, transition: { duration: 0.25 } },
             }}
-            className="bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4"
+            className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4"
           >
             <div className="flex items-center gap-3">
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-slate-100 truncate">
+                <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {catalog.name}
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
                   <span>{catalog.questions.length} Fragen</span>
                   {catalog.lastUsed && (
-                    <span className="flex items-center gap-1 text-slate-600">
+                    <span className="flex items-center gap-1 text-slate-500 dark:text-slate-600">
                       <TrendingUp size={10} />
                       Zuletzt geübt
                     </span>
@@ -388,14 +387,14 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
               <div className="flex items-center gap-1 flex-shrink-0">
                 <button
                   onClick={() => exportCatalog(catalog)}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-700 transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                   title="Als JSON herunterladen"
                 >
                   <Download size={15} />
                 </button>
                 <button
                   onClick={() => setEditing(catalog.id)}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-200 hover:bg-slate-700 transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                   title="Bearbeiten"
                 >
                   <Pencil size={15} />
@@ -432,13 +431,13 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 32 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="relative z-10 w-full max-w-sm bg-slate-900 border border-slate-700 rounded-3xl px-6 py-7 shadow-2xl"
+              className="relative z-10 w-full max-w-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl px-6 py-7 shadow-2xl"
             >
-              <h3 className="font-bold text-slate-100 mb-2">
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-2">
                 Katalog löschen?
               </h3>
-              <p className="text-sm text-slate-400 mb-6">
-                <span className="text-slate-200 font-medium">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
                   „{catalogs.find((c) => c.id === confirmDelete)?.name}"
                 </span>{" "}
                 wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig
@@ -447,7 +446,7 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmDelete(null)}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-200 text-sm font-medium transition-colors"
+                  className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200 text-sm font-medium transition-colors"
                 >
                   Abbrechen
                 </button>

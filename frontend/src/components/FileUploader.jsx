@@ -92,8 +92,8 @@ export default function FileUploader({ onCatalogAdded }) {
           transition-colors duration-200 select-none
           ${
             dragging
-              ? "border-violet-400 bg-violet-900/30"
-              : "border-slate-600 bg-slate-800/50 hover:border-violet-500 hover:bg-slate-800"
+              ? "border-violet-400 bg-violet-50 dark:bg-violet-900/30"
+              : "border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 hover:border-violet-500 hover:bg-slate-100 dark:hover:bg-slate-800"
           }
         `}
       >
@@ -111,7 +111,7 @@ export default function FileUploader({ onCatalogAdded }) {
             d="M12 16v-8m0 0-3 3m3-3 3 3M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1"
           />
         </svg>
-        <p className="text-slate-300 text-sm text-center leading-relaxed">
+        <p className="text-slate-700 dark:text-slate-300 text-sm text-center leading-relaxed">
           JSON-Datei per{" "}
           <span className="text-violet-400 font-semibold">Drag & Drop</span>{" "}
           hierher ziehen

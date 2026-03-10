@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, X } from "lucide-react";
+import { Settings, X, Sun, Moon } from "lucide-react";
 import Dashboard from "./components/Dashboard";
 import QuizCard from "./components/QuizCard";
 import Results from "./components/Results";
@@ -8,11 +8,7 @@ import { useQuestionStats } from "./hooks/useQuestionStats";
 import { useCatalogs } from "./hooks/useCatalogs";
 import { useStreak } from "./hooks/useStreak";
 import CatalogManager from "./components/CatalogManager";
-
-/**
- * Views: 'dashboard' | 'quiz' | 'result'
- * Settings are rendered as an overlay on top of any view.
- */
+import QuizConfig from "./components/QuizConfig";
 
 /** Weighted shuffle — questions with a higher error rate appear earlier. */
 function smartShuffle(questions, errorRateFn) {
@@ -27,14 +23,63 @@ function smartShuffle(questions, errorRateFn) {
 }
 
 export default function App() {
-  const [view, setView] = useState("dashboard"); // 'dashboard' | 'quiz' | 'result'
+  const [view, setView] = useState("dashboard");
+  const [configInitialIds, setConfigInitialIds] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
 
+  // Dark mode — default dark, persisted in localStorage
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      const stored = localStorage.getItem("hexlearn_theme");
+      return stored !== null ? stored === "dark" : true;
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    try {
+      localStorage.setItem("hexlearn_theme", darkMode ? "dark" : "light");
+    } catch {}
+  }, [darkMode]);
+
+  // Scroll-hide header
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentY = window.scrollY;
+      if (currentY <= 10) {
+        setHeaderVisible(true);
+      } else if (currentY > lastScrollY.current + 8) {
+        setHeaderVisible(false);
+      } else if (currentY < lastScrollY.current - 4) {
+        setHeaderVisible(true);
+      }
+      lastScrollY.current = currentY;
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const { stats, recordRound, clearStats, errorRate } = useQuestionStats();
-  const { catalogs, addCatalog, updateCatalog, markUsed, removeCatalog, clearCatalogs } = useCatalogs();
+  const {
+    catalogs,
+    addCatalog,
+    updateCatalog,
+    markUsed,
+    removeCatalog,
+    clearCatalogs,
+  } = useCatalogs();
   const { streak, todayCount, weeklyData, recordActivity, clearStreak } =
     useStreak();
 
@@ -42,13 +87,25 @@ export default function App() {
     addCatalog({ name, questions: qs });
   }
 
-  function handleStartQuiz(catalogIds) {
+  function handleOpenConfig(catalogIds) {
+    setConfigInitialIds(catalogIds ?? []);
+    setView("config");
+  }
+
+  function handleStartQuiz(catalogIds, count = 10) {
+    const seen = new Set();
     const pooled = catalogs
       .filter((c) => catalogIds.includes(c.id))
-      .flatMap((c) => c.questions);
+      .flatMap((c) => c.questions)
+      .filter((q) => {
+        const key = String(q.id ?? q.question);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     if (pooled.length === 0) return;
     markUsed(catalogIds);
-    const ordered = smartShuffle(pooled, errorRate);
+    const ordered = smartShuffle(pooled, errorRate).slice(0, count);
     setQuestions(ordered);
     setCurrentIndex(0);
     setAnswers([]);
@@ -97,34 +154,50 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="bg-white dark:bg-slate-950 overflow-x-hidden">
       {/* ── Sticky Header ─────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md">
+      <motion.header
+        className="sticky top-0 z-30 flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md"
+        animate={{ y: headerVisible ? 0 : -80 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
         <button
           onClick={() => setView("dashboard")}
           aria-label="Dashboard"
           className="group"
         >
-          <span className="text-violet-400 font-extrabold text-xl tracking-tight group-hover:text-violet-300 transition-colors">
+          <span className="text-violet-600 dark:text-violet-400 font-extrabold text-xl tracking-tight group-hover:text-violet-500 dark:group-hover:text-violet-300 transition-colors">
             HexLearn
           </span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {view === "quiz" && (
             <span className="text-xs text-slate-500 tabular-nums">
               {currentIndex + 1} / {questions.length}
             </span>
           )}
+          {/* Dark mode toggle */}
+          <button
+            onClick={() => setDarkMode((d) => !d)}
+            aria-label={
+              darkMode
+                ? "In den Hellmodus wechseln"
+                : "In den Dunkelmodus wechseln"
+            }
+            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+          >
+            {darkMode ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
           <button
             onClick={() => setShowSettings(true)}
             aria-label="Einstellungen öffnen"
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             <Settings size={18} />
           </button>
         </div>
-      </header>
+      </motion.header>
 
       {/* ── Settings Modal ─────────────────────────────────────── */}
       <AnimatePresence>
@@ -138,7 +211,7 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-[env(safe-area-inset-bottom,24px)] sm:pb-0"
           >
             <div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
               onClick={() => setShowSettings(false)}
             />
             <motion.div
@@ -146,15 +219,15 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="relative z-10 w-full max-w-sm bg-slate-900 border border-slate-700 rounded-3xl px-6 py-8 flex flex-col gap-5 shadow-2xl"
+              className="relative z-10 w-full max-w-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl px-6 py-8 flex flex-col gap-5 shadow-2xl"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-slate-100">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                   Einstellungen
                 </h2>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors focus:outline-none"
+                  className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
                   aria-label="Schließen"
                 >
                   <X size={18} />
@@ -162,24 +235,24 @@ export default function App() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-semibold text-slate-300">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Datenschutz &amp; Daten
                 </p>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   HexLearn speichert deine Fragenkataloge, deinen
-                  Lernfortschritt und deinen Lern-Streak ausschließlich lokal
-                  in deinem Browser (localStorage). Es werden keine Daten an
+                  Lernfortschritt und deinen Lern-Streak ausschließlich lokal in
+                  deinem Browser (localStorage). Es werden keine Daten an
                   externe Server gesendet.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mt-1">
-                  <div className="bg-slate-800 rounded-xl px-3 py-2 text-center">
-                    <p className="text-lg font-bold text-violet-400">
+                  <div className="bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-2 text-center">
+                    <p className="text-lg font-bold text-violet-600 dark:text-violet-400">
                       {catalogs.length}
                     </p>
                     <p className="text-[10px] text-slate-500">Kataloge</p>
                   </div>
-                  <div className="bg-slate-800 rounded-xl px-3 py-2 text-center">
-                    <p className="text-lg font-bold text-violet-400">
+                  <div className="bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-2 text-center">
+                    <p className="text-lg font-bold text-violet-600 dark:text-violet-400">
                       {Object.keys(stats).length}
                     </p>
                     <p className="text-[10px] text-slate-500">
@@ -191,7 +264,7 @@ export default function App() {
 
               <button
                 onClick={handleClearData}
-                className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-400 hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
                 Alle Daten löschen
               </button>
@@ -201,11 +274,11 @@ export default function App() {
       </AnimatePresence>
 
       {/* ── Main content ──────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="min-h-screen flex flex-col">
         <AnimatePresence mode="wait">
           {view === "dashboard" && (
             <motion.div
-              className="flex-1 overflow-y-auto py-6"
+              className="flex-1 flex flex-col py-6"
               {...pageProps("dashboard")}
             >
               <Dashboard
@@ -214,7 +287,7 @@ export default function App() {
                 streak={streak}
                 todayCount={todayCount}
                 weeklyData={weeklyData}
-                onStartQuiz={handleStartQuiz}
+                onOpenConfig={handleOpenConfig}
                 onCatalogAdded={handleCatalogAdded}
                 onOpenSettings={() => setShowSettings(true)}
                 onManageCatalogs={() => setView("manage")}
@@ -224,7 +297,7 @@ export default function App() {
 
           {view === "quiz" && questions[currentIndex] && (
             <motion.div
-              className="flex-1 flex flex-col justify-center py-8 overflow-hidden"
+              className="flex-1 flex flex-col justify-center py-8"
               key={`quiz-${currentIndex}`}
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
@@ -243,7 +316,7 @@ export default function App() {
 
           {view === "result" && (
             <motion.div
-              className="flex-1 overflow-y-auto py-8"
+              className="flex-1 flex flex-col py-8"
               {...pageProps("result")}
             >
               <Results
@@ -261,9 +334,24 @@ export default function App() {
               />
             </motion.div>
           )}
+          {view === "config" && (
+            <motion.div
+              className="flex-1 flex flex-col py-6"
+              {...pageProps("config")}
+            >
+              <QuizConfig
+                catalogs={catalogs}
+                stats={stats}
+                initialIds={configInitialIds}
+                onStart={handleStartQuiz}
+                onBack={() => setView("dashboard")}
+              />
+            </motion.div>
+          )}
+
           {view === "manage" && (
             <motion.div
-              className="flex-1 overflow-y-auto py-6"
+              className="flex-1 flex flex-col py-6"
               {...pageProps("manage")}
             >
               <CatalogManager
@@ -276,6 +364,13 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* ── Footer ─────────────────────────────────────────────── */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-6 px-5 text-center">
+        <p className="text-xs text-slate-500">
+          HexLearn · Lokal. Privat. Dein Wissen.
+        </p>
+      </footer>
     </div>
   );
 }

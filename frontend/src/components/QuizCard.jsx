@@ -29,23 +29,23 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
 
   function optionStyle(i) {
     if (selected === null) {
-      return "border-slate-700 bg-slate-800 text-slate-300 hover:border-violet-500 hover:bg-violet-900/20 hover:text-slate-100 cursor-pointer active:scale-95";
+      return "border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer active:scale-95";
     }
     if (i === correct) {
-      return "border-emerald-500 bg-emerald-900/30 text-emerald-300 cursor-default";
+      return "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 cursor-default";
     }
     if (i === selected) {
-      return "border-red-500 bg-red-900/30 text-red-300 cursor-default";
+      return "border-red-500 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 cursor-default";
     }
-    return "border-slate-700 bg-slate-800/50 text-slate-500 cursor-default";
+    return "border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 cursor-default";
   }
 
   function optionBadgeStyle(i) {
-    if (selected === null) return "border-slate-600 text-slate-400";
+    if (selected === null) return "border-slate-400 dark:border-slate-600 text-slate-500 dark:text-slate-400";
     if (i === correct)
-      return "border-emerald-500 text-emerald-400 bg-emerald-900/40";
-    if (i === selected) return "border-red-500 text-red-400 bg-red-900/40";
-    return "border-slate-700 text-slate-600";
+      return "border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/40";
+    if (i === selected) return "border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/40";
+    return "border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-600";
   }
 
   const progressPct = ((index + 1) / total) * 100;
@@ -54,13 +54,13 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-4">
       {/* Progress bar */}
       <div className="flex flex-col gap-1.5">
-        <div className="flex justify-between text-xs text-slate-400">
+        <div className="flex justify-between text-xs text-slate-600 dark:text-slate-400">
           <span>
             Frage {index + 1} von {total}
           </span>
           <span>{Math.round(progressPct)} %</span>
         </div>
-        <div className="w-full bg-slate-800 rounded-full h-2">
+        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
           <motion.div
             className="bg-violet-500 h-2 rounded-full"
             initial={false}
@@ -78,9 +78,9 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="bg-slate-800 border border-slate-700 rounded-3xl px-6 py-7 shadow-xl shadow-slate-950/60"
+          className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl px-6 py-7 shadow-xl shadow-slate-950/10 dark:shadow-slate-950/60"
         >
-          <p className="text-lg font-semibold text-slate-100 leading-snug">
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 leading-snug">
             {question.question}
           </p>
         </motion.div>

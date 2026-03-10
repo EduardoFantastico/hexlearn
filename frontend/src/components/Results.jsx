@@ -40,9 +40,9 @@ export default function Results({
       className="flex flex-col gap-6 w-full max-w-md mx-auto px-4"
     >
       {/* Score card */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl px-8 py-10 flex flex-col items-center gap-4 shadow-xl shadow-slate-950/60 text-center">
+      <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl px-8 py-10 flex flex-col items-center gap-4 shadow-xl shadow-slate-950/10 dark:shadow-slate-950/60 text-center">
         <span className="text-5xl">{emoji}</span>
-        <h2 className="text-2xl font-extrabold text-slate-100">
+        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
           Quiz beendet!
         </h2>
 
@@ -51,13 +51,13 @@ export default function Results({
           <span className="text-4xl font-extrabold text-violet-400">
             {pct} %
           </span>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-600 dark:text-slate-400 text-sm">
             {score} von {total} Fragen richtig beantwortet
           </p>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-slate-700 rounded-full h-3 mt-1">
+        <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-3 mt-1">
           <motion.div
             className={`h-3 rounded-full ${pct >= 70 ? "bg-emerald-500" : pct >= 40 ? "bg-amber-400" : "bg-red-500"}`}
             initial={{ width: 0 }}
@@ -70,7 +70,7 @@ export default function Results({
       {/* Wrong answers review */}
       {wrongItems.length > 0 && (
         <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest px-1">
+          <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-widest px-1">
             Falsch beantwortet ({wrongItems.length})
           </h3>
           <motion.ul
@@ -91,10 +91,10 @@ export default function Results({
                 <motion.li
                   key={q.id ?? idx}
                   variants={item}
-                  className="bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 flex flex-col gap-3"
+                  className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 flex flex-col gap-3"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-slate-200 text-sm font-medium leading-snug">
+                    <p className="text-slate-800 dark:text-slate-200 text-sm font-medium leading-snug">
                       {q.question}
                     </p>
                     {histPct !== null && (
@@ -172,7 +172,7 @@ export default function Results({
         </button>
         <button
           onClick={onChangeCatalogs}
-          className="w-full py-3 rounded-2xl border-2 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
         >
           Katalog-Auswahl ändern
         </button>

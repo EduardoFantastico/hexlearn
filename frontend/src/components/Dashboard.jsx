@@ -22,9 +22,9 @@ import FileUploader from "./FileUploader";
  *   streak          – number (active streak days)
  *   todayCount      – questions answered today
  *   weeklyData      – [{ date, count }] last 7 days
- *   onStartQuiz     – (catalogIds: string[]) => void
+ *   onOpenConfig   – (catalogIds: string[]) => void
  *   onCatalogAdded  – (catalog: { name, questions }) => void
- *   onOpenSettings  – () => void
+ *   onManageCatalogs – () => void
  */
 export default function Dashboard({
   catalogs,
@@ -32,14 +32,11 @@ export default function Dashboard({
   streak,
   todayCount,
   weeklyData,
-  onStartQuiz,
+  onOpenConfig,
   onCatalogAdded,
   onManageCatalogs,
 }) {
   const fileUploaderRef = useRef(null);
-
-  // Most recently used catalog (sorted by useCatalogs)
-  const lastCatalog = catalogs[0] ?? null;
 
   // Compute per-catalog accuracy from stats
   function catalogAccuracy(catalog) {
@@ -65,7 +62,11 @@ export default function Dashboard({
     d.setDate(today.getDate() - (6 - i));
     const iso = d.toISOString().slice(0, 10);
     const found = weeklyData.find((w) => w.date === iso);
-    return { date: iso, count: found?.count ?? 0, label: DAY_LABELS[d.getDay()] };
+    return {
+      date: iso,
+      count: found?.count ?? 0,
+      label: DAY_LABELS[d.getDay()],
+    };
   });
 
   const container = {
@@ -117,12 +118,12 @@ export default function Dashboard({
             </svg>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-100 tracking-tight leading-none">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-none">
             HexLearn
           </h1>
-          <p className="text-slate-400 text-base sm:text-lg mt-3 leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg mt-3 leading-relaxed">
             Lerne smarter&nbsp;–{" "}
-            <span className="text-violet-400 font-semibold">
+            <span className="text-violet-600 dark:text-violet-400 font-semibold">
               mit deinen eigenen Fragen.
             </span>
           </p>
@@ -142,7 +143,7 @@ export default function Dashboard({
           ].map(({ Icon, label }) => (
             <span
               key={label}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-400 font-medium"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 font-medium"
             >
               <Icon size={12} />
               {label}
@@ -165,18 +166,18 @@ export default function Dashboard({
 
           {/* JSON format hint */}
           <details className="mt-5 group">
-            <summary className="flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
+            <summary className="flex items-center justify-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
               <ChevronRight
                 size={12}
                 className="transition-transform duration-200 group-open:rotate-90"
               />
               JSON-Format anzeigen
             </summary>
-            <div className="mt-3 bg-slate-900 border border-slate-700 rounded-2xl p-4">
+            <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
               <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">
                 Deine Datei muss ein Array von Fragen enthalten:
               </p>
-              <pre className="text-[11px] text-violet-300 font-mono leading-relaxed overflow-x-auto">{`[
+              <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">{`[
   {
     "id": 1,
     "question": "Was ist React?",
@@ -206,10 +207,10 @@ export default function Dashboard({
         transition={{ duration: 0.3 }}
         className="mb-6"
       >
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 leading-snug">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
           Hallo! 👋
           <br />
-          <span className="text-violet-400">Bereit zum Lernen?</span>
+          <span className="text-violet-600 dark:text-violet-400">Bereit zum Lernen?</span>
         </h1>
 
         {/* Streak + today badge row */}
@@ -218,7 +219,7 @@ export default function Dashboard({
             className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
               streak > 0
                 ? "bg-orange-900/40 text-orange-400 border border-orange-700/50"
-                : "bg-slate-800 text-slate-500 border border-slate-700"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
             }`}
           >
             <Flame size={13} />
@@ -228,7 +229,7 @@ export default function Dashboard({
             className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
               todayCount > 0
                 ? "bg-violet-900/40 text-violet-300 border border-violet-700/50"
-                : "bg-slate-800 text-slate-500 border border-slate-700"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
             }`}
           >
             <CheckCircle2 size={13} />
@@ -237,24 +238,6 @@ export default function Dashboard({
               : "Heute noch nichts gelernt"}
           </div>
         </div>
-
-        {/* Quick-start button — most recently used catalog */}
-        {lastCatalog && (
-          <button
-            onClick={() => onStartQuiz([lastCatalog.id])}
-            className="mt-4 w-full flex items-center justify-between bg-violet-600 hover:bg-violet-500 active:scale-[0.98] text-white rounded-2xl px-5 py-4 shadow-lg shadow-violet-900/40 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
-          >
-            <div className="flex flex-col items-start gap-0.5">
-              <span className="text-xs text-violet-200 font-medium">
-                Schnellstart
-              </span>
-              <span className="font-bold text-base truncate max-w-[200px]">
-                {lastCatalog.name}
-              </span>
-            </div>
-            <ChevronRight size={20} className="flex-shrink-0 opacity-80" />
-          </button>
-        )}
       </motion.div>
 
       {/* Weekly activity mini-chart */}
@@ -263,11 +246,14 @@ export default function Dashboard({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 mb-6"
+          className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 mb-6"
         >
           <div className="flex items-center gap-2 mb-3">
-            <BarChart2 size={14} className="text-violet-400" />
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <BarChart2
+              size={14}
+              className="text-violet-500 dark:text-violet-400"
+            />
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
               Diese Woche
             </span>
             <span className="ml-auto text-xs text-slate-500">
@@ -282,7 +268,7 @@ export default function Dashboard({
               >
                 <motion.div
                   className={`w-full rounded-t-sm ${
-                    day.count > 0 ? "bg-violet-500" : "bg-slate-700"
+                    day.count > 0 ? "bg-violet-500" : "bg-slate-300 dark:bg-slate-700"
                   }`}
                   style={{
                     height: `${Math.max(
@@ -300,8 +286,8 @@ export default function Dashboard({
                 <span
                   className={`text-[9px] font-medium ${
                     day.date === today.toISOString().slice(0, 10)
-                      ? "text-violet-400"
-                      : "text-slate-600"
+                      ? "text-violet-500 dark:text-violet-400"
+                      : "text-slate-400 dark:text-slate-600"
                   }`}
                 >
                   {day.label}
@@ -314,13 +300,13 @@ export default function Dashboard({
 
       {/* Catalog section header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+        <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <BookOpen size={14} />
           Meine Kataloge
         </h2>
         <button
           onClick={onManageCatalogs}
-          className="text-xs text-slate-500 hover:text-violet-400 font-medium transition-colors flex items-center gap-0.5"
+          className="text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors flex items-center gap-0.5"
         >
           Verwalten
           <ChevronRight size={12} />
@@ -339,7 +325,7 @@ export default function Dashboard({
           const pct = acc?.pct ?? null;
           const barColor =
             pct === null
-              ? "bg-slate-700"
+              ? "bg-slate-300 dark:bg-slate-700"
               : pct >= 70
                 ? "bg-emerald-500"
                 : pct >= 40
@@ -347,14 +333,17 @@ export default function Dashboard({
                   : "bg-red-500";
 
           return (
-            <motion.li key={catalog.id} variants={cardVariant}>
+            <motion.li
+              key={catalog.id}
+              variants={cardVariant}
+            >
               <button
-                onClick={() => onStartQuiz([catalog.id])}
-                className="w-full text-left bg-slate-800 border border-slate-700 hover:border-violet-600 hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group"
+                onClick={() => onOpenConfig([catalog.id])}
+                className="w-full text-left bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-semibold text-slate-100 text-sm truncate group-hover:text-violet-300 transition-colors">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
                       {catalog.name}
                     </span>
                     <span className="text-xs text-slate-500">
@@ -365,10 +354,10 @@ export default function Dashboard({
                     <span
                       className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
                         pct >= 70
-                          ? "bg-emerald-900/40 text-emerald-400"
+                          ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
                           : pct >= 40
-                            ? "bg-amber-900/40 text-amber-400"
-                            : "bg-red-900/40 text-red-400"
+                            ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
+                            : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"
                       }`}
                     >
                       {pct} %
@@ -378,7 +367,7 @@ export default function Dashboard({
 
                 {/* Progress bar */}
                 <div className="flex flex-col gap-1">
-                  <div className="w-full bg-slate-700 rounded-full h-1.5">
+                  <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-1.5">
                     <motion.div
                       className={`h-1.5 rounded-full ${barColor}`}
                       initial={{ width: 0 }}
@@ -386,7 +375,7 @@ export default function Dashboard({
                       transition={{ duration: 0.6, ease: "easeOut" }}
                     />
                   </div>
-                  <span className="text-[10px] text-slate-600">
+                  <span className="text-[10px] text-slate-500">
                     {pct === null
                       ? "Noch nicht geübt"
                       : pct >= 70
@@ -419,7 +408,7 @@ export default function Dashboard({
         className="mb-2"
       >
         <details className="group">
-          <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-700 py-3 text-sm text-slate-400 hover:border-violet-600 hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
+          <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-3 text-sm text-slate-500 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
             <Plus size={16} />
             Neuen Katalog hinzufügen
           </summary>
