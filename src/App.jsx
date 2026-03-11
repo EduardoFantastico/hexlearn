@@ -10,6 +10,7 @@ import { useStreak } from "./hooks/useStreak";
 import CatalogManager from "./components/CatalogManager";
 import QuizConfig from "./components/QuizConfig";
 import Tutorial from "./components/Tutorial";
+import Legal from "./components/Legal";
 
 /** Weighted shuffle — questions with a higher error rate appear earlier. */
 function smartShuffle(questions, errorRateFn) {
@@ -446,6 +447,15 @@ export default function App() {
               <Tutorial onBack={() => setView("dashboard")} />
             </motion.div>
           )}
+
+          {view === "legal" && (
+            <motion.div
+              className="flex-1 flex flex-col py-6"
+              {...pageProps("legal")}
+            >
+              <Legal onBack={() => setView("dashboard")} />
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 
@@ -459,6 +469,21 @@ export default function App() {
           Daten. Alle Inhalte verbleiben ausschließlich lokal auf deinem Gerät
           (localStorage).
         </p>
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <button
+            onClick={() => setView("legal")}
+            className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
+          >
+            Impressum
+          </button>
+          <span className="text-slate-300 dark:text-slate-700">·</span>
+          <button
+            onClick={() => setView("legal")}
+            className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
+          >
+            Datenschutz
+          </button>
+        </div>
       </footer>
     </div>
   );
