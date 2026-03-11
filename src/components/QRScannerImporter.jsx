@@ -100,7 +100,13 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
 
         await scanner.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 220, height: 220 } },
+          {
+            fps: 10,
+            qrbox: (w, h) => {
+              const s = Math.round(Math.min(w, h) * 0.55);
+              return { width: s, height: s };
+            },
+          },
           (decodedText) => {
             handleScannedUrl(decodedText);
           },
@@ -142,10 +148,13 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
           className={`w-full h-full ${scanStatus === "scanning" ? "" : "invisible"}`}
         />
 
-        {/* Violet scanning frame */}
+        {/* Violet scanning frame — box-shadow shades everything outside */}
         {(scanStatus === "scanning" || scanStatus === "fetching") && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="w-[55%] aspect-square border-2 border-violet-400/90 rounded-2xl" />
+            <div
+              className="w-[55%] aspect-square border-2 border-violet-400/90 rounded-2xl"
+              style={{ boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)" }}
+            />
           </div>
         )}
 

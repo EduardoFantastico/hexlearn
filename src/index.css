@@ -6,8 +6,9 @@ body {
   @apply bg-slate-950 text-slate-100 min-h-screen;
 }
 
-/* Remove the white corner brackets injected by html5-qrcode */
+/* Hide all html5-qrcode overlays — we use our own */
 #hl-qr-reader__scan_region > img,
-#hl-qr-reader__scan_region svg {
+#hl-qr-reader__scan_region svg,
+#qr-shaded-region {
   display: none !important;
 }
