@@ -14,9 +14,11 @@ import {
   Hash,
   Copy,
   Check,
+  QrCode,
 } from "lucide-react";
 import FileUploader from "./FileUploader";
 import JsonPasteImporter from "./JsonPasteImporter";
+import QRScannerImporter from "./QRScannerImporter";
 
 /**
  * Dashboard
@@ -293,25 +295,27 @@ export default function Dashboard({
             {/* Tab switcher */}
             <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
               {[
-                { id: "file", label: "Datei hochladen" },
-                { id: "paste", label: "JSON einfügen" },
+                { id: "file", label: "Datei" },
+                { id: "paste", label: "JSON" },
+                { id: "qr", label: "QR-Code", Icon: QrCode },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
                     activeTab === tab.id
                       ? "bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 shadow-sm"
                       : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   }`}
                 >
+                  {tab.Icon && <tab.Icon size={11} />}
                   {tab.label}
                 </button>
               ))}
             </div>
 
             {/* Tab content */}
-            {activeTab === "file" ? (
+            {activeTab === "file" && (
               <>
                 <FileUploader onCatalogAdded={onCatalogAdded} />
                 {/* JSON format hint */}
@@ -346,8 +350,15 @@ export default function Dashboard({
                   </div>
                 </details>
               </>
-            ) : (
+            )}
+            {activeTab === "paste" && (
               <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
+            )}
+            {activeTab === "qr" && (
+              <QRScannerImporter
+                onCatalogAdded={onCatalogAdded}
+                onClose={() => setActiveTab("file")}
+              />
             )}
           </div>
         </motion.div>
@@ -723,8 +734,40 @@ export default function Dashboard({
             <Plus size={16} />
             Neuen Katalog hinzufügen
           </summary>
-          <div className="mt-3">
-            <FileUploader onCatalogAdded={onCatalogAdded} />
+          <div className="mt-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+            {/* Tab switcher */}
+            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
+              {[
+                { id: "file", label: "Datei" },
+                { id: "paste", label: "JSON" },
+                { id: "qr", label: "QR-Code", Icon: QrCode },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
+                    activeTab === tab.id
+                      ? "bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  }`}
+                >
+                  {tab.Icon && <tab.Icon size={11} />}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            {activeTab === "file" && (
+              <FileUploader onCatalogAdded={onCatalogAdded} />
+            )}
+            {activeTab === "paste" && (
+              <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
+            )}
+            {activeTab === "qr" && (
+              <QRScannerImporter
+                onCatalogAdded={onCatalogAdded}
+                onClose={() => setActiveTab("file")}
+              />
+            )}
           </div>
         </details>
       </motion.div>

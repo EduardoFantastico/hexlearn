@@ -10,6 +10,7 @@ import {
   Check,
   Upload,
   Pencil,
+  QrCode,
 } from "lucide-react";
 
 const STEPS = [
@@ -77,6 +78,11 @@ const CATALOG_TYPES = [
     icon: Sparkles,
     label: "KI-generiert",
     desc: "Prompt nutzen → JSON importieren",
+  },
+  {
+    icon: QrCode,
+    label: "QR-Code",
+    desc: "Katalog kontaktlos von Freunden übernehmen",
   },
 ];
 
@@ -196,7 +202,84 @@ export default function Tutorial({ onBack }) {
           </div>
         </section>
 
-        {/* ── Section 3: AI ───────────────────────────────────── */}
+        {/* ── Section 3: QR-Code Sharing ──────────────────────── */}
+        <section>
+          <div className="rounded-2xl border border-violet-200 dark:border-violet-800/50 bg-violet-50/60 dark:bg-violet-950/30 p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                <QrCode
+                  size={13}
+                  className="text-violet-600 dark:text-violet-400"
+                />
+              </div>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                Kataloge kontaktlos teilen
+              </h2>
+            </div>
+
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+              Du kannst jeden Katalog per QR-Code an Freunde weitergeben –{" "}
+              <strong className="text-slate-600 dark:text-slate-300">
+                ohne Dateien zu verschicken
+              </strong>
+              . Einfach QR-Code zeigen, scannen, fertig.
+            </p>
+
+            <ol className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4 list-decimal list-inside space-y-1.5 pl-1">
+              <li>
+                Öffne{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „Kataloge verwalten"
+                </strong>{" "}
+                und klicke neben einem Katalog auf das{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  Teilen-Symbol
+                </strong>
+                .
+              </li>
+              <li>
+                Wähle, wie lange der QR-Code gültig sein soll (max.{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  10 Minuten
+                </strong>
+                ), und klicke auf{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „QR-Code generieren"
+                </strong>
+                .
+              </li>
+              <li>
+                Zeige den QR-Code deinen Freunden – oder drücke{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „Vollbild"
+                </strong>{" "}
+                für maximale Lesbarkeit.
+              </li>
+              <li>
+                Deine Freunde öffnen HexLearn, wählen{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „QR-Code"
+                </strong>{" "}
+                in der Importsektion und scannen den Code.
+              </li>
+            </ol>
+
+            <div className="flex gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/40 rounded-xl px-3 py-2.5">
+              <QrCode
+                size={13}
+                className="text-amber-500 flex-shrink-0 mt-0.5"
+              />
+              <p className="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
+                Die Daten werden nur für max.{" "}
+                <strong>10 Minuten zwischengespeichert</strong> und danach
+                automatisch gelöscht. Kein Account, keine dauerhafte
+                Speicherung.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Section 4: AI ───────────────────────────────────── */}
         <section>
           <div className="rounded-2xl border border-violet-200 dark:border-violet-800/50 bg-violet-50/60 dark:bg-violet-950/30 p-5">
             <div className="flex items-center gap-2 mb-2">

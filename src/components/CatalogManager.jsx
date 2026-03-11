@@ -10,7 +10,9 @@ import {
   ChevronDown,
   ChevronUp,
   TrendingUp,
+  Share2,
 } from "lucide-react";
+import ShareCatalogModal from "./ShareCatalogModal";
 
 // ── Utilities ──────────────────────────────────────────────────────────
 
@@ -566,6 +568,7 @@ export default function CatalogManager({
 }) {
   const [editing, setEditing] = useState(null); // null | 'new' | catalogId
   const [confirmDelete, setConfirmDelete] = useState(null); // null | catalogId
+  const [sharingCatalog, setSharingCatalog] = useState(null); // null | catalog
 
   const editingCatalog =
     editing && editing !== "new"
@@ -672,6 +675,13 @@ export default function CatalogManager({
               {/* Action buttons */}
               <div className="flex items-center gap-1 flex-shrink-0">
                 <button
+                  onClick={() => setSharingCatalog(catalog)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Katalog teilen"
+                >
+                  <Share2 size={15} />
+                </button>
+                <button
                   onClick={() => exportCatalog(catalog)}
                   className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                   title="Als JSON herunterladen"
@@ -697,6 +707,16 @@ export default function CatalogManager({
           </motion.li>
         ))}
       </motion.ul>
+
+      {/* Share modal */}
+      <AnimatePresence>
+        {sharingCatalog && (
+          <ShareCatalogModal
+            catalog={sharingCatalog}
+            onClose={() => setSharingCatalog(null)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete confirmation modal */}
       <AnimatePresence>

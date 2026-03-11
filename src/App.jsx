@@ -37,6 +37,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [importError, setImportError] = useState(null);
+  const [shareImportToast, setShareImportToast] = useState(null); // null | { status, msg }
   const importRef = useRef(null);
 
   // Dark mode — default dark, persisted in localStorage
@@ -96,6 +97,52 @@ export default function App() {
   function handleCatalogAdded({ name, questions: qs }) {
     addCatalog({ name, questions: qs });
   }
+
+  // Handle ?share=ID on first render — auto-import shared catalog
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get("share");
+    if (!shareId || !/^[a-f0-9]{8}$/.test(shareId)) return;
+
+    // Strip query param without reload
+    window.history.replaceState(null, "", window.location.pathname);
+
+    setShareImportToast({ status: "loading" });
+    fetch(`/api/share?id=${encodeURIComponent(shareId)}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(
+            body.error === "Share abgelaufen."
+              ? "Der QR-Code ist abgelaufen."
+              : "Katalog nicht gefunden.",
+          );
+        }
+        return res.json();
+      })
+      .then(({ catalog }) => {
+        const questions = Array.isArray(catalog) ? catalog : catalog?.questions;
+        if (!Array.isArray(questions) || questions.length === 0)
+          throw new Error("Ungültiges Katalog-Format.");
+        const name = catalog?.name || "Geteilter Katalog";
+        addCatalog({
+          name,
+          questions: questions.map((q) =>
+            q.type ? q : { ...q, type: "multiple-choice" },
+          ),
+        });
+        setShareImportToast({
+          status: "success",
+          msg: `„${name}" importiert!`,
+        });
+        setTimeout(() => setShareImportToast(null), 4000);
+      })
+      .catch((err) => {
+        setShareImportToast({ status: "error", msg: err.message });
+        setTimeout(() => setShareImportToast(null), 5000);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleOpenConfig(catalogIds) {
     setConfigInitialIds(catalogIds ?? []);
@@ -432,6 +479,57 @@ export default function App() {
                 Alle Daten l&ouml;schen
               </button>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Share-import toast ────────────────────────────────── */}
+      <AnimatePresence>
+        {shareImportToast && (
+          <motion.div
+            key="share-toast"
+            initial={{ opacity: 0, y: -24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -24 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 pointer-events-none w-full max-w-sm"
+          >
+            <div
+              className={`rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3 border text-sm font-medium ${
+                shareImportToast.status === "success"
+                  ? "bg-emerald-50 dark:bg-emerald-900/40 border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200"
+                  : shareImportToast.status === "error"
+                    ? "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300"
+                    : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+              }`}
+            >
+              {shareImportToast.status === "loading" && (
+                <svg
+                  className="animate-spin w-4 h-4 flex-shrink-0 text-violet-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              )}
+              <span>
+                {shareImportToast.status === "loading"
+                  ? "Katalog wird importiert…"
+                  : shareImportToast.msg}
+              </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
