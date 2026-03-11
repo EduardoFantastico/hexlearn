@@ -11,13 +11,14 @@ import CatalogManager from "./components/CatalogManager";
 import QuizConfig from "./components/QuizConfig";
 import Tutorial from "./components/Tutorial";
 import Legal from "./components/Legal";
+import StatsPage from "./components/StatsPage";
 
-/** Weighted shuffle — questions with a higher error rate appear earlier. */
-function smartShuffle(questions, errorRateFn) {
+/** SR-aware shuffle — weight from srWeight() drives question order. */
+function smartShuffle(questions, srWeightFn) {
   return [...questions]
     .map((q) => {
       const id = String(q.id ?? q.question);
-      const w = 1 + errorRateFn(id) * 4;
+      const w = srWeightFn(id);
       return { q, sort: Math.random() ** (1 / w) };
     })
     .sort((a, b) => b.sort - a.sort)
@@ -74,7 +75,7 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { stats, recordRound, clearStats, errorRate } = useQuestionStats();
+  const { stats, recordRound, clearStats, errorRate, srWeight } = useQuestionStats();
   const {
     catalogs,
     addCatalog,
@@ -108,7 +109,7 @@ export default function App() {
       });
     if (pooled.length === 0) return;
     markUsed(catalogIds);
-    const ordered = smartShuffle(pooled, errorRate).slice(0, count);
+    const ordered = smartShuffle(pooled, srWeight).slice(0, count);
     setQuestions(ordered);
     setCurrentIndex(0);
     setAnswers([]);
@@ -367,6 +368,7 @@ export default function App() {
                 onOpenSettings={() => setShowSettings(true)}
                 onManageCatalogs={() => setView("manage")}
                 onOpenTutorial={() => setView("tutorial")}
+                onOpenStats={() => setView("stats")}
               />
             </motion.div>
           )}
@@ -400,7 +402,7 @@ export default function App() {
                 answers={answers}
                 stats={stats}
                 onPlayAgain={() => {
-                  const ordered = smartShuffle(questions, errorRate);
+                  const ordered = smartShuffle(questions, srWeight);
                   setQuestions(ordered);
                   setCurrentIndex(0);
                   setAnswers([]);
@@ -454,6 +456,19 @@ export default function App() {
               {...pageProps("legal")}
             >
               <Legal onBack={() => setView("dashboard")} />
+            </motion.div>
+          )}
+
+          {view === "stats" && (
+            <motion.div
+              className="flex-1 flex flex-col py-6"
+              {...pageProps("stats")}
+            >
+              <StatsPage
+                catalogs={catalogs}
+                stats={stats}
+                onBack={() => setView("dashboard")}
+              />
             </motion.div>
           )}
         </AnimatePresence>

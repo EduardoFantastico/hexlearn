@@ -41,6 +41,7 @@ export default function Dashboard({
   onCatalogAdded,
   onManageCatalogs,
   onOpenTutorial,
+  onOpenStats,
 }) {
   const fileUploaderRef = useRef(null);
   const [jsonCopied, setJsonCopied] = useState(false);
@@ -594,6 +595,13 @@ export default function Dashboard({
           Meine Kataloge
         </h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={onOpenStats}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+          >
+            <BarChart2 size={11} />
+            Statistiken
+          </button>
           <button
             onClick={onOpenTutorial}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"

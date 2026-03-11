@@ -7,38 +7,47 @@ const STORAGE_KEY = "hexlearn_question_stats";
 /**
  * useQuestionStats
  *
- * Manages per-question attempt statistics persisted in localStorage.
+ * Manages per-question statistics with SM-2-inspired spaced repetition.
  *
  * Shape stored:
  *   {
- *     [questionId: string]: { correct: number; wrong: number }
+ *     [questionId: string]: {
+ *       correct:  number,
+ *       wrong:    number,
+ *       interval: number,   // days until next review
+ *       lastSeen: number,   // timestamp (ms) or null
+ *     }
  *   }
- *
- * Returns:
- *   stats        – the full stats map
- *   recordRound  – (questions, answers) => void  — call once after a quiz round
- *   clearStats   – () => void                    — wipes all stored data
- *   errorRate    – (questionId) => number [0-1]  — fraction of wrong answers (0 when no attempts)
  */
 export function useQuestionStats() {
   const [stats, setStats] = useLocalStorage(STORAGE_KEY, {});
 
-  /**
-   * Persist the results of a completed quiz round.
-   * @param {Array<{id: string|number}>} questions  ordered list of questions shown
-   * @param {number[]} answers                       chosen option indices, same order
-   */
   const recordRound = useCallback(
     (questions, answers) => {
+      const now = Date.now();
       setStats((prev) => {
         const next = { ...prev };
         questions.forEach((q, i) => {
-          const id = String(q.id ?? q.question); // fall back to question text as key
+          const id = String(q.id ?? q.question);
           const wasCorrect = isAnswerCorrect(q, answers[i]);
-          const existing = next[id] ?? { correct: 0, wrong: 0 };
+          const existing = next[id] ?? {
+            correct: 0,
+            wrong: 0,
+            interval: 1,
+            lastSeen: null,
+          };
+          // SM-2 inspired interval: correct → grow ×2.5 (cap 60d), wrong → reset to 0.5d
+          const prevInterval = existing.interval ?? 1;
+          const newInterval = wasCorrect
+            ? existing.lastSeen === null
+              ? 1
+              : Math.min(prevInterval * 2.5, 60)
+            : 0.5;
           next[id] = {
             correct: existing.correct + (wasCorrect ? 1 : 0),
             wrong: existing.wrong + (wasCorrect ? 0 : 1),
+            interval: newInterval,
+            lastSeen: now,
           };
         });
         return next;
@@ -51,10 +60,7 @@ export function useQuestionStats() {
     setStats({});
   }, [setStats]);
 
-  /**
-   * Returns the error rate for a question [0, 1].
-   * 0 = never wrong (or never attempted), 1 = always wrong.
-   */
+  /** Error rate [0–1]. 0 when never attempted. */
   const errorRate = useCallback(
     (questionId) => {
       const id = String(questionId);
@@ -66,5 +72,28 @@ export function useQuestionStats() {
     [stats],
   );
 
-  return { stats, recordRound, clearStats, errorRate };
+  /**
+   * SR-aware shuffle weight (higher = appears earlier).
+   *   Never seen          → 3    (should be introduced)
+   *   Overdue             → 2–5  (based on error rate)
+   *   Not yet due         → 0.2–1.0 (de-prioritised until interval elapsed)
+   */
+  const srWeight = useCallback(
+    (questionId) => {
+      const id = String(questionId);
+      const s = stats[id];
+      if (!s || s.lastSeen == null) return 3;
+      const daysSince = (Date.now() - s.lastSeen) / 86_400_000;
+      const interval = s.interval ?? 1;
+      const er =
+        s.correct + s.wrong > 0 ? s.wrong / (s.correct + s.wrong) : 0;
+      if (daysSince >= interval) {
+        return 2 + er * 3; // overdue: 2–5
+      }
+      return 0.2 + (daysSince / interval) * 0.8; // not due: 0.2–1.0
+    },
+    [stats],
+  );
+
+  return { stats, recordRound, clearStats, errorRate, srWeight };
 }
