@@ -41,6 +41,11 @@ export default async function handler(req, res) {
     const id = randomBytes(4).toString("hex");
     const expiresAt = Date.now() + safeTtl * 1000;
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error("BLOB_READ_WRITE_TOKEN is not set.");
+      return res.status(503).json({ error: "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen." });
+    }
+
     try {
       await put(`${BLOB_PREFIX}${id}`, JSON.stringify({ catalog, expiresAt }), {
         access: "public",
@@ -51,7 +56,7 @@ export default async function handler(req, res) {
       console.error("Blob PUT error:", err);
       return res
         .status(503)
-        .json({ error: "Speicherfehler. Bitte erneut versuchen." });
+        .json({ error: `Speicherfehler: ${err.message}` });
     }
 
     return res.status(200).json({ id, ttl: safeTtl });
