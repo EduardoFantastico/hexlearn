@@ -460,7 +460,7 @@ export default function App() {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-10 px-6 text-center space-y-2">
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-3 px-6 text-center space-y-1">
         <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
           HexLearn · Lokal. Privat. Dein Wissen.
         </p>
@@ -470,6 +470,15 @@ export default function App() {
           (localStorage).
         </p>
         <div className="flex items-center justify-center gap-4 pt-2">
+          <a
+            href="https://github.com/EduardoFantastico"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
+          >
+            GitHub
+          </a>
+          <span className="text-slate-300 dark:text-slate-700">·</span>
           <button
             onClick={() => setView("legal")}
             className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
