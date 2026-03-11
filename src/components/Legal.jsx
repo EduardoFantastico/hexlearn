@@ -191,8 +191,8 @@ export default function Legal({ section = "impressum", onBack }) {
               von Vercel Inc. Die Daten werden ausschließlich für die vom Nutzer
               gewählte Dauer (maximal 10 Minuten) gespeichert und danach
               automatisch gelöscht. Der Zugriff ist nur über eine
-              zufallsgenerierte ID möglich; es findet keine
-              Nutzerprofilierung statt. Weitere Informationen findest du in der{" "}
+              zufallsgenerierte ID möglich; es findet keine Nutzerprofilierung
+              statt. Weitere Informationen findest du in der{" "}
               <a
                 href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
