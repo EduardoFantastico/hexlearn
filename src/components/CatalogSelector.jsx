@@ -32,8 +32,10 @@ export default function CatalogSelector({
   return (
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto px-4">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-slate-100">Fragenkataloge</h2>
-        <p className="text-slate-400 text-sm mt-1">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          Fragenkataloge
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
           Wähle einen oder mehrere Kataloge für dein Quiz aus.
         </p>
       </div>
@@ -46,10 +48,10 @@ export default function CatalogSelector({
             accuracy === null
               ? "text-slate-500"
               : accuracy >= 70
-                ? "text-emerald-400"
+                ? "text-emerald-600 dark:text-emerald-400"
                 : accuracy >= 40
-                  ? "text-amber-400"
-                  : "text-red-400";
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-red-600 dark:text-red-400";
           return (
             <li key={catalog.name}>
               <button
@@ -60,8 +62,8 @@ export default function CatalogSelector({
                   border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500
                   ${
                     selected
-                      ? "border-violet-500 bg-violet-900/30 text-slate-100"
-                      : "border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-500"
+                      ? "border-violet-500 bg-violet-50 dark:bg-violet-900/30 text-slate-900 dark:text-slate-100"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500"
                   }
                 `}
               >
@@ -69,11 +71,13 @@ export default function CatalogSelector({
                   <span className="font-semibold text-base">
                     {catalog.name}
                   </span>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                     <span>{catalog.questions.length} Fragen</span>
                     {accuracy !== null && (
                       <>
-                        <span className="text-slate-600">·</span>
+                        <span className="text-slate-400 dark:text-slate-600">
+                          ·
+                        </span>
                         <span className={`font-semibold ${accuracyColor}`}>
                           {accuracy} % korrekt
                         </span>
@@ -82,7 +86,7 @@ export default function CatalogSelector({
                   </div>
                 </div>
                 <span
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selected ? "border-violet-400 bg-violet-500" : "border-slate-600"}`}
+                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selected ? "border-violet-400 bg-violet-500" : "border-slate-300 dark:border-slate-600"}`}
                 >
                   {selected && (
                     <svg
@@ -107,7 +111,7 @@ export default function CatalogSelector({
 
       <button
         onClick={onAddMore}
-        className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-700 py-3 text-sm text-slate-400 hover:border-violet-600 hover:text-violet-400 transition-colors"
+        className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 py-3 text-sm text-slate-500 dark:text-slate-400 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +138,7 @@ export default function CatalogSelector({
           ${
             canStart
               ? "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/40"
-              : "bg-slate-800 text-slate-600 cursor-not-allowed"
+              : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
           }
         `}
       >

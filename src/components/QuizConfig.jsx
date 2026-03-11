@@ -82,7 +82,9 @@ export default function QuizConfig({
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Quiz konfigurieren</h1>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+          Quiz konfigurieren
+        </h1>
       </div>
 
       {/* ── Catalog selection ──────────────────────────────── */}
@@ -118,7 +120,7 @@ export default function QuizConfig({
                 onClick={() => toggle(catalog.id)}
                 className={`w-full text-left rounded-2xl px-4 py-3.5 border-2 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
                   selected
-                    ? "border-violet-500 bg-violet-900/20"
+                    ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
                     : "border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600"
                 }`}
               >
@@ -128,7 +130,7 @@ export default function QuizConfig({
                     className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                       selected
                         ? "border-violet-500 bg-violet-500"
-                        : "border-slate-600"
+                        : "border-slate-300 dark:border-slate-600"
                     }`}
                   >
                     {selected && (
@@ -141,7 +143,9 @@ export default function QuizConfig({
                   <div className="flex-1 min-w-0">
                     <p
                       className={`font-semibold text-sm truncate transition-colors ${
-                        selected ? "text-violet-300" : "text-slate-700 dark:text-slate-300"
+                        selected
+                          ? "text-violet-700 dark:text-violet-300"
+                          : "text-slate-700 dark:text-slate-300"
                       }`}
                     >
                       {catalog.name}
@@ -155,10 +159,10 @@ export default function QuizConfig({
                     <span
                       className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
                         pct >= 70
-                          ? "bg-emerald-900/40 text-emerald-400"
+                          ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
                           : pct >= 40
-                            ? "bg-amber-900/40 text-amber-400"
-                            : "bg-red-900/40 text-red-400"
+                            ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
+                            : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"
                       }`}
                     >
                       {pct} %
@@ -193,7 +197,7 @@ export default function QuizConfig({
             <Minus size={16} />
           </button>
 
-          <span className="text-5xl font-extrabold text-violet-400 tabular-nums w-20 text-center leading-none">
+          <span className="text-5xl font-extrabold text-violet-600 dark:text-violet-400 tabular-nums w-20 text-center leading-none">
             {effectiveCount}
           </span>
 

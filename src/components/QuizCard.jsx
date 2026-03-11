@@ -3,21 +3,51 @@ import { motion, AnimatePresence } from "framer-motion";
 import { isAnswerCorrect } from "../utils/questionHelpers";
 
 const TYPE_BADGE = {
-  "text-input": ["Freie Eingabe", "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30"],
-  "fill-in-the-blank": ["Lückentext", "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"],
-  "true-false": ["Richtig / Falsch", "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30"],
-  matching: ["Zuordnung", "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30"],
+  "text-input": [
+    "Freie Eingabe",
+    "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30",
+  ],
+  "fill-in-the-blank": [
+    "Lückentext",
+    "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30",
+  ],
+  "true-false": [
+    "Richtig / Falsch",
+    "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30",
+  ],
+  matching: [
+    "Zuordnung",
+    "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30",
+  ],
 };
 
 const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-3.5 w-3.5"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+      clipRule="evenodd"
+    />
   </svg>
 );
 
 const XIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-3.5 w-3.5"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+      clipRule="evenodd"
+    />
   </svg>
 );
 
@@ -32,29 +62,37 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
   const [inputValue, setInputValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
   // matching
-  const [matchingSelections, setMatchingSelections] = useState(
-    () => (question.pairs ?? []).map(() => ""),
+  const [matchingSelections, setMatchingSelections] = useState(() =>
+    (question.pairs ?? []).map(() => ""),
   );
-  const [shuffledRights] = useState(
-    () => [...(question.pairs ?? []).map((p) => p.right)].sort(() => Math.random() - 0.5),
+  const [shuffledRights] = useState(() =>
+    [...(question.pairs ?? []).map((p) => p.right)].sort(
+      () => Math.random() - 0.5,
+    ),
   );
 
   const isLast = index === total - 1;
   const questionType = question.type ?? "multiple-choice";
   const isMC = questionType === "multiple-choice";
   const isTrueFalse = questionType === "true-false";
-  const isTextLike = questionType === "text-input" || questionType === "fill-in-the-blank";
+  const isTextLike =
+    questionType === "text-input" || questionType === "fill-in-the-blank";
   const isMatching = questionType === "matching";
 
   const correct = question.correctAnswerIndex;
-  const textCorrect = isTextLike && submitted ? isAnswerCorrect(question, inputValue) : null;
+  const textCorrect =
+    isTextLike && submitted ? isAnswerCorrect(question, inputValue) : null;
   const allMatchingFilled = matchingSelections.every((s) => s !== "");
   const matchingResultsPerPair =
     isMatching && submitted
       ? matchingSelections.map(
           (sel, i) =>
-            String(sel ?? "").trim().toLowerCase() ===
-            String(question.pairs[i]?.right ?? "").trim().toLowerCase(),
+            String(sel ?? "")
+              .trim()
+              .toLowerCase() ===
+            String(question.pairs[i]?.right ?? "")
+              .trim()
+              .toLowerCase(),
         )
       : null;
 
@@ -123,7 +161,9 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
       {/* Progress bar */}
       <div className="flex flex-col gap-1.5">
         <div className="flex justify-between text-xs text-slate-600 dark:text-slate-400">
-          <span>Frage {index + 1} von {total}</span>
+          <span>
+            Frage {index + 1} von {total}
+          </span>
           <span>{Math.round(progressPct)} %</span>
         </div>
         <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2">
@@ -160,8 +200,8 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 <span key={i}>
                   {part}
                   {i < arr.length - 1 && (
-                    <span className="inline-block border-b-2 border-blue-400 text-blue-400 dark:text-blue-300 font-bold px-1 mx-0.5 min-w-[2.5rem] text-center">
-                      ___
+                    <span className="inline-block border-b-2 border-blue-500 dark:border-blue-400 mx-1 min-w-[3rem]">
+                      &nbsp;
                     </span>
                   )}
                 </span>
@@ -183,7 +223,9 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
               <li key={i}>
                 <button
                   onClick={() => handleOption(i)}
-                  disabled={selected !== null && i !== correct && i !== selected}
+                  disabled={
+                    selected !== null && i !== correct && i !== selected
+                  }
                   className={`w-full text-left flex items-center gap-4 rounded-2xl border-2 px-5 py-4 text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${optionStyle(i)}`}
                 >
                   <span
@@ -228,15 +270,17 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
               let cls =
                 "flex-1 py-5 rounded-2xl border-2 font-bold text-base transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ";
               if (selected === null) {
-                cls += val
-                  ? "border-emerald-400 dark:border-emerald-600 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 cursor-pointer active:scale-95"
-                  : "border-red-400 dark:border-red-600 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 cursor-pointer active:scale-95";
+                cls +=
+                  "border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:border-violet-400 dark:hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300 cursor-pointer active:scale-95";
               } else if (isTheCorrect) {
-                cls += "border-emerald-500 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 cursor-default";
+                cls +=
+                  "border-emerald-500 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 cursor-default";
               } else if (isSelected) {
-                cls += "border-red-500 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 cursor-default";
+                cls +=
+                  "border-red-500 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 cursor-default";
               } else {
-                cls += "border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 cursor-default opacity-50";
+                cls +=
+                  "border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 cursor-default opacity-50";
               }
               return (
                 <button
@@ -272,7 +316,12 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
             type="text"
             value={inputValue}
             onChange={(e) => !submitted && setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && !submitted && inputValue.trim() && setSubmitted(true)}
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              !submitted &&
+              inputValue.trim() &&
+              setSubmitted(true)
+            }
             disabled={submitted}
             placeholder="Antwort eingeben…"
             autoFocus
@@ -292,8 +341,17 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 exit={{ opacity: 0 }}
                 className="flex items-center gap-2 text-sm bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl px-5 py-3"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 flex-shrink-0 text-emerald-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <span className="text-emerald-700 dark:text-emerald-300">
                   <span className="font-semibold">Richtig wäre: </span>
@@ -340,7 +398,10 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
             const sel = matchingSelections[i];
             const res = matchingResultsPerPair?.[i];
             return (
-              <div key={i} className="flex items-center gap-2">
+              <div
+                key={i}
+                className="flex items-center gap-2"
+              >
                 {/* Left label */}
                 <span className="flex-1 min-w-0 text-sm font-medium text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 truncate">
                   {pair.left}
@@ -368,7 +429,10 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                   >
                     <option value="">Wählen…</option>
                     {shuffledRights.map((r, ri) => (
-                      <option key={ri} value={r}>
+                      <option
+                        key={ri}
+                        value={r}
+                      >
                         {r}
                       </option>
                     ))}
@@ -404,8 +468,12 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 </p>
                 {question.pairs.map((pair, i) =>
                   matchingResultsPerPair[i] ? null : (
-                    <p key={i} className="text-xs text-emerald-700 dark:text-emerald-300">
-                      <span className="font-semibold">{pair.left}</span> → {pair.right}
+                    <p
+                      key={i}
+                      className="text-xs text-emerald-700 dark:text-emerald-300"
+                    >
+                      <span className="font-semibold">{pair.left}</span> →{" "}
+                      {pair.right}
                     </p>
                   ),
                 )}

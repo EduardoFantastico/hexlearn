@@ -98,19 +98,19 @@ export default function Dashboard({
             >
               <polygon
                 points="50,5 96,30 96,85 50,110 4,85 4,30"
-                fill="rgba(76,29,149,0.45)"
-                stroke="rgb(139,92,246)"
+                className="fill-violet-100 dark:fill-violet-950"
+                stroke="rgb(109,40,217)"
                 strokeWidth="3"
               />
               <text
                 x="50"
                 y="72"
                 textAnchor="middle"
+                className="fill-violet-700 dark:fill-violet-400"
                 style={{
                   fontSize: 36,
                   fontWeight: 800,
                   fontFamily: "system-ui, sans-serif",
-                  fill: "rgb(167,139,250)",
                 }}
               >
                 Hx
@@ -244,7 +244,7 @@ export default function Dashboard({
           <div
             className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
               streak > 0
-                ? "bg-orange-900/40 text-orange-400 border border-orange-700/50"
+                ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-700/50"
                 : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
             }`}
           >
@@ -254,7 +254,7 @@ export default function Dashboard({
           <div
             className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
               todayCount > 0
-                ? "bg-violet-900/40 text-violet-300 border border-violet-700/50"
+                ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700/50"
                 : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
             }`}
           >

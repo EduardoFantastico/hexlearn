@@ -166,8 +166,8 @@ export default function App() {
     <div className="bg-white dark:bg-slate-950 overflow-x-hidden">
       {/* ── Sticky Header ─────────────────────────────────────── */}
       <motion.header
-        className="sticky top-0 z-30 flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md"
-        animate={{ y: headerVisible ? 0 : -80 }}
+        className="sticky top-0 z-30 flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md"
+        animate={{ y: headerVisible ? 0 : -100 }}
         transition={{ duration: 0.25, ease: "easeInOut" }}
       >
         <button
@@ -175,7 +175,7 @@ export default function App() {
           aria-label="Dashboard"
           className="group"
         >
-          <span className="text-violet-600 dark:text-violet-400 font-extrabold text-xl tracking-tight group-hover:text-violet-500 dark:group-hover:text-violet-300 transition-colors">
+          <span className="text-violet-700 dark:text-violet-400 font-extrabold text-2xl tracking-tight group-hover:text-violet-500 dark:group-hover:text-violet-300 transition-colors">
             HexLearn
           </span>
         </button>
@@ -189,9 +189,9 @@ export default function App() {
               <button
                 onClick={() => setShowPauseModal(true)}
                 aria-label="Quiz pausieren"
-                className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
               >
-                <Pause size={17} />
+                <Pause size={18} />
               </button>
             </>
           )}
@@ -203,16 +203,16 @@ export default function App() {
                 ? "In den Hellmodus wechseln"
                 : "In den Dunkelmodus wechseln"
             }
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
           >
-            {darkMode ? <Sun size={17} /> : <Moon size={17} />}
+            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             onClick={() => setShowSettings(true)}
             aria-label="Einstellungen öffnen"
-            className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
           >
-            <Settings size={18} />
+            <Settings size={19} />
           </button>
         </div>
       </motion.header>
@@ -439,9 +439,14 @@ export default function App() {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-6 px-5 text-center">
-        <p className="text-xs text-slate-500">
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-10 px-6 text-center space-y-2">
+        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
           HexLearn · Lokal. Privat. Dein Wissen.
+        </p>
+        <p className="text-xs text-slate-400 dark:text-slate-600 max-w-sm mx-auto leading-relaxed">
+          Diese App erhebt, speichert oder überträgt keinerlei personenbezogene
+          Daten. Alle Inhalte verbleiben ausschließlich lokal auf deinem Gerät
+          (localStorage).
         </p>
       </footer>
     </div>

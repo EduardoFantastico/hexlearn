@@ -49,7 +49,7 @@ export default function Results({
 
         {/* Percentage ring-like display */}
         <div className="flex flex-col items-center gap-1 w-full">
-          <span className="text-4xl font-extrabold text-violet-400">
+          <span className="text-4xl font-extrabold text-violet-600 dark:text-violet-400">
             {pct} %
           </span>
           <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -100,7 +100,7 @@ export default function Results({
                     </p>
                     {histPct !== null && (
                       <span
-                        className={`flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${histPct >= 70 ? "bg-emerald-900/40 text-emerald-400" : histPct >= 40 ? "bg-amber-900/40 text-amber-400" : "bg-red-900/40 text-red-400"}`}
+                        className={`flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${histPct >= 70 ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : histPct >= 40 ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"}`}
                       >
                         {histPct} % gesamt
                       </span>
@@ -108,11 +108,11 @@ export default function Results({
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {/* Wrong chosen answer */}
-                    <div className="flex items-start gap-2 text-xs">
-                      <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-red-900/50 border border-red-600 flex items-center justify-center">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="flex-shrink-0 w-4 h-4 rounded-full bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-600 flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-2.5 w-2.5 text-red-400"
+                          className="h-2.5 w-2.5 text-red-600 dark:text-red-400"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -123,7 +123,7 @@ export default function Results({
                           />
                         </svg>
                       </span>
-                      <span className="text-red-400">
+                      <span className="text-red-600 dark:text-red-400">
                         <span className="font-semibold">Deine Antwort: </span>
                         {(() => {
                           const type = q.type ?? "multiple-choice";
@@ -157,11 +157,11 @@ export default function Results({
                       </span>
                     </div>
                     {/* Correct answer */}
-                    <div className="flex items-start gap-2 text-xs">
-                      <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-emerald-900/50 border border-emerald-600 flex items-center justify-center">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="flex-shrink-0 w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-500 dark:border-emerald-600 flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-2.5 w-2.5 text-emerald-400"
+                          className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -172,7 +172,7 @@ export default function Results({
                           />
                         </svg>
                       </span>
-                      <span className="text-emerald-400">
+                      <span className="text-emerald-600 dark:text-emerald-400">
                         <span className="font-semibold">Richtig: </span>
                         {(() => {
                           const type = q.type ?? "multiple-choice";
