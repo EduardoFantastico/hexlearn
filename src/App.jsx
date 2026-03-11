@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, X, Sun, Moon, Pause } from "lucide-react";
+import { Settings, X, Sun, Moon, Pause, Download, Upload } from "lucide-react";
 import Dashboard from "./components/Dashboard";
 import QuizCard from "./components/QuizCard";
 import Results from "./components/Results";
@@ -33,6 +33,8 @@ export default function App() {
   const [answers, setAnswers] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showPauseModal, setShowPauseModal] = useState(false);
+  const [importError, setImportError] = useState(null);
+  const importRef = useRef(null);
 
   // Dark mode — default dark, persisted in localStorage
   const [darkMode, setDarkMode] = useState(() => {
@@ -144,6 +146,73 @@ export default function App() {
     clearStreak();
     setView("dashboard");
     setShowSettings(false);
+  }
+
+  function handleExport() {
+    const data = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      hexlearn_catalogs: JSON.parse(
+        localStorage.getItem("hexlearn_catalogs") ?? "[]",
+      ),
+      hexlearn_question_stats: JSON.parse(
+        localStorage.getItem("hexlearn_question_stats") ?? "{}",
+      ),
+      hexlearn_streak: JSON.parse(
+        localStorage.getItem("hexlearn_streak") ?? "null",
+      ),
+      hexlearn_theme: localStorage.getItem("hexlearn_theme") ?? "dark",
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hexlearn-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (
+          data.hexlearn_catalogs === undefined &&
+          data.hexlearn_question_stats === undefined &&
+          data.hexlearn_streak === undefined
+        ) {
+          setImportError("Ungültige Backup-Datei.");
+          return;
+        }
+        if (data.hexlearn_catalogs !== undefined)
+          localStorage.setItem(
+            "hexlearn_catalogs",
+            JSON.stringify(data.hexlearn_catalogs),
+          );
+        if (data.hexlearn_question_stats !== undefined)
+          localStorage.setItem(
+            "hexlearn_question_stats",
+            JSON.stringify(data.hexlearn_question_stats),
+          );
+        if (data.hexlearn_streak !== undefined)
+          localStorage.setItem(
+            "hexlearn_streak",
+            JSON.stringify(data.hexlearn_streak),
+          );
+        if (data.hexlearn_theme !== undefined)
+          localStorage.setItem("hexlearn_theme", data.hexlearn_theme);
+        window.location.reload();
+      } catch {
+        setImportError("Datei konnte nicht gelesen werden.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
   }
 
   function handleUpdateCatalog(id, { name, questions }) {
@@ -284,11 +353,52 @@ export default function App() {
                 </div>
               </div>
 
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Ger&auml;te&uuml;bergreifend
+                </p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Exportiere alle deine Kataloge und deinen Lernfortschritt als
+                  JSON-Datei und importiere sie auf einem anderen Ger&auml;t.
+                </p>
+                {importError && (
+                  <p className="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl px-3 py-2">
+                    {importError}
+                  </p>
+                )}
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <button
+                    onClick={handleExport}
+                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                  >
+                    <Download size={15} />
+                    Exportieren
+                  </button>
+                  <button
+                    onClick={() => {
+                      setImportError(null);
+                      importRef.current?.click();
+                    }}
+                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-400 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                  >
+                    <Upload size={15} />
+                    Importieren
+                  </button>
+                </div>
+                <input
+                  ref={importRef}
+                  type="file"
+                  accept=".json,application/json"
+                  className="hidden"
+                  onChange={handleImportFile}
+                />
+              </div>
+
               <button
                 onClick={handleClearData}
                 className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
-                Alle Daten löschen
+                Alle Daten l&ouml;schen
               </button>
             </motion.div>
           </motion.div>
