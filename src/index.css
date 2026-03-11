@@ -5,3 +5,9 @@
 body {
   @apply bg-slate-950 text-slate-100 min-h-screen;
 }
+
+/* Remove the white corner brackets injected by html5-qrcode */
+#hl-qr-reader__scan_region > img,
+#hl-qr-reader__scan_region svg {
+  display: none !important;
+}
