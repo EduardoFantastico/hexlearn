@@ -97,8 +97,9 @@ export default function Legal({ section = "impressum", onBack }) {
             </h2>
             <p>
               HexLearn erhebt, verarbeitet oder übermittelt{" "}
-              <strong>keine personenbezogenen Daten</strong> an externe Server.
-              Es findet keinerlei serverseitige Kommunikation statt.
+              <strong>keine personenbezogenen Daten</strong>. Alle Lernkataloge,
+              Statistiken und Einstellungen werden ausschließlich lokal auf
+              deinem Gerät gespeichert.
             </p>
           </div>
 
@@ -123,7 +124,24 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              4. Cookies
+              4. Katalog-Sharing via QR-Code (HexShare)
+            </h2>
+            <p>
+              Die optionale Teilen-Funktion überträgt den ausgewählten Katalog
+              temporär an einen Server, um einen QR-Code zu ermöglichen. Die
+              Daten werden ausschließlich für die gewählte Dauer (maximal{" "}
+              <strong>10 Minuten</strong>) gespeichert und danach{" "}
+              <strong>automatisch und unwiderruflich gelöscht</strong>. Es wird
+              kein Account benötigt. Der Zugriff ist nur über die zufällig
+              generierte Kurz-ID möglich. Die Übertragung erfolgt verschlüsselt
+              (HTTPS). Es findet keine dauerhafte Speicherung oder
+              Nutzerprofilierung statt.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
+              5. Cookies
             </h2>
             <p>
               Diese Website verwendet keine Cookies. Die App-Daten werden
@@ -134,7 +152,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              5. Externe Dienste &amp; Drittanbieter
+              6. Externe Dienste &amp; Drittanbieter
             </h2>
             <p>
               Es werden keine externen Dienste, Analyse-Tools, Tracking-Skripte
@@ -145,22 +163,38 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              6. Hosting
+              7. Hosting
             </h2>
             <p>
-              Diese App wird über GitHub Pages (GitHub, Inc., 88 Colin P. Kelly
-              Jr. St., San Francisco, CA 94107, USA) bereitgestellt. GitHub
-              erhebt beim Aufruf der Seite serverseitige Zugriffsdaten (z. B.
-              IP-Adresse, Zeitstempel). Diese Verarbeitung erfolgt auf Grundlage
-              von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren
-              Betrieb). Weitere Informationen findest du in der{" "}
+              Diese App wird über <strong>Vercel</strong> (Vercel Inc., 340 Pine
+              Street, Suite 700, San Francisco, CA 94104, USA) bereitgestellt.
+              Vercel erhebt beim Aufruf der Seite serverseitige Zugriffsdaten
+              (z. B. IP-Adresse, Zeitstempel). Diese Verarbeitung erfolgt auf
+              Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+              am sicheren Betrieb). Weitere Informationen findest du in der{" "}
               <a
-                href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
+                href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-violet-600 dark:text-violet-400 underline hover:opacity-80"
               >
-                Datenschutzerklärung von GitHub
+                Datenschutzerklärung von Vercel
+              </a>
+              .
+            </p>
+            <p className="mt-2">
+              Die HexShare-Funktion nutzt <strong>Upstash Redis</strong>{" "}
+              (Upstash Inc.) zur temporären Zwischenspeicherung von
+              Katalogdaten. Daten werden ausschließlich für die gewählte Dauer
+              gespeichert und danach automatisch gelöscht. Weitere Informationen
+              unter{" "}
+              <a
+                href="https://upstash.com/trust/privacy.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-violet-600 dark:text-violet-400 underline hover:opacity-80"
+              >
+                Upstash Privacy Policy
               </a>
               .
             </p>
@@ -168,7 +202,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              7. Deine Rechte
+              8. Deine Rechte
             </h2>
             <p>
               Du hast das Recht auf Auskunft, Berichtigung, Löschung und
@@ -186,7 +220,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              8. Beschwerderecht
+              9. Beschwerderecht
             </h2>
             <p>
               Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu

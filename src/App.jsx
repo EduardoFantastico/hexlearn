@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, X, Sun, Moon, Pause, Download, Upload } from "lucide-react";
+import {
+  Settings,
+  X,
+  Sun,
+  Moon,
+  Pause,
+  Download,
+  Upload,
+  Loader2,
+} from "lucide-react";
 import Dashboard from "./components/Dashboard";
 import QuizCard from "./components/QuizCard";
 import Results from "./components/Results";
@@ -98,33 +107,32 @@ export default function App() {
     addCatalog({ name, questions: qs });
   }
 
-  // Handle ?share=ID on first render — auto-import shared catalog
+  // Handle ?share=... on first render — fetch catalog from server (HexShare)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const shareId = params.get("share");
-    if (!shareId || !/^[a-f0-9]{8}$/.test(shareId)) return;
+    if (!params.has("share")) return;
 
-    // Strip query param without reload
+    const shareId = params.get("share");
+    if (!shareId || !/^[0-9a-f]{8}$/.test(shareId)) return;
+
+    // Strip query param immediately
     window.history.replaceState(null, "", window.location.pathname);
 
-    setShareImportToast({ status: "loading" });
-    fetch(`/api/share?id=${encodeURIComponent(shareId)}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(
-            body.error === "Share abgelaufen."
-              ? "Der QR-Code ist abgelaufen."
-              : "Katalog nicht gefunden.",
-          );
-        }
-        return res.json();
-      })
-      .then(({ catalog }) => {
-        const questions = Array.isArray(catalog) ? catalog : catalog?.questions;
+    async function fetchShare() {
+      setShareImportToast({ status: "loading", msg: "Katalog wird geladen…" });
+      try {
+        const res = await fetch(`/api/share?id=${encodeURIComponent(shareId)}`);
+        const data = await res.json();
+        if (!res.ok)
+          throw new Error(data.error || "Ungültiger oder abgelaufener Link.");
+
+        const questions = Array.isArray(data.catalog)
+          ? data.catalog
+          : data.catalog?.questions;
         if (!Array.isArray(questions) || questions.length === 0)
           throw new Error("Ungültiges Katalog-Format.");
-        const name = catalog?.name || "Geteilter Katalog";
+
+        const name = data.catalog?.name || "Geteilter Katalog";
         addCatalog({
           name,
           questions: questions.map((q) =>
@@ -136,11 +144,13 @@ export default function App() {
           msg: `„${name}" importiert!`,
         });
         setTimeout(() => setShareImportToast(null), 4000);
-      })
-      .catch((err) => {
+      } catch (err) {
         setShareImportToast({ status: "error", msg: err.message });
         setTimeout(() => setShareImportToast(null), 5000);
-      });
+      }
+    }
+
+    fetchShare();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -305,8 +315,7 @@ export default function App() {
     removeCatalog(id);
   }
 
-  const pageProps = (key) => ({
-    key,
+  const pageProps = () => ({
     initial: { opacity: 0, y: 18 },
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -18 },
@@ -498,37 +507,18 @@ export default function App() {
               className={`rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3 border text-sm font-medium ${
                 shareImportToast.status === "success"
                   ? "bg-emerald-50 dark:bg-emerald-900/40 border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200"
-                  : shareImportToast.status === "error"
-                    ? "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300"
-                    : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                  : shareImportToast.status === "loading"
+                    ? "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                    : "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300"
               }`}
             >
               {shareImportToast.status === "loading" && (
-                <svg
-                  className="animate-spin w-4 h-4 flex-shrink-0 text-violet-500"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
+                <Loader2
+                  size={14}
+                  className="animate-spin flex-shrink-0"
+                />
               )}
-              <span>
-                {shareImportToast.status === "loading"
-                  ? "Katalog wird importiert…"
-                  : shareImportToast.msg}
-              </span>
+              <span>{shareImportToast.msg}</span>
             </div>
           </motion.div>
         )}
@@ -594,8 +584,9 @@ export default function App() {
         <AnimatePresence mode="wait">
           {view === "dashboard" && (
             <motion.div
+              key="dashboard"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("dashboard")}
+              {...pageProps()}
             >
               <Dashboard
                 catalogs={catalogs}
@@ -634,8 +625,9 @@ export default function App() {
 
           {view === "result" && (
             <motion.div
+              key="result"
               className="flex-1 flex flex-col py-8"
-              {...pageProps("result")}
+              {...pageProps()}
             >
               <Results
                 questions={questions}
@@ -649,8 +641,9 @@ export default function App() {
           )}
           {view === "config" && (
             <motion.div
+              key="config"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("config")}
+              {...pageProps()}
             >
               <QuizConfig
                 catalogs={catalogs}
@@ -664,8 +657,9 @@ export default function App() {
 
           {view === "manage" && (
             <motion.div
+              key="manage"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("manage")}
+              {...pageProps()}
             >
               <CatalogManager
                 catalogs={catalogs}
@@ -678,8 +672,9 @@ export default function App() {
 
           {view === "tutorial" && (
             <motion.div
+              key="tutorial"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("tutorial")}
+              {...pageProps()}
             >
               <Tutorial onBack={() => setView("dashboard")} />
             </motion.div>
@@ -687,8 +682,9 @@ export default function App() {
 
           {view === "legal" && (
             <motion.div
+              key="legal"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("legal")}
+              {...pageProps()}
             >
               <Legal onBack={() => setView("dashboard")} />
             </motion.div>
@@ -696,8 +692,9 @@ export default function App() {
 
           {view === "stats" && (
             <motion.div
+              key="stats"
               className="flex-1 flex flex-col py-6"
-              {...pageProps("stats")}
+              {...pageProps()}
             >
               <StatsPage
                 catalogs={catalogs}

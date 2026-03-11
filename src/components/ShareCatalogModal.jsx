@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
@@ -8,70 +8,63 @@ import {
   Clock,
   Loader2,
   AlertCircle,
-  CheckCircle2,
 } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const BASE_URL = "https://hexlearn.eddy.rip";
 
-function formatCountdown(ms) {
-  if (ms <= 0) return "00:00";
-  const totalSec = Math.ceil(ms / 1000);
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+function formatCountdown(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${String(sec).padStart(2, "0")}`;
 }
 
 export default function ShareCatalogModal({ catalog, onClose }) {
-  const [ttl, setTtl] = useState(10);
-  const [status, setStatus] = useState("idle"); // idle | loading | ready | expired | error
+  const [ttlMinutes, setTtlMinutes] = useState(5);
+  const [status, setStatus] = useState("idle"); // idle | loading | success | expired | error
   const [shareId, setShareId] = useState(null);
-  const [expiresAt, setExpiresAt] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(null);
-  const [fullscreen, setFullscreen] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
-  const shareUrl = shareId ? `${BASE_URL}/?share=${shareId}` : null;
-
-  // Countdown timer
+  // Countdown timer once QR is shown
   useEffect(() => {
-    if (!expiresAt) return;
-    const tick = () => {
-      const left = expiresAt - Date.now();
-      if (left <= 0) {
-        setTimeLeft(0);
-        setStatus("expired");
-      } else {
-        setTimeLeft(left);
-      }
-    };
-    tick();
-    const id = setInterval(tick, 500);
-    return () => clearInterval(id);
-  }, [expiresAt]);
+    if (status !== "success") return;
+    setCountdown(ttlMinutes * 60);
+    const interval = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(interval);
+          setStatus("expired");
+          setFullscreen(false);
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [status, ttlMinutes]);
 
-  const handleGenerate = useCallback(async () => {
+  async function handleGenerate() {
     setStatus("loading");
     setErrorMsg(null);
     try {
       const res = await fetch("/api/share", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ catalog, ttlMinutes: ttl }),
+        body: JSON.stringify({ catalog, ttl: ttlMinutes * 60 }),
       });
-      if (!res.ok) {
-        const { error } = await res.json().catch(() => ({}));
-        throw new Error(error || `Server-Fehler ${res.status}`);
-      }
-      const { id, expiresAt: exp } = await res.json();
-      setShareId(id);
-      setExpiresAt(exp);
-      setStatus("ready");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unbekannter Fehler.");
+      setShareId(data.id);
+      setStatus("success");
     } catch (err) {
-      setErrorMsg(err.message || "Unbekannter Fehler");
+      setErrorMsg(err.message);
       setStatus("error");
     }
-  }, [catalog, ttl]);
+  }
+
+  const shareUrl = shareId ? `${BASE_URL}/?share=${shareId}` : null;
 
   return (
     <AnimatePresence>
@@ -89,7 +82,7 @@ export default function ShareCatalogModal({ catalog, onClose }) {
           onClick={onClose}
         />
 
-        {/* Modal */}
+        {/* Panel */}
         <motion.div
           key="share-panel"
           initial={{ opacity: 0, y: 40, scale: 0.97 }}
@@ -120,74 +113,97 @@ export default function ShareCatalogModal({ catalog, onClose }) {
             </button>
           </div>
 
-          <div className="px-5 py-5 flex flex-col gap-5">
-            {/* Privacy notice */}
-            <div className="flex gap-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl px-3.5 py-3">
-              <Clock
-                size={14}
-                className="text-amber-500 flex-shrink-0 mt-0.5"
-              />
-              <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
-                Daten werden nur für max.{" "}
-                <strong>10 Minuten zwischengespeichert</strong> und danach
-                automatisch gelöscht. Kein Account, keine dauerhafte
-                Speicherung.
-              </p>
-            </div>
-
-            {/* TTL Slider — only before generating */}
-            {status === "idle" || status === "error" ? (
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                    Verfügbar für
-                  </label>
-                  <span className="text-xs font-bold text-violet-600 dark:text-violet-400">
-                    {ttl} {ttl === 1 ? "Minute" : "Minuten"}
-                  </span>
+          {/* Body — animated state transitions */}
+          <AnimatePresence mode="wait">
+            {/* ── IDLE ── */}
+            {status === "idle" && (
+              <motion.div
+                key="idle"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="px-5 py-5 flex flex-col gap-4"
+              >
+                {/* TTL slider */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <Clock size={12} />
+                      Gültigkeitsdauer
+                    </label>
+                    <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 tabular-nums">
+                      {ttlMinutes} Minute{ttlMinutes !== 1 ? "n" : ""}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={10}
+                    value={ttlMinutes}
+                    onChange={(e) => setTtlMinutes(Number(e.target.value))}
+                    className="w-full accent-violet-600"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-400">
+                    <span>1 Min</span>
+                    <span>10 Min</span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={10}
-                  step={1}
-                  value={ttl}
-                  onChange={(e) => setTtl(Number(e.target.value))}
-                  className="w-full accent-violet-600"
-                />
-                <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-                  <span>1 Min</span>
-                  <span>10 Min</span>
-                </div>
-              </div>
-            ) : null}
 
-            {/* Error */}
-            {status === "error" && errorMsg && (
-              <div className="flex gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 rounded-xl px-3.5 py-3">
-                <AlertCircle
-                  size={14}
-                  className="text-red-500 flex-shrink-0 mt-0.5"
-                />
-                <p className="text-xs text-red-600 dark:text-red-400">
-                  {errorMsg}
+                {/* Privacy notice */}
+                <p className="text-xs text-slate-500 text-center leading-relaxed bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-2.5">
+                  Daten werden nur für{" "}
+                  <strong className="text-slate-700 dark:text-slate-300">
+                    {ttlMinutes} Minute{ttlMinutes !== 1 ? "n" : ""}
+                  </strong>{" "}
+                  zwischengespeichert und dann automatisch gelöscht. Kein
+                  Account, keine dauerhafte Speicherung.
                 </p>
-              </div>
+
+                {/* Generate button */}
+                <button
+                  onClick={handleGenerate}
+                  className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-700 active:scale-[0.98] text-white text-sm font-semibold transition-all"
+                >
+                  QR-Code generieren
+                </button>
+              </motion.div>
             )}
 
-            {/* QR Code area */}
-            {(status === "ready" || status === "expired") && shareUrl && (
+            {/* ── LOADING ── */}
+            {status === "loading" && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="flex flex-col items-center gap-3"
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="px-5 py-12 flex flex-col items-center gap-3"
               >
-                {/* QR container */}
-                <div
-                  className={`relative bg-white rounded-2xl p-3 shadow-inner ${
-                    status === "expired" ? "opacity-40 grayscale" : ""
-                  }`}
+                <Loader2
+                  size={28}
+                  className="animate-spin text-violet-500"
+                />
+                <p className="text-sm text-slate-500">QR-Code wird erstellt…</p>
+              </motion.div>
+            )}
+
+            {/* ── SUCCESS ── */}
+            {status === "success" && shareUrl && (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="px-5 py-5 flex flex-col items-center gap-4"
+              >
+                {/* QR Code */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
+                  className="bg-white rounded-2xl p-3 shadow-inner"
                 >
                   <QRCode
                     value={shareUrl}
@@ -195,78 +211,107 @@ export default function ShareCatalogModal({ catalog, onClose }) {
                     level="L"
                     style={{ display: "block" }}
                   />
-                  {status === "expired" && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-2xl">
-                      <span className="bg-white/90 dark:bg-slate-900/90 text-red-600 text-xs font-bold px-3 py-1.5 rounded-lg border border-red-200">
-                        Abgelaufen
-                      </span>
-                    </div>
-                  )}
-                </div>
+                </motion.div>
 
                 {/* Countdown */}
-                {status === "ready" && timeLeft !== null && (
-                  <div className="flex items-center gap-1.5 text-sm font-mono font-bold text-slate-700 dark:text-slate-300">
-                    <Clock
-                      size={13}
-                      className="text-violet-500"
-                    />
-                    <span>{formatCountdown(timeLeft)}</span>
-                    <span className="text-xs font-normal text-slate-500">
-                      verbleibend
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <Clock size={11} />
+                  <span>
+                    Läuft ab in{" "}
+                    <strong className="text-slate-700 dark:text-slate-300 tabular-nums">
+                      {formatCountdown(countdown)}
+                    </strong>
+                  </span>
+                </div>
 
-                {/* Short URL display */}
-                <p className="text-[11px] text-slate-400 break-all text-center font-mono px-2">
-                  {shareUrl}
+                {/* Privacy */}
+                <p className="text-xs text-slate-500 text-center leading-relaxed px-1">
+                  Wird nach {ttlMinutes} Minute{ttlMinutes !== 1 ? "n" : ""}{" "}
+                  automatisch gelöscht.{" "}
+                  <strong className="text-slate-700 dark:text-slate-300">
+                    Kein Account
+                  </strong>
+                  , keine dauerhafte Speicherung.
                 </p>
 
                 {/* Fullscreen button */}
-                {status === "ready" && (
-                  <button
-                    onClick={() => setFullscreen(true)}
-                    className="flex items-center gap-1.5 text-xs text-violet-600 dark:text-violet-400 hover:underline font-medium"
-                  >
-                    <Maximize2 size={12} />
-                    Vollbild
-                  </button>
-                )}
+                <button
+                  onClick={() => setFullscreen(true)}
+                  className="flex items-center gap-1.5 text-xs text-violet-600 dark:text-violet-400 hover:underline font-medium"
+                >
+                  <Maximize2 size={12} />
+                  Vollbild
+                </button>
               </motion.div>
             )}
 
-            {/* Generate / Retry button */}
-            {(status === "idle" ||
-              status === "error" ||
-              status === "expired") && (
-              <button
-                onClick={handleGenerate}
-                disabled={status === "loading"}
-                className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 disabled:opacity-60 text-white text-sm font-semibold shadow-lg shadow-violet-900/30 transition-all flex items-center justify-center gap-2"
+            {/* ── EXPIRED ── */}
+            {status === "expired" && (
+              <motion.div
+                key="expired"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="px-5 py-10 flex flex-col items-center gap-3 text-center"
               >
-                <Share2 size={14} />
-                {status === "expired"
-                  ? "Neuen QR-Code generieren"
-                  : "QR-Code generieren"}
-              </button>
+                <Clock
+                  size={24}
+                  className="text-amber-400"
+                />
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  QR-Code abgelaufen
+                </p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Der QR-Code war nur {ttlMinutes} Minute
+                  {ttlMinutes !== 1 ? "n" : ""} gültig.
+                </p>
+                <button
+                  onClick={() => {
+                    setStatus("idle");
+                    setShareId(null);
+                  }}
+                  className="mt-1 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-all"
+                >
+                  Neuen QR-Code erstellen
+                </button>
+              </motion.div>
             )}
 
-            {/* Loading spinner */}
-            {status === "loading" && (
-              <div className="flex justify-center py-4">
-                <Loader2
-                  size={28}
-                  className="animate-spin text-violet-500"
+            {/* ── ERROR ── */}
+            {status === "error" && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="px-5 py-10 flex flex-col items-center gap-3 text-center"
+              >
+                <AlertCircle
+                  size={24}
+                  className="text-red-400"
                 />
-              </div>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  Fehler beim Erstellen
+                </p>
+                <p className="text-xs text-slate-500 leading-relaxed px-2">
+                  {errorMsg}
+                </p>
+                <button
+                  onClick={() => setStatus("idle")}
+                  className="mt-1 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold transition-all"
+                >
+                  Erneut versuchen
+                </button>
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         </motion.div>
       </motion.div>
 
       {/* Fullscreen overlay */}
-      {fullscreen && shareUrl && status === "ready" && (
+      {fullscreen && shareUrl && (
         <motion.div
           key="share-fullscreen"
           initial={{ opacity: 0 }}
@@ -285,37 +330,26 @@ export default function ShareCatalogModal({ catalog, onClose }) {
           >
             <Minimize2 size={18} />
           </button>
-
           <motion.div
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col items-center gap-4 w-full max-w-xs"
           >
-            <div className="bg-white rounded-3xl p-4 shadow-2xl w-full flex items-center justify-center">
+            <div className="bg-white rounded-3xl p-5 shadow-xl w-full">
               <QRCode
                 value={shareUrl}
-                size={Math.min(
-                  window.innerWidth - 80,
-                  window.innerHeight - 160,
-                  400,
-                )}
+                size={280}
                 level="L"
-                style={{ display: "block", maxWidth: "100%", height: "auto" }}
+                style={{ display: "block", width: "100%", height: "auto" }}
               />
             </div>
-            <div className="flex items-center gap-1.5 text-sm font-mono font-bold text-slate-700 dark:text-slate-300">
-              <Clock
-                size={13}
-                className="text-violet-500"
-              />
-              <span>{formatCountdown(timeLeft)}</span>
-              <span className="text-xs font-normal text-slate-400">
-                verbleibend
-              </span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
+              <Clock size={11} />
+              <span className="tabular-nums">{formatCountdown(countdown)}</span>
             </div>
-            <p className="text-xs text-slate-400 text-center">
-              Antippen zum Schließen
+            <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
+              Tippe irgendwo, um zurückzukehren.
             </p>
           </motion.div>
         </motion.div>
