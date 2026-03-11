@@ -216,12 +216,17 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                 className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 flex flex-col gap-1"
               >
                 <div className="flex items-center gap-1.5">
-                  <Icon size={11} className="text-slate-400" />
+                  <Icon
+                    size={11}
+                    className="text-slate-400"
+                  />
                   <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
                     {label}
                   </span>
                 </div>
-                <span className={`text-xl font-extrabold leading-none ${color}`}>
+                <span
+                  className={`text-xl font-extrabold leading-none ${color}`}
+                >
                   {value}
                 </span>
                 <span className="text-[10px] text-slate-500">{sub}</span>
@@ -243,7 +248,10 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                 label: "Noch nie gesehen",
               },
             ].map(({ cls, label }) => (
-              <span key={label} className="flex items-center gap-1.5">
+              <span
+                key={label}
+                className="flex items-center gap-1.5"
+              >
                 <span className={`w-3 h-3 rounded-sm inline-block ${cls}`} />
                 {label}
               </span>
@@ -268,9 +276,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                 >
                   {/* Catalog header row */}
                   <button
-                    onClick={() =>
-                      setExpanded(isOpen ? null : catalog.id)
-                    }
+                    onClick={() => setExpanded(isOpen ? null : catalog.id)}
                     className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-slate-200/50 dark:hover:bg-slate-700/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500"
                   >
                     <BookOpen
@@ -317,7 +323,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                             className={`relative w-6 h-6 rounded-md transition-transform hover:scale-125 cursor-default ${STATUS_CLASSES[status]}`}
                             title={`${q.question.slice(0, 70)}${q.question.length > 70 ? "…" : ""}\n${
                               pct !== null
-                                ? `${pct} % richtig · ${(s.correct + s.wrong)}× beantwortet${due ? " · Fällig" : ""}`
+                                ? `${pct} % richtig · ${s.correct + s.wrong}× beantwortet${due ? " · Fällig" : ""}`
                                 : "Noch nie gesehen"
                             }`}
                           >

@@ -75,7 +75,8 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { stats, recordRound, clearStats, errorRate, srWeight } = useQuestionStats();
+  const { stats, recordRound, clearStats, errorRate, srWeight } =
+    useQuestionStats();
   const {
     catalogs,
     addCatalog,

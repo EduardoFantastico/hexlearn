@@ -85,8 +85,7 @@ export function useQuestionStats() {
       if (!s || s.lastSeen == null) return 3;
       const daysSince = (Date.now() - s.lastSeen) / 86_400_000;
       const interval = s.interval ?? 1;
-      const er =
-        s.correct + s.wrong > 0 ? s.wrong / (s.correct + s.wrong) : 0;
+      const er = s.correct + s.wrong > 0 ? s.wrong / (s.correct + s.wrong) : 0;
       if (daysSince >= interval) {
         return 2 + er * 3; // overdue: 2–5
       }
