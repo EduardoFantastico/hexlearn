@@ -10,6 +10,8 @@ import {
   BarChart2,
   Sparkles,
   ShieldCheck,
+  Target,
+  Hash,
 } from "lucide-react";
 import FileUploader from "./FileUploader";
 
@@ -41,20 +43,53 @@ export default function Dashboard({
   // Compute per-catalog accuracy from stats
   function catalogAccuracy(catalog) {
     let correct = 0;
-    let total = 0;
+    let attempts = 0;
+    let attempted = 0;
+    const totalQuestions = catalog.questions.length;
     for (const q of catalog.questions) {
       const s = stats[String(q.id ?? q.question)];
       if (s) {
         correct += s.correct;
-        total += s.correct + s.wrong;
+        attempts += s.correct + s.wrong;
+        attempted++;
       }
     }
-    if (total === 0) return null;
-    return { pct: Math.round((correct / total) * 100), total };
+    if (attempts === 0) return null;
+    return {
+      accuracyPct: Math.round((correct / attempts) * 100), // correct / all answer events
+      coveragePct: Math.round((attempted / totalQuestions) * 100), // unique q tried / total q
+      attempted,
+      totalQuestions,
+      total: attempts,
+    };
   }
 
   const maxCount = Math.max(...weeklyData.map((d) => d.count), 1);
   const DAY_LABELS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+
+  // Aggregate stats
+  const allStatValues = Object.values(stats);
+  const totalAnswered = allStatValues.reduce(
+    (s, v) => s + v.correct + v.wrong,
+    0,
+  );
+  const totalCorrect = allStatValues.reduce((s, v) => s + v.correct, 0);
+  const overallPct =
+    totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : null;
+  const totalQuestionsAcrossAll = catalogs.reduce(
+    (s, c) => s + c.questions.length,
+    0,
+  );
+  const uniqueAttempted = catalogs.reduce((s, c) => {
+    for (const q of c.questions) {
+      if (stats[String(q.id ?? q.question)]) s++;
+    }
+    return s;
+  }, 0);
+  const masteredCount = allStatValues.filter((v) => {
+    const t = v.correct + v.wrong;
+    return t >= 3 && Math.round((v.correct / t) * 100) >= 70;
+  }).length;
 
   const today = new Date();
   const last7 = Array.from({ length: 7 }, (_, i) => {
@@ -266,6 +301,69 @@ export default function Dashboard({
         </div>
       </motion.div>
 
+      {/* Aggregate stats row */}
+      {totalAnswered > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="grid grid-cols-3 gap-3 mb-6"
+        >
+          {[
+            {
+              Icon: Hash,
+              label: "Beantwortet",
+              value: totalAnswered,
+              sub: "insgesamt",
+              color: "text-violet-600 dark:text-violet-400",
+            },
+            {
+              Icon: Target,
+              label: "Genauigkeit",
+              value: overallPct !== null ? `${overallPct} %` : "–",
+              sub:
+                overallPct !== null
+                  ? `${uniqueAttempted} / ${totalQuestionsAcrossAll} Fragen versucht`
+                  : "keine Daten",
+              color:
+                overallPct === null
+                  ? "text-slate-500"
+                  : overallPct >= 70
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : overallPct >= 40
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-red-600 dark:text-red-400",
+            },
+            {
+              Icon: CheckCircle2,
+              label: "Gemeistert",
+              value: masteredCount,
+              sub: "Fragen ≥ 70 %",
+              color: "text-emerald-600 dark:text-emerald-400",
+            },
+          ].map(({ Icon, label, value, sub, color }) => (
+            <div
+              key={label}
+              className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3 py-3.5 flex flex-col gap-1"
+            >
+              <div className="flex items-center gap-1.5">
+                <Icon
+                  size={12}
+                  className="text-slate-400"
+                />
+                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider truncate">
+                  {label}
+                </span>
+              </div>
+              <span className={`text-xl font-extrabold leading-none ${color}`}>
+                {value}
+              </span>
+              <span className="text-[10px] text-slate-500">{sub}</span>
+            </div>
+          ))}
+        </motion.div>
+      )}
+
       {/* Weekly activity mini-chart */}
       {weeklyData.length > 0 && (
         <motion.div
@@ -274,7 +372,7 @@ export default function Dashboard({
           transition={{ duration: 0.3, delay: 0.1 }}
           className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 mb-6"
         >
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-4">
             <BarChart2
               size={14}
               className="text-violet-500 dark:text-violet-400"
@@ -282,46 +380,83 @@ export default function Dashboard({
             <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
               Diese Woche
             </span>
-            <span className="ml-auto text-xs text-slate-500">
-              {weeklyData.reduce((s, d) => s + d.count, 0)} Fragen gesamt
+            <span className="ml-auto text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {weeklyData.reduce((s, d) => s + d.count, 0)}
+              <span className="font-normal text-slate-500"> Fragen</span>
             </span>
           </div>
-          <div className="flex items-end gap-1.5 h-12">
-            {last7.map((day) => (
-              <div
-                key={day.date}
-                className="flex flex-col items-center gap-1 flex-1"
-              >
-                <motion.div
-                  className={`w-full rounded-t-sm ${
-                    day.count > 0
-                      ? "bg-violet-500"
-                      : "bg-slate-300 dark:bg-slate-700"
-                  }`}
-                  style={{
-                    height: `${Math.max(
-                      (day.count / maxCount) * 40,
-                      day.count > 0 ? 4 : 2,
-                    )}px`,
-                  }}
-                  initial={{ scaleY: 0, originY: 1 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.05 * last7.indexOf(day),
-                  }}
-                />
-                <span
-                  className={`text-[9px] font-medium ${
-                    day.date === today.toISOString().slice(0, 10)
-                      ? "text-violet-500 dark:text-violet-400"
-                      : "text-slate-400 dark:text-slate-600"
-                  }`}
+          <div className="flex items-end gap-1.5 h-20">
+            {last7.map((day) => {
+              const isToday = day.date === today.toISOString().slice(0, 10);
+              return (
+                <div
+                  key={day.date}
+                  className="flex flex-col items-center gap-1 flex-1"
                 >
-                  {day.label}
-                </span>
-              </div>
-            ))}
+                  {day.count > 0 && (
+                    <span
+                      className={`text-[9px] font-bold ${isToday ? "text-violet-500 dark:text-violet-400" : "text-slate-500 dark:text-slate-400"}`}
+                    >
+                      {day.count}
+                    </span>
+                  )}
+                  <motion.div
+                    className={`w-full rounded-sm ${
+                      day.count > 0
+                        ? isToday
+                          ? "bg-violet-500"
+                          : "bg-violet-400 dark:bg-violet-600"
+                        : "bg-slate-300 dark:bg-slate-700"
+                    }`}
+                    style={{
+                      height: `${Math.max(
+                        (day.count / maxCount) * 56,
+                        day.count > 0 ? 6 : 3,
+                      )}px`,
+                    }}
+                    initial={{ scaleY: 0, originY: 1 }}
+                    animate={{ scaleY: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 0.05 * last7.indexOf(day),
+                    }}
+                  />
+                  <span
+                    className={`text-[9px] font-medium ${
+                      isToday
+                        ? "text-violet-500 dark:text-violet-400 font-bold"
+                        : "text-slate-400 dark:text-slate-600"
+                    }`}
+                  >
+                    {day.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Streak + today summary inside chart card */}
+          <div className="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex-wrap">
+            <div
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                streak > 0
+                  ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400"
+                  : "text-slate-500"
+              }`}
+            >
+              <Flame size={11} />
+              {streak > 0 ? `${streak} Tage Streak` : "Noch kein Streak"}
+            </div>
+            <div
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                todayCount > 0
+                  ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400"
+                  : "text-slate-500"
+              }`}
+            >
+              <CheckCircle2 size={11} />
+              {todayCount > 0 ? `${todayCount} heute` : "Heute noch nichts"}
+            </div>
           </div>
         </motion.div>
       )}
@@ -350,13 +485,14 @@ export default function Dashboard({
       >
         {catalogs.map((catalog) => {
           const acc = catalogAccuracy(catalog);
-          const pct = acc?.pct ?? null;
+          const accuracyPct = acc?.accuracyPct ?? null;
+          const coveragePct = acc?.coveragePct ?? null;
           const barColor =
-            pct === null
+            accuracyPct === null
               ? "bg-slate-300 dark:bg-slate-700"
-              : pct >= 70
+              : accuracyPct >= 70
                 ? "bg-emerald-500"
-                : pct >= 40
+                : accuracyPct >= 40
                   ? "bg-amber-400"
                   : "bg-red-500";
 
@@ -378,39 +514,43 @@ export default function Dashboard({
                       {catalog.questions.length} Fragen
                     </span>
                   </div>
-                  {pct !== null && (
+                  {accuracyPct !== null && (
                     <span
                       className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
-                        pct >= 70
+                        accuracyPct >= 70
                           ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
-                          : pct >= 40
+                          : accuracyPct >= 40
                             ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
                             : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"
                       }`}
                     >
-                      {pct} %
+                      {accuracyPct} %
                     </span>
                   )}
                 </div>
 
-                {/* Progress bar */}
+                {/* Progress bar — width = coverage (attempted/total), colour = accuracy */}
                 <div className="flex flex-col gap-1">
                   <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-1.5">
                     <motion.div
                       className={`h-1.5 rounded-full ${barColor}`}
                       initial={{ width: 0 }}
-                      animate={{ width: pct !== null ? `${pct}%` : "0%" }}
+                      animate={{
+                        width: coveragePct !== null ? `${coveragePct}%` : "0%",
+                      }}
                       transition={{ duration: 0.6, ease: "easeOut" }}
                     />
                   </div>
                   <span className="text-[10px] text-slate-500">
-                    {pct === null
+                    {acc === null
                       ? "Noch nicht geübt"
-                      : pct >= 70
-                        ? "Gut gemeistert"
-                        : pct >= 40
-                          ? "Im Aufbau"
-                          : "Braucht Übung"}
+                      : acc.coveragePct < 100
+                        ? `${acc.attempted} / ${acc.totalQuestions} Fragen versucht`
+                        : accuracyPct >= 70
+                          ? "Alle geübt · Stark"
+                          : accuracyPct >= 40
+                            ? "Alle geübt · Im Aufbau"
+                            : "Alle geübt · Mehr üben!"}
                   </span>
                 </div>
 
