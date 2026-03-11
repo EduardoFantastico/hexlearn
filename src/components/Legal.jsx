@@ -155,9 +155,12 @@ export default function Legal({ section = "impressum", onBack }) {
               6. Externe Dienste &amp; Drittanbieter
             </h2>
             <p>
-              Es werden keine externen Dienste, Analyse-Tools, Tracking-Skripte
-              oder Content-Delivery-Networks eingebunden. Es findet kein
-              Datenaustausch mit Drittanbietern statt.
+              Es werden keine Analyse-Tools, Tracking-Skripte oder
+              Werbenetzwerke eingebunden. Die optionale HexShare-Funktion
+              überträgt Katalogdaten temporär an <strong>Vercel Blob</strong>{" "}
+              (Vercel Inc.) zur Zwischenspeicherung — ausschließlich auf
+              Anforderung des Nutzers und nur für die gewählte Dauer. Es findet
+              kein sonstiger Datenaustausch mit Drittanbietern statt.
             </p>
           </div>
 
@@ -183,18 +186,20 @@ export default function Legal({ section = "impressum", onBack }) {
               .
             </p>
             <p className="mt-2">
-              Die HexShare-Funktion nutzt <strong>Upstash Redis</strong>{" "}
-              (Upstash Inc.) zur temporären Zwischenspeicherung von
-              Katalogdaten. Daten werden ausschließlich für die gewählte Dauer
-              gespeichert und danach automatisch gelöscht. Weitere Informationen
-              unter{" "}
+              Die HexShare-Funktion speichert Katalogdaten temporär in{" "}
+              <strong>Vercel Blob</strong>, einem integrierten Speicherdienst
+              von Vercel Inc. Die Daten werden ausschließlich für die vom Nutzer
+              gewählte Dauer (maximal 10 Minuten) gespeichert und danach
+              automatisch gelöscht. Der Zugriff ist nur über eine
+              zufallsgenerierte ID möglich; es findet keine
+              Nutzerprofilierung statt. Weitere Informationen findest du in der{" "}
               <a
-                href="https://upstash.com/trust/privacy.pdf"
+                href="https://vercel.com/legal/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-violet-600 dark:text-violet-400 underline hover:opacity-80"
               >
-                Upstash Privacy Policy
+                Datenschutzerklärung von Vercel
               </a>
               .
             </p>
