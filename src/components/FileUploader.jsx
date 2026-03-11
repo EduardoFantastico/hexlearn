@@ -165,9 +165,6 @@ export default function FileUploader({ onCatalogAdded }) {
           </span>{" "}
           zum Auswählen
         </p>
-        <p className="text-xs text-slate-500">
-          Format: {`{ id, question, options[], correctAnswerIndex }`}
-        </p>
       </div>
 
       <input

@@ -9,6 +9,7 @@ import { useCatalogs } from "./hooks/useCatalogs";
 import { useStreak } from "./hooks/useStreak";
 import CatalogManager from "./components/CatalogManager";
 import QuizConfig from "./components/QuizConfig";
+import Tutorial from "./components/Tutorial";
 
 /** Weighted shuffle — questions with a higher error rate appear earlier. */
 function smartShuffle(questions, errorRateFn) {
@@ -364,6 +365,7 @@ export default function App() {
                 onCatalogAdded={handleCatalogAdded}
                 onOpenSettings={() => setShowSettings(true)}
                 onManageCatalogs={() => setView("manage")}
+                onOpenTutorial={() => setView("tutorial")}
               />
             </motion.div>
           )}
@@ -433,6 +435,15 @@ export default function App() {
                 onDelete={handleDeleteCatalog}
                 onBack={() => setView("dashboard")}
               />
+            </motion.div>
+          )}
+
+          {view === "tutorial" && (
+            <motion.div
+              className="flex-1 flex flex-col py-6"
+              {...pageProps("tutorial")}
+            >
+              <Tutorial onBack={() => setView("dashboard")} />
             </motion.div>
           )}
         </AnimatePresence>

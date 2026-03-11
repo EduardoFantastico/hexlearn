@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Flame,
@@ -12,6 +12,8 @@ import {
   ShieldCheck,
   Target,
   Hash,
+  Copy,
+  Check,
 } from "lucide-react";
 import FileUploader from "./FileUploader";
 
@@ -37,8 +39,55 @@ export default function Dashboard({
   onOpenConfig,
   onCatalogAdded,
   onManageCatalogs,
+  onOpenTutorial,
 }) {
   const fileUploaderRef = useRef(null);
+  const [jsonCopied, setJsonCopied] = useState(false);
+
+  const JSON_TEMPLATE = `[
+  {
+    "id": 1,
+    "type": "multiple-choice",
+    "question": "Was ist React?",
+    "options": ["Ein Framework","Eine UI-Library","Ein Browser"],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": 2,
+    "type": "text-input",
+    "question": "Was ist 6 \u00d7 7?",
+    "answer": "42",
+    "acceptedAnswers": ["zweiundvierzig"]
+  },
+  {
+    "id": 3,
+    "type": "fill-in-the-blank",
+    "question": "Die Hauptstadt von Deutschland ist ___.",
+    "answer": "Berlin"
+  },
+  {
+    "id": 4,
+    "type": "true-false",
+    "question": "Die Erde ist rund.",
+    "answer": true
+  },
+  {
+    "id": 5,
+    "type": "matching",
+    "question": "Ordne die Hauptst\u00e4dte zu:",
+    "pairs": [
+      { "left": "Deutschland", "right": "Berlin" },
+      { "left": "Frankreich", "right": "Paris" }
+    ]
+  }
+]`;
+
+  function copyJsonTemplate() {
+    navigator.clipboard.writeText(JSON_TEMPLATE).then(() => {
+      setJsonCopied(true);
+      setTimeout(() => setJsonCopied(false), 2000);
+    });
+  }
 
   // Compute per-catalog accuracy from stats
   function catalogAccuracy(catalog) {
@@ -169,7 +218,7 @@ export default function Dashboard({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.12 }}
-          className="flex flex-wrap justify-center gap-2 mb-10"
+          className="flex flex-wrap justify-center gap-2 mb-8"
         >
           {[
             { Icon: Sparkles, label: "Spaced Repetition" },
@@ -186,72 +235,101 @@ export default function Dashboard({
           ))}
         </motion.div>
 
-        {/* Upload call-to-action */}
+        {/* Two entry-point cards */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.22 }}
-          className="w-full"
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="w-full flex flex-col gap-3 mb-4"
         >
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider text-center mb-4">
-            Katalog hochladen um zu starten
-          </p>
-
-          <FileUploader onCatalogAdded={onCatalogAdded} />
-
-          {/* JSON format hint */}
-          <details className="mt-5 group">
-            <summary className="flex items-center justify-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
-              <ChevronRight
-                size={12}
-                className="transition-transform duration-200 group-open:rotate-90"
+          {/* Option A – manual editor */}
+          <button
+            onClick={onManageCatalogs}
+            className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+          >
+            <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+              <BookOpen
+                size={16}
+                className="text-violet-600 dark:text-violet-400"
               />
-              JSON-Format anzeigen
-            </summary>
-            <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
-              <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">
-                Deine Datei muss ein Array von Fragen enthalten:
-              </p>
-              <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">{`[
-  {
-    "id": 1,
-    "type": "multiple-choice",
-    "question": "Was ist React?",
-    "options": ["Ein Framework","Eine UI-Library","Ein Browser"],
-    "correctAnswerIndex": 1
-  },
-  {
-    "id": 2,
-    "type": "text-input",
-    "question": "Was ist 6 × 7?",
-    "answer": "42",
-    "acceptedAnswers": ["zweiundvierzig"]
-  },
-  {
-    "id": 3,
-    "type": "fill-in-the-blank",
-    "question": "Die Hauptstadt von Deutschland ist ___.",
-    "answer": "Berlin"
-  },
-  {
-    "id": 4,
-    "type": "true-false",
-    "question": "Die Erde ist rund.",
-    "answer": true
-  },
-  {
-    "id": 5,
-    "type": "matching",
-    "question": "Ordne die Hauptstädte zu:",
-    "pairs": [
-      { "left": "Deutschland", "right": "Berlin" },
-      { "left": "Frankreich", "right": "Paris" }
-    ]
-  }
-]`}</pre>
             </div>
-          </details>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
+                Katalog manuell erstellen
+              </p>
+              <p className="text-xs text-slate-500">
+                Fragen direkt im Editor eingeben
+              </p>
+            </div>
+            <ChevronRight
+              size={16}
+              className="ml-auto text-slate-400 group-hover:text-violet-500 transition-colors"
+            />
+          </button>
+
+          {/* Option B – JSON upload */}
+          <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                <Plus
+                  size={14}
+                  className="text-violet-600 dark:text-violet-400"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  Katalog hochladen
+                </p>
+                <p className="text-xs text-slate-500">JSON-Datei importieren</p>
+              </div>
+            </div>
+            <FileUploader onCatalogAdded={onCatalogAdded} />
+            {/* JSON format hint */}
+            <details className="mt-3 group">
+              <summary className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
+                <ChevronRight
+                  size={12}
+                  className="transition-transform duration-200 group-open:rotate-90"
+                />
+                JSON-Format anzeigen
+              </summary>
+              <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                    Beispiel
+                  </span>
+                  <button
+                    onClick={copyJsonTemplate}
+                    className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-all ${
+                      jsonCopied
+                        ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+                        : "bg-slate-200 dark:bg-slate-800 text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30"
+                    }`}
+                  >
+                    {jsonCopied ? <Check size={11} /> : <Copy size={11} />}
+                    {jsonCopied ? "Kopiert!" : "Kopieren"}
+                  </button>
+                </div>
+                <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">
+                  {JSON_TEMPLATE}
+                </pre>
+              </div>
+            </details>
+          </div>
         </motion.div>
+
+        {/* Tutorial link */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          onClick={onOpenTutorial}
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors mx-auto"
+        >
+          <Sparkles size={12} />
+          Wie funktioniert HexLearn?
+          <ChevronRight size={12} />
+        </motion.button>
       </div>
     );
   }
@@ -467,13 +545,22 @@ export default function Dashboard({
           <BookOpen size={14} />
           Meine Kataloge
         </h2>
-        <button
-          onClick={onManageCatalogs}
-          className="text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 font-medium transition-colors flex items-center gap-0.5"
-        >
-          Verwalten
-          <ChevronRight size={12} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onOpenTutorial}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+          >
+            <Sparkles size={11} />
+            Hilfe
+          </button>
+          <button
+            onClick={onManageCatalogs}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+          >
+            <BookOpen size={11} />
+            Verwalten
+          </button>
+        </div>
       </div>
 
       {/* Catalog grid */}

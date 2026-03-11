@@ -275,9 +275,10 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
               } else if (isTheCorrect) {
                 cls +=
                   "border-emerald-500 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 cursor-default";
+                if (isSelected) cls += " ring-2 ring-emerald-400 ring-offset-1";
               } else if (isSelected) {
                 cls +=
-                  "border-red-500 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 cursor-default";
+                  "border-red-500 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 cursor-default ring-2 ring-red-400 ring-offset-1";
               } else {
                 cls +=
                   "border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 cursor-default opacity-50";
