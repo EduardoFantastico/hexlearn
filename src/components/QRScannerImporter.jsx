@@ -1,13 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  QrCode,
-  X,
-  Loader2,
-  CheckCircle2,
-  AlertCircle,
-  Camera,
-} from "lucide-react";
+import { X, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 const VALID_TYPES = new Set([
   "multiple-choice",
@@ -136,132 +129,102 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-5 w-full max-w-md mx-auto px-4">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-            <QrCode
-              size={15}
-              className="text-violet-600 dark:text-violet-400"
-            />
-          </div>
-          <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
-            QR-Code scannen
-          </h3>
-        </div>
-        <button
-          onClick={onClose}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        >
-          <X size={15} />
-        </button>
-      </div>
-
-      {/* Scanner viewport — always in DOM so html5-qrcode can attach */}
+    <div className="w-full">
+      {/* Single viewport block — all states live here */}
       <div
-        className={`w-full rounded-2xl overflow-hidden bg-black relative ${
-          scanStatus === "scanning" ? "block" : "hidden"
-        }`}
-        style={{ aspectRatio: "1 / 1", maxWidth: 320 }}
+        className="relative w-full rounded-2xl overflow-hidden bg-black"
+        style={{ aspectRatio: "1 / 1" }}
       >
+        {/* Camera feed — always in DOM so html5-qrcode can attach */}
         <div
           id="hl-qr-reader"
           ref={containerRef}
-          className="w-full h-full"
+          className={`w-full h-full ${scanStatus === "scanning" ? "" : "invisible"}`}
         />
-        {/* Viewfinder overlay */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="w-[220px] h-[220px] border-2 border-violet-400/80 rounded-2xl" />
-        </div>
-      </div>
 
-      {/* Init / loading */}
-      {scanStatus === "init" && (
-        <div className="flex flex-col items-center gap-3 py-8">
-          <Loader2
-            size={32}
-            className="animate-spin text-violet-500"
-          />
-          <p className="text-sm text-slate-500">Kamera wird gestartet…</p>
-        </div>
-      )}
-
-      {/* Fetching */}
-      {scanStatus === "fetching" && (
-        <div className="flex flex-col items-center gap-3 py-6">
-          <Loader2
-            size={32}
-            className="animate-spin text-violet-500"
-          />
-          <p className="text-sm text-slate-500">Katalog wird geladen…</p>
-        </div>
-      )}
-
-      {/* Success */}
-      <AnimatePresence>
-        {scanStatus === "success" && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="flex flex-col items-center gap-3 py-6 w-full"
-          >
-            <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-              <CheckCircle2
-                size={28}
-                className="text-emerald-600 dark:text-emerald-400"
-              />
-            </div>
-            <p className="font-semibold text-slate-900 dark:text-slate-100 text-base text-center">
-              Katalog importiert!
-            </p>
-            {importedName && (
-              <p className="text-sm text-slate-500 text-center">
-                „{importedName}" wurde zu deinen Katalogen hinzugefügt.
-              </p>
-            )}
-            <button
-              onClick={onClose}
-              className="mt-2 px-6 py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold shadow-lg shadow-violet-900/30 transition-all"
-            >
-              Fertig
-            </button>
-          </motion.div>
+        {/* Violet scanning frame */}
+        {(scanStatus === "scanning" || scanStatus === "fetching") && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div className="w-[55%] aspect-square border-2 border-violet-400/90 rounded-2xl" />
+          </div>
         )}
-      </AnimatePresence>
 
-      {/* Error */}
-      {scanStatus === "error" && (
-        <div className="flex flex-col items-center gap-4 py-4 w-full">
-          <div className="flex gap-2.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/40 rounded-xl px-4 py-3 w-full">
-            <AlertCircle
-              size={15}
-              className="text-red-500 flex-shrink-0 mt-0.5"
+        {/* Close button — top-right overlay */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-xl bg-black/40 hover:bg-black/60 text-white/80 hover:text-white transition-colors z-10"
+        >
+          <X size={15} />
+        </button>
+
+        {/* Init / loading overlay */}
+        {(scanStatus === "init" || scanStatus === "fetching") && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60">
+            <Loader2
+              size={28}
+              className="animate-spin text-violet-400"
             />
-            <p className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
-              {errorMsg}
+            <p className="text-xs text-white/70">
+              {scanStatus === "init"
+                ? "Kamera wird gestartet…"
+                : "Katalog wird geladen…"}
             </p>
           </div>
-          <button
-            onClick={() => {
-              didHandleRef.current = false;
-              setScanStatus("init");
-              setErrorMsg(null);
-            }}
-            className="px-5 py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-all"
-          >
-            Erneut versuchen
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* Hint */}
-      {scanStatus === "scanning" && (
-        <p className="text-xs text-slate-500 text-center leading-relaxed">
-          Halte den QR-Code eines geteilten HexLearn-Katalogs in das Suchfeld.
-        </p>
-      )}
+        {/* Success overlay */}
+        <AnimatePresence>
+          {scanStatus === "success" && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70"
+            >
+              <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center">
+                <CheckCircle2
+                  size={28}
+                  className="text-emerald-400"
+                />
+              </div>
+              <p className="font-semibold text-white text-sm text-center px-4">
+                {importedName
+                  ? `„${importedName}" importiert!`
+                  : "Katalog importiert!"}
+              </p>
+              <button
+                onClick={onClose}
+                className="mt-1 px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition-all"
+              >
+                Fertig
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Error overlay */}
+        {scanStatus === "error" && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70 px-5">
+            <AlertCircle
+              size={24}
+              className="text-red-400"
+            />
+            <p className="text-xs text-white/70 text-center leading-relaxed">
+              {errorMsg}
+            </p>
+            <button
+              onClick={() => {
+                didHandleRef.current = false;
+                setScanStatus("init");
+                setErrorMsg(null);
+              }}
+              className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition-all"
+            >
+              Erneut versuchen
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
