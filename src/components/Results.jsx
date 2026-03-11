@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { isAnswerCorrect } from "../utils/questionHelpers";
 
 /**
  * Results
@@ -12,13 +13,13 @@ export default function Results({
   onChangeCatalogs,
 }) {
   const total = questions.length;
-  const score = answers.filter(
-    (ans, i) => ans === questions[i]?.correctAnswerIndex,
+  const score = answers.filter((ans, i) =>
+    isAnswerCorrect(questions[i], ans),
   ).length;
   const pct = Math.round((score / total) * 100);
   const wrongItems = questions
     .map((q, i) => ({ q, chosen: answers[i] }))
-    .filter(({ q, chosen }) => chosen !== q.correctAnswerIndex);
+    .filter(({ q, chosen }) => !isAnswerCorrect(q, chosen));
 
   const emoji =
     score === total ? "🏆" : pct >= 70 ? "👍" : pct >= 40 ? "📚" : "💪";
@@ -124,7 +125,9 @@ export default function Results({
                       </span>
                       <span className="text-red-400">
                         <span className="font-semibold">Deine Antwort: </span>
-                        {q.options[chosen] ?? "—"}
+                        {(q.type ?? "multiple-choice") === "text-input"
+                          ? String(chosen ?? "").trim() || "—"
+                          : (q.options?.[chosen] ?? "—")}
                       </span>
                     </div>
                     {/* Correct answer */}
@@ -145,7 +148,9 @@ export default function Results({
                       </span>
                       <span className="text-emerald-400">
                         <span className="font-semibold">Richtig: </span>
-                        {q.options[q.correctAnswerIndex]}
+                        {(q.type ?? "multiple-choice") === "text-input"
+                          ? q.answer
+                          : q.options?.[q.correctAnswerIndex]}
                       </span>
                     </div>
                   </div>

@@ -29,17 +29,33 @@ export default function FileUploader({ onCatalogAdded }) {
             );
           }
           for (const q of questions) {
-            if (
-              typeof q.id === "undefined" ||
-              typeof q.question !== "string" ||
-              !Array.isArray(q.options) ||
-              typeof q.correctAnswerIndex !== "number"
-            ) {
+            const type = q.type ?? "multiple-choice";
+            if (typeof q.id === "undefined" || typeof q.question !== "string") {
               return reject(
                 new Error(
-                  `"${file.name}": Ungültiges Fragen-Format. Erwartet: { id, question, options[], correctAnswerIndex }.`,
+                  `"${file.name}": Ungültiges Fragen-Format — jede Frage braucht 'id' und 'question'.`,
                 ),
               );
+            }
+            if (type === "text-input") {
+              if (typeof q.answer !== "string") {
+                return reject(
+                  new Error(
+                    `"${file.name}": Frage vom Typ 'text-input' braucht ein 'answer'-Feld.`,
+                  ),
+                );
+              }
+            } else {
+              if (
+                !Array.isArray(q.options) ||
+                typeof q.correctAnswerIndex !== "number"
+              ) {
+                return reject(
+                  new Error(
+                    `"${file.name}": Ungültiges Fragen-Format. Erwartet: { id, question, options[], correctAnswerIndex }.`,
+                  ),
+                );
+              }
             }
           }
           resolve({ name: file.name.replace(/\.json$/i, ""), questions });

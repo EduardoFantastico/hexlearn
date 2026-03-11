@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, X, Sun, Moon } from "lucide-react";
+import { Settings, X, Sun, Moon, Pause } from "lucide-react";
 import Dashboard from "./components/Dashboard";
 import QuizCard from "./components/QuizCard";
 import Results from "./components/Results";
@@ -29,6 +29,7 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [showPauseModal, setShowPauseModal] = useState(false);
 
   // Dark mode — default dark, persisted in localStorage
   const [darkMode, setDarkMode] = useState(() => {
@@ -125,6 +126,14 @@ export default function App() {
     setView("result");
   }
 
+  function handleQuitQuiz() {
+    setShowPauseModal(false);
+    setQuestions([]);
+    setCurrentIndex(0);
+    setAnswers([]);
+    setView("dashboard");
+  }
+
   function handleClearData() {
     clearStats();
     clearCatalogs();
@@ -173,9 +182,18 @@ export default function App() {
 
         <div className="flex items-center gap-2">
           {view === "quiz" && (
-            <span className="text-xs text-slate-500 tabular-nums">
-              {currentIndex + 1} / {questions.length}
-            </span>
+            <>
+              <span className="text-xs text-slate-500 tabular-nums">
+                {currentIndex + 1} / {questions.length}
+              </span>
+              <button
+                onClick={() => setShowPauseModal(true)}
+                aria-label="Quiz pausieren"
+                className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              >
+                <Pause size={17} />
+              </button>
+            </>
           )}
           {/* Dark mode toggle */}
           <button
@@ -268,6 +286,61 @@ export default function App() {
               >
                 Alle Daten löschen
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Pause Modal ───────────────────────────────────────── */}
+      <AnimatePresence>
+        {showPauseModal && (
+          <motion.div
+            key="pause-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          >
+            <div
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowPauseModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative z-10 w-full max-w-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl px-6 py-8 flex flex-col items-center gap-5 shadow-2xl"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                <Pause
+                  size={28}
+                  className="text-violet-600 dark:text-violet-400"
+                />
+              </div>
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                  Quiz pausiert
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Frage {currentIndex + 1} von {questions.length}
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={() => setShowPauseModal(false)}
+                  className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                >
+                  Weiter →
+                </button>
+                <button
+                  onClick={handleQuitQuiz}
+                  className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                >
+                  Quiz beenden
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}

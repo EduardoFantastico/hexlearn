@@ -14,22 +14,37 @@ import {
 
 // ── Utilities ──────────────────────────────────────────────────────────
 
-function emptyQuestion() {
-  return {
+function emptyQuestion(type = "multiple-choice") {
+  const base = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     question: "",
-    options: ["", "", "", ""],
-    correctAnswerIndex: 0,
+    type,
   };
+  if (type === "text-input") {
+    return { ...base, answer: "", acceptedAnswers: [] };
+  }
+  return { ...base, options: ["", "", "", ""], correctAnswerIndex: 0 };
 }
 
 function exportCatalog(catalog) {
-  const data = catalog.questions.map((q, i) => ({
-    id: q.id ?? i + 1,
-    question: q.question,
-    options: q.options,
-    correctAnswerIndex: q.correctAnswerIndex,
-  }));
+  const data = catalog.questions.map((q, i) => {
+    const type = q.type ?? "multiple-choice";
+    const base = { id: q.id ?? i + 1, question: q.question, type };
+    if (type === "text-input") {
+      return {
+        ...base,
+        answer: q.answer,
+        ...(q.acceptedAnswers?.length
+          ? { acceptedAnswers: q.acceptedAnswers }
+          : {}),
+      };
+    }
+    return {
+      ...base,
+      options: q.options,
+      correctAnswerIndex: q.correctAnswerIndex,
+    };
+  });
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json",
   });
@@ -52,6 +67,17 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
       <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-700/50">
         <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-violet-900/50 text-violet-400 text-xs font-bold">
           {index + 1}
+        </span>
+        <span
+          className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
+            (question.type ?? "multiple-choice") === "text-input"
+              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+              : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400"
+          }`}
+        >
+          {(question.type ?? "multiple-choice") === "text-input"
+            ? "Eingabe"
+            : "MC"}
         </span>
         <span className="flex-1 text-sm text-slate-600 dark:text-slate-400 truncate min-w-0">
           {question.question.trim() || "Neue Frage"}
@@ -77,6 +103,38 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
       {/* Body */}
       {!collapsed && (
         <div className="px-4 py-4 flex flex-col gap-4">
+          {/* Type selector */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5">
+              Fragentyp
+            </label>
+            <select
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+              value={question.type ?? "multiple-choice"}
+              onChange={(e) => {
+                const t = e.target.value;
+                if (t === "text-input") {
+                  onChange({
+                    ...question,
+                    type: t,
+                    answer: question.answer ?? "",
+                    acceptedAnswers: question.acceptedAnswers ?? [],
+                  });
+                } else {
+                  onChange({
+                    ...question,
+                    type: t,
+                    options: question.options ?? ["", "", "", ""],
+                    correctAnswerIndex: question.correctAnswerIndex ?? 0,
+                  });
+                }
+              }}
+            >
+              <option value="multiple-choice">Multiple Choice (MC)</option>
+              <option value="text-input">Freie Eingabe (Text)</option>
+            </select>
+          </div>
+
           {/* Question text */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">
@@ -93,50 +151,98 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
             />
           </div>
 
-          {/* Answer options */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5">
-              Antwortoptionen{" "}
-              <span className="font-normal text-slate-500 dark:text-slate-600">
-                · Richtige anklicken
-              </span>
-            </label>
-            <div className="flex flex-col gap-2">
-              {question.options.map((opt, oi) => (
-                <div key={oi} className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onChange({ ...question, correctAnswerIndex: oi })
-                    }
-                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                      question.correctAnswerIndex === oi
-                        ? "border-emerald-500 bg-emerald-500"
-                        : "border-slate-600 hover:border-slate-400"
-                    }`}
-                    aria-label={`Option ${oi + 1} als richtig markieren`}
-                  >
-                    {question.correctAnswerIndex === oi && (
-                      <span className="text-white text-[10px] leading-none">
-                        ✓
-                      </span>
-                    )}
-                  </button>
-                  <input
-                    type="text"
-                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
-                    placeholder={`Option ${String.fromCharCode(65 + oi)}`}
-                    value={opt}
-                    onChange={(e) => {
-                      const newOpts = [...question.options];
-                      newOpts[oi] = e.target.value;
-                      onChange({ ...question, options: newOpts });
-                    }}
-                  />
-                </div>
-              ))}
+          {/* Answer section — conditional by type */}
+          {(question.type ?? "multiple-choice") === "text-input" ? (
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">
+                  Richtige Antwort
+                </label>
+                <input
+                  type="text"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                  placeholder="z.B. 42"
+                  value={question.answer ?? ""}
+                  onChange={(e) =>
+                    onChange({ ...question, answer: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">
+                  Weitere akzeptierte Antworten{" "}
+                  <span className="font-normal text-slate-500 dark:text-slate-600">
+                    · eine pro Zeile, optional
+                  </span>
+                </label>
+                <textarea
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                  rows={2}
+                  placeholder={"zweiundvierzig\nforty-two"}
+                  value={(question.acceptedAnswers ?? []).join("\n")}
+                  onChange={(e) =>
+                    onChange({
+                      ...question,
+                      acceptedAnswers: e.target.value
+                        .split("\n")
+                        .map((s) => s.trim())
+                        .filter(Boolean),
+                    })
+                  }
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Answer options (MC) */
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">
+                Antwortoptionen{" "}
+                <span className="font-normal text-slate-500 dark:text-slate-600">
+                  · Richtige anklicken
+                </span>
+              </label>
+              <div className="flex flex-col gap-2">
+                {(question.options ?? ["", "", "", ""]).map((opt, oi) => (
+                  <div
+                    key={oi}
+                    className="flex items-center gap-2"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onChange({ ...question, correctAnswerIndex: oi })
+                      }
+                      className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        question.correctAnswerIndex === oi
+                          ? "border-emerald-500 bg-emerald-500"
+                          : "border-slate-600 hover:border-slate-400"
+                      }`}
+                      aria-label={`Option ${oi + 1} als richtig markieren`}
+                    >
+                      {question.correctAnswerIndex === oi && (
+                        <span className="text-white text-[10px] leading-none">
+                          ✓
+                        </span>
+                      )}
+                    </button>
+                    <input
+                      type="text"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      placeholder={`Option ${String.fromCharCode(65 + oi)}`}
+                      value={opt}
+                      onChange={(e) => {
+                        const newOpts = [
+                          ...(question.options ?? ["", "", "", ""]),
+                        ];
+                        newOpts[oi] = e.target.value;
+                        onChange({ ...question, options: newOpts });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -168,12 +274,18 @@ function CatalogEditor({ initial, onSave, onCancel }) {
   const canSave =
     name.trim().length > 0 &&
     questions.length > 0 &&
-    questions.every(
-      (q) =>
-        q.question.trim() &&
+    questions.every((q) => {
+      if (!q.question.trim()) return false;
+      const type = q.type ?? "multiple-choice";
+      if (type === "text-input") {
+        return typeof q.answer === "string" && q.answer.trim().length > 0;
+      }
+      return (
+        Array.isArray(q.options) &&
         q.options.length === 4 &&
-        q.options.every((o) => o.trim()),
-    );
+        q.options.every((o) => typeof o === "string" && o.trim().length > 0)
+      );
+    });
 
   return (
     <div className="flex flex-col">
@@ -277,13 +389,18 @@ function CatalogEditor({ initial, onSave, onCancel }) {
 
 // ── CatalogManager (list) ──────────────────────────────────────────────
 
-export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack }) {
+export default function CatalogManager({
+  catalogs,
+  onUpdate,
+  onDelete,
+  onBack,
+}) {
   const [editing, setEditing] = useState(null); // null | 'new' | catalogId
   const [confirmDelete, setConfirmDelete] = useState(null); // null | catalogId
 
   const editingCatalog =
     editing && editing !== "new"
-      ? catalogs.find((c) => c.id === editing) ?? null
+      ? (catalogs.find((c) => c.id === editing) ?? null)
       : null;
 
   function handleSave({ name, questions }) {
@@ -437,7 +554,7 @@ export default function CatalogManager({ catalogs, onUpdate, onDelete, onBack })
                 Katalog löschen?
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                <span className="text-slate-800 dark:text-slate-200 font-medium">
                   „{catalogs.find((c) => c.id === confirmDelete)?.name}"
                 </span>{" "}
                 wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig

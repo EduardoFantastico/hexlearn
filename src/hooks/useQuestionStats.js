@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import { isAnswerCorrect } from "../utils/questionHelpers";
 
 const STORAGE_KEY = "hexlearn_question_stats";
 
@@ -33,7 +34,7 @@ export function useQuestionStats() {
         const next = { ...prev };
         questions.forEach((q, i) => {
           const id = String(q.id ?? q.question); // fall back to question text as key
-          const wasCorrect = answers[i] === q.correctAnswerIndex;
+          const wasCorrect = isAnswerCorrect(q, answers[i]);
           const existing = next[id] ?? { correct: 0, wrong: 0 };
           next[id] = {
             correct: existing.correct + (wasCorrect ? 1 : 0),

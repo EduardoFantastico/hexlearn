@@ -188,6 +188,13 @@ export default function Dashboard({
       "Eine Datenbank"
     ],
     "correctAnswerIndex": 1
+  },
+  {
+    "id": 2,
+    "type": "text-input",
+    "question": "Was ist 6 × 7?",
+    "answer": "42",
+    "acceptedAnswers": ["zweiundvierzig"]
   }
 ]`}</pre>
             </div>
@@ -210,7 +217,9 @@ export default function Dashboard({
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
           Hallo! 👋
           <br />
-          <span className="text-violet-600 dark:text-violet-400">Bereit zum Lernen?</span>
+          <span className="text-violet-600 dark:text-violet-400">
+            Bereit zum Lernen?
+          </span>
         </h1>
 
         {/* Streak + today badge row */}
@@ -268,7 +277,9 @@ export default function Dashboard({
               >
                 <motion.div
                   className={`w-full rounded-t-sm ${
-                    day.count > 0 ? "bg-violet-500" : "bg-slate-300 dark:bg-slate-700"
+                    day.count > 0
+                      ? "bg-violet-500"
+                      : "bg-slate-300 dark:bg-slate-700"
                   }`}
                   style={{
                     height: `${Math.max(
