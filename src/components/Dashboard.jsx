@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Flame,
@@ -44,7 +44,6 @@ export default function Dashboard({
   onOpenTutorial,
   onOpenStats,
 }) {
-  const fileUploaderRef = useRef(null);
   const [jsonCopied, setJsonCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("file");
 
@@ -597,7 +596,6 @@ export default function Dashboard({
 
       {/* ── Add / first catalog ───────────────────────────────── */}
       <motion.div
-        ref={fileUploaderRef}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}

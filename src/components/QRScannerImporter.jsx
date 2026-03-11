@@ -32,7 +32,6 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [importedName, setImportedName] = useState(null);
   const scannerRef = useRef(null);
-  const containerRef = useRef(null);
   const didHandleRef = useRef(false);
 
   const handleScannedUrl = useCallback(
@@ -135,16 +134,13 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
   }, []);
 
   return (
-    <div className="w-full">
-      {/* Single viewport block — all states live here */}
-      <div
-        className="relative w-full rounded-2xl overflow-hidden bg-black"
-        style={{ aspectRatio: "1 / 1" }}
-      >
+    <div
+      className="relative w-full rounded-2xl overflow-hidden bg-black"
+      style={{ aspectRatio: "1 / 1" }}
+    >
         {/* Camera feed — always in DOM so html5-qrcode can attach */}
         <div
           id="hl-qr-reader"
-          ref={containerRef}
           className={`w-full h-full ${scanStatus === "scanning" ? "" : "invisible"}`}
         />
 
@@ -233,7 +229,6 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
             </button>
           </div>
         )}
-      </div>
     </div>
   );
 }
