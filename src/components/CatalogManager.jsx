@@ -20,8 +20,20 @@ function emptyQuestion(type = "multiple-choice") {
     question: "",
     type,
   };
-  if (type === "text-input") {
+  if (type === "text-input" || type === "fill-in-the-blank") {
     return { ...base, answer: "", acceptedAnswers: [] };
+  }
+  if (type === "true-false") {
+    return { ...base, answer: true };
+  }
+  if (type === "matching") {
+    return {
+      ...base,
+      pairs: [
+        { left: "", right: "" },
+        { left: "", right: "" },
+      ],
+    };
   }
   return { ...base, options: ["", "", "", ""], correctAnswerIndex: 0 };
 }
@@ -30,7 +42,7 @@ function exportCatalog(catalog) {
   const data = catalog.questions.map((q, i) => {
     const type = q.type ?? "multiple-choice";
     const base = { id: q.id ?? i + 1, question: q.question, type };
-    if (type === "text-input") {
+    if (type === "text-input" || type === "fill-in-the-blank") {
       return {
         ...base,
         answer: q.answer,
@@ -38,6 +50,12 @@ function exportCatalog(catalog) {
           ? { acceptedAnswers: q.acceptedAnswers }
           : {}),
       };
+    }
+    if (type === "true-false") {
+      return { ...base, answer: q.answer };
+    }
+    if (type === "matching") {
+      return { ...base, pairs: q.pairs };
     }
     return {
       ...base,
@@ -70,14 +88,28 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
         </span>
         <span
           className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
-            (question.type ?? "multiple-choice") === "text-input"
-              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
-              : "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400"
+            {
+              "multiple-choice":
+                "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400",
+              "text-input":
+                "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+              "fill-in-the-blank":
+                "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+              "true-false":
+                "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400",
+              matching:
+                "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400",
+            }[question.type ?? "multiple-choice"] ??
+            "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400"
           }`}
         >
-          {(question.type ?? "multiple-choice") === "text-input"
-            ? "Eingabe"
-            : "MC"}
+          {{
+            "multiple-choice": "MC",
+            "text-input": "Eingabe",
+            "fill-in-the-blank": "Lückentext",
+            "true-false": "R / F",
+            matching: "Zuordnung",
+          }[question.type ?? "multiple-choice"] ?? "MC"}
         </span>
         <span className="flex-1 text-sm text-slate-600 dark:text-slate-400 truncate min-w-0">
           {question.question.trim() || "Neue Frage"}
@@ -113,12 +145,30 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
               value={question.type ?? "multiple-choice"}
               onChange={(e) => {
                 const t = e.target.value;
-                if (t === "text-input") {
+                if (t === "text-input" || t === "fill-in-the-blank") {
                   onChange({
                     ...question,
                     type: t,
                     answer: question.answer ?? "",
                     acceptedAnswers: question.acceptedAnswers ?? [],
+                  });
+                } else if (t === "true-false") {
+                  onChange({
+                    ...question,
+                    type: t,
+                    answer:
+                      typeof question.answer === "boolean"
+                        ? question.answer
+                        : true,
+                  });
+                } else if (t === "matching") {
+                  onChange({
+                    ...question,
+                    type: t,
+                    pairs: question.pairs ?? [
+                      { left: "", right: "" },
+                      { left: "", right: "" },
+                    ],
                   });
                 } else {
                   onChange({
@@ -132,6 +182,9 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
             >
               <option value="multiple-choice">Multiple Choice (MC)</option>
               <option value="text-input">Freie Eingabe (Text)</option>
+              <option value="fill-in-the-blank">Lückentext (___)</option>
+              <option value="true-false">Richtig / Falsch</option>
+              <option value="matching">Zuordnung (Matching)</option>
             </select>
           </div>
 
@@ -152,7 +205,8 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
           </div>
 
           {/* Answer section — conditional by type */}
-          {(question.type ?? "multiple-choice") === "text-input" ? (
+          {question.type === "text-input" ||
+          question.type === "fill-in-the-blank" ? (
             <div className="flex flex-col gap-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1.5">
@@ -190,6 +244,105 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                     })
                   }
                 />
+              </div>
+            </div>
+          ) : question.type === "true-false" ? (
+            /* True / False toggle */
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">
+                Richtige Antwort
+              </label>
+              <div className="flex gap-2">
+                {[true, false].map((val) => (
+                  <button
+                    key={String(val)}
+                    type="button"
+                    onClick={() => onChange({ ...question, answer: val })}
+                    className={`flex-1 py-2 rounded-xl border-2 text-sm font-semibold transition-all ${
+                      question.answer === val
+                        ? val
+                          ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+                          : "border-red-500 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300"
+                        : "border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-500 hover:border-slate-400"
+                    }`}
+                  >
+                    {val ? "Richtig ✓" : "Falsch ✗"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : question.type === "matching" ? (
+            /* Matching pairs editor */
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">
+                Paare{" "}
+                <span className="font-normal text-slate-500 dark:text-slate-600">
+                  · mind. 2
+                </span>
+              </label>
+              <div className="flex flex-col gap-2">
+                {(question.pairs ?? []).map((pair, pi) => (
+                  <div
+                    key={pi}
+                    className="flex items-center gap-1.5"
+                  >
+                    <input
+                      type="text"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      placeholder="Begriff"
+                      value={pair.left}
+                      onChange={(e) => {
+                        const next = [...(question.pairs ?? [])];
+                        next[pi] = { ...next[pi], left: e.target.value };
+                        onChange({ ...question, pairs: next });
+                      }}
+                    />
+                    <span className="text-slate-400 text-sm flex-shrink-0">
+                      →
+                    </span>
+                    <input
+                      type="text"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      placeholder="Antwort"
+                      value={pair.right}
+                      onChange={(e) => {
+                        const next = [...(question.pairs ?? [])];
+                        next[pi] = { ...next[pi], right: e.target.value };
+                        onChange({ ...question, pairs: next });
+                      }}
+                    />
+                    {(question.pairs ?? []).length > 2 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = (question.pairs ?? []).filter(
+                            (_, idx) => idx !== pi,
+                          );
+                          onChange({ ...question, pairs: next });
+                        }}
+                        className="flex-shrink-0 p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-900/20 transition-colors"
+                        aria-label="Paar löschen"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange({
+                      ...question,
+                      pairs: [
+                        ...(question.pairs ?? []),
+                        { left: "", right: "" },
+                      ],
+                    })
+                  }
+                  className="self-start flex items-center gap-1.5 text-xs text-violet-600 dark:text-violet-400 hover:text-violet-500 font-semibold transition-colors mt-1"
+                >
+                  <Plus size={12} /> Paar hinzufügen
+                </button>
               </div>
             </div>
           ) : (
@@ -277,8 +430,24 @@ function CatalogEditor({ initial, onSave, onCancel }) {
     questions.every((q) => {
       if (!q.question.trim()) return false;
       const type = q.type ?? "multiple-choice";
-      if (type === "text-input") {
+      if (type === "text-input" || type === "fill-in-the-blank") {
         return typeof q.answer === "string" && q.answer.trim().length > 0;
+      }
+      if (type === "true-false") {
+        return typeof q.answer === "boolean";
+      }
+      if (type === "matching") {
+        return (
+          Array.isArray(q.pairs) &&
+          q.pairs.length >= 2 &&
+          q.pairs.every(
+            (p) =>
+              typeof p.left === "string" &&
+              p.left.trim().length > 0 &&
+              typeof p.right === "string" &&
+              p.right.trim().length > 0,
+          )
+        );
       }
       return (
         Array.isArray(q.options) &&

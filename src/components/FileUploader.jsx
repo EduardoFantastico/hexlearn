@@ -37,11 +37,34 @@ export default function FileUploader({ onCatalogAdded }) {
                 ),
               );
             }
-            if (type === "text-input") {
+            if (type === "text-input" || type === "fill-in-the-blank") {
               if (typeof q.answer !== "string") {
                 return reject(
                   new Error(
-                    `"${file.name}": Frage vom Typ 'text-input' braucht ein 'answer'-Feld.`,
+                    `"${file.name}": Frage vom Typ '${type}' braucht ein 'answer'-Feld (string).`,
+                  ),
+                );
+              }
+            } else if (type === "true-false") {
+              if (typeof q.answer !== "boolean") {
+                return reject(
+                  new Error(
+                    `"${file.name}": Frage vom Typ 'true-false' braucht 'answer: true|false'.`,
+                  ),
+                );
+              }
+            } else if (type === "matching") {
+              if (
+                !Array.isArray(q.pairs) ||
+                q.pairs.length < 2 ||
+                q.pairs.some(
+                  (p) =>
+                    typeof p.left !== "string" || typeof p.right !== "string",
+                )
+              ) {
+                return reject(
+                  new Error(
+                    `"${file.name}": Frage vom Typ 'matching' braucht 'pairs: [{left, right}]' mit mind. 2 Paaren.`,
                   ),
                 );
               }
@@ -58,7 +81,12 @@ export default function FileUploader({ onCatalogAdded }) {
               }
             }
           }
-          resolve({ name: file.name.replace(/\.json$/i, ""), questions });
+          resolve({
+            name: file.name.replace(/\.json$/i, ""),
+            questions: questions.map((q) =>
+              q.type ? q : { ...q, type: "multiple-choice" },
+            ),
+          });
         } catch {
           reject(
             new Error(`"${file.name}" konnte nicht als JSON geparst werden.`),

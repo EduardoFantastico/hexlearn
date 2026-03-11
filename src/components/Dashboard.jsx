@@ -180,13 +180,9 @@ export default function Dashboard({
               <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">{`[
   {
     "id": 1,
+    "type": "multiple-choice",
     "question": "Was ist React?",
-    "options": [
-      "Ein Framework",
-      "Eine UI-Library",
-      "Ein Browser",
-      "Eine Datenbank"
-    ],
+    "options": ["Ein Framework","Eine UI-Library","Ein Browser"],
     "correctAnswerIndex": 1
   },
   {
@@ -195,6 +191,27 @@ export default function Dashboard({
     "question": "Was ist 6 × 7?",
     "answer": "42",
     "acceptedAnswers": ["zweiundvierzig"]
+  },
+  {
+    "id": 3,
+    "type": "fill-in-the-blank",
+    "question": "Die Hauptstadt von Deutschland ist ___.",
+    "answer": "Berlin"
+  },
+  {
+    "id": 4,
+    "type": "true-false",
+    "question": "Die Erde ist rund.",
+    "answer": true
+  },
+  {
+    "id": 5,
+    "type": "matching",
+    "question": "Ordne die Hauptstädte zu:",
+    "pairs": [
+      { "left": "Deutschland", "right": "Berlin" },
+      { "left": "Frankreich", "right": "Paris" }
+    ]
   }
 ]`}</pre>
             </div>

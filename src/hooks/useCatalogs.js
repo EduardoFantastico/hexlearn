@@ -19,7 +19,15 @@ const STORAGE_KEY = "hexlearn_catalogs";
  *   }
  */
 export function useCatalogs() {
-  const [catalogs, setCatalogs] = useLocalStorage(STORAGE_KEY, []);
+  const [rawCatalogs, setCatalogs] = useLocalStorage(STORAGE_KEY, []);
+
+  // Normalize legacy questions that were stored without an explicit type field
+  const catalogs = rawCatalogs.map((catalog) => ({
+    ...catalog,
+    questions: catalog.questions.map((q) =>
+      q.type ? q : { ...q, type: "multiple-choice" },
+    ),
+  }));
 
   /** Add or replace a catalog by name. Returns the final catalog object. */
   const addCatalog = useCallback(

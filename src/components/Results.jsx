@@ -125,9 +125,35 @@ export default function Results({
                       </span>
                       <span className="text-red-400">
                         <span className="font-semibold">Deine Antwort: </span>
-                        {(q.type ?? "multiple-choice") === "text-input"
-                          ? String(chosen ?? "").trim() || "—"
-                          : (q.options?.[chosen] ?? "—")}
+                        {(() => {
+                          const type = q.type ?? "multiple-choice";
+                          if (
+                            type === "text-input" ||
+                            type === "fill-in-the-blank"
+                          )
+                            return String(chosen ?? "").trim() || "—";
+                          if (type === "true-false")
+                            return chosen === true
+                              ? "Richtig"
+                              : chosen === false
+                                ? "Falsch"
+                                : "—";
+                          if (type === "matching")
+                            return Array.isArray(chosen)
+                              ? `${
+                                  chosen.filter(
+                                    (a, i) =>
+                                      String(a ?? "")
+                                        .trim()
+                                        .toLowerCase() ===
+                                      String(q.pairs[i]?.right ?? "")
+                                        .trim()
+                                        .toLowerCase(),
+                                  ).length
+                                } / ${q.pairs?.length ?? 0} richtig`
+                              : "—";
+                          return q.options?.[chosen] ?? "—";
+                        })()}
                       </span>
                     </div>
                     {/* Correct answer */}
@@ -148,9 +174,23 @@ export default function Results({
                       </span>
                       <span className="text-emerald-400">
                         <span className="font-semibold">Richtig: </span>
-                        {(q.type ?? "multiple-choice") === "text-input"
-                          ? q.answer
-                          : q.options?.[q.correctAnswerIndex]}
+                        {(() => {
+                          const type = q.type ?? "multiple-choice";
+                          if (
+                            type === "text-input" ||
+                            type === "fill-in-the-blank"
+                          )
+                            return q.answer;
+                          if (type === "true-false")
+                            return q.answer ? "Richtig" : "Falsch";
+                          if (type === "matching")
+                            return (
+                              q.pairs
+                                ?.map((p) => `${p.left} → ${p.right}`)
+                                .join(", ") ?? "—"
+                            );
+                          return q.options?.[q.correctAnswerIndex];
+                        })()}
                       </span>
                     </div>
                   </div>
