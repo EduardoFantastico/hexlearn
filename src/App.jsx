@@ -31,6 +31,9 @@ export default function App() {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [quizPool, setQuizPool] = useState([]);
+  const [quizCount, setQuizCount] = useState(10);
+  const [quizOffset, setQuizOffset] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [importError, setImportError] = useState(null);
@@ -112,8 +115,12 @@ export default function App() {
       });
     if (pooled.length === 0) return;
     markUsed(catalogIds);
-    const ordered = smartShuffle(pooled, srWeight).slice(0, count);
-    setQuestions(ordered);
+    const shuffled = smartShuffle(pooled, srWeight);
+    const batch = shuffled.slice(0, count);
+    setQuizPool(shuffled);
+    setQuizCount(count);
+    setQuizOffset(count);
+    setQuestions(batch);
     setCurrentIndex(0);
     setAnswers([]);
     setView("quiz");
@@ -130,6 +137,30 @@ export default function App() {
     recordRound(questions, finalAnswers);
     recordActivity(questions.length);
     setView("result");
+  }
+
+  function handlePlayNext() {
+    let pool = quizPool;
+    let offset = quizOffset;
+    if (offset >= pool.length) {
+      pool = smartShuffle(pool, srWeight);
+      setQuizPool(pool);
+      offset = 0;
+    }
+    const batch = pool.slice(offset, offset + quizCount);
+    setQuizOffset(offset + quizCount);
+    setQuestions(batch);
+    setCurrentIndex(0);
+    setAnswers([]);
+    setView("quiz");
+  }
+
+  function handlePlaySameAgain() {
+    const reshuffled = smartShuffle(questions, srWeight);
+    setQuestions(reshuffled);
+    setCurrentIndex(0);
+    setAnswers([]);
+    setView("quiz");
   }
 
   function handleQuitQuiz() {
@@ -512,14 +543,9 @@ export default function App() {
                 questions={questions}
                 answers={answers}
                 stats={stats}
-                onPlayAgain={() => {
-                  const ordered = smartShuffle(questions, srWeight);
-                  setQuestions(ordered);
-                  setCurrentIndex(0);
-                  setAnswers([]);
-                  setView("quiz");
-                }}
-                onChangeCatalogs={() => setView("dashboard")}
+                onPlayNext={handlePlayNext}
+                onPlaySameAgain={handlePlaySameAgain}
+                onGoHome={() => setView("dashboard")}
               />
             </motion.div>
           )}

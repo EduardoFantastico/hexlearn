@@ -9,8 +9,9 @@ export default function Results({
   questions,
   answers,
   stats = {},
-  onPlayAgain,
-  onChangeCatalogs,
+  onPlayNext,
+  onPlaySameAgain,
+  onGoHome,
 }) {
   const total = questions.length;
   const score = answers.filter((ans, i) =>
@@ -210,16 +211,22 @@ export default function Results({
       {/* Action buttons */}
       <div className="flex flex-col gap-3">
         <button
-          onClick={onPlayAgain}
+          onClick={onPlayNext}
           className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
         >
-          Nochmal spielen
+          Weiter →
         </button>
         <button
-          onClick={onChangeCatalogs}
+          onClick={onPlaySameAgain}
           className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
         >
-          Katalog-Auswahl ändern
+          Nochmal gleiches Quiz
+        </button>
+        <button
+          onClick={onGoHome}
+          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+        >
+          Hauptmenü
         </button>
       </div>
     </motion.div>
