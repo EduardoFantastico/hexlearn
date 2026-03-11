@@ -16,6 +16,7 @@ import {
   Check,
 } from "lucide-react";
 import FileUploader from "./FileUploader";
+import JsonPasteImporter from "./JsonPasteImporter";
 
 /**
  * Dashboard
@@ -43,6 +44,7 @@ export default function Dashboard({
 }) {
   const fileUploaderRef = useRef(null);
   const [jsonCopied, setJsonCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("file");
 
   const JSON_TEMPLATE = `[
   {
@@ -267,8 +269,9 @@ export default function Dashboard({
             />
           </button>
 
-          {/* Option B – JSON upload */}
+          {/* Option B – Import (tabbed: paste / file) */}
           <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+            {/* Card header */}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
                 <Plus
@@ -278,57 +281,102 @@ export default function Dashboard({
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                  Katalog hochladen
+                  Katalog importieren
                 </p>
-                <p className="text-xs text-slate-500">JSON-Datei importieren</p>
+                <p className="text-xs text-slate-500">
+                  Datei hochladen oder JSON einfügen
+                </p>
               </div>
             </div>
-            <FileUploader onCatalogAdded={onCatalogAdded} />
-            {/* JSON format hint */}
-            <details className="mt-3 group">
-              <summary className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
-                <ChevronRight
-                  size={12}
-                  className="transition-transform duration-200 group-open:rotate-90"
-                />
-                JSON-Format anzeigen
-              </summary>
-              <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Beispiel
-                  </span>
-                  <button
-                    onClick={copyJsonTemplate}
-                    className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-all ${
-                      jsonCopied
-                        ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
-                        : "bg-slate-200 dark:bg-slate-800 text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30"
-                    }`}
-                  >
-                    {jsonCopied ? <Check size={11} /> : <Copy size={11} />}
-                    {jsonCopied ? "Kopiert!" : "Kopieren"}
-                  </button>
-                </div>
-                <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">
-                  {JSON_TEMPLATE}
-                </pre>
-              </div>
-            </details>
+
+            {/* Tab switcher */}
+            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
+              {[
+                { id: "file", label: "Datei hochladen" },
+                { id: "paste", label: "JSON einfügen" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    activeTab === tab.id
+                      ? "bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content */}
+            {activeTab === "file" ? (
+              <>
+                <FileUploader onCatalogAdded={onCatalogAdded} />
+                {/* JSON format hint */}
+                <details className="mt-3 group">
+                  <summary className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
+                    <ChevronRight
+                      size={12}
+                      className="transition-transform duration-200 group-open:rotate-90"
+                    />
+                    JSON-Format anzeigen
+                  </summary>
+                  <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                        Beispiel
+                      </span>
+                      <button
+                        onClick={copyJsonTemplate}
+                        className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-all ${
+                          jsonCopied
+                            ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+                            : "bg-slate-200 dark:bg-slate-800 text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30"
+                        }`}
+                      >
+                        {jsonCopied ? <Check size={11} /> : <Copy size={11} />}
+                        {jsonCopied ? "Kopiert!" : "Kopieren"}
+                      </button>
+                    </div>
+                    <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">
+                      {JSON_TEMPLATE}
+                    </pre>
+                  </div>
+                </details>
+              </>
+            ) : (
+              <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
+            )}
           </div>
         </motion.div>
 
-        {/* Tutorial link */}
+        {/* Tutorial card */}
         <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
           onClick={onOpenTutorial}
-          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors mx-auto"
+          className="w-full flex items-center gap-4 bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-violet-200 dark:border-violet-800/60 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
         >
-          <Sparkles size={12} />
-          Wie funktioniert HexLearn?
-          <ChevronRight size={12} />
+          <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+            <Sparkles
+              size={16}
+              className="text-violet-600 dark:text-violet-400"
+            />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-violet-700 dark:text-violet-300 group-hover:text-violet-800 dark:group-hover:text-violet-200 transition-colors">
+              Wie funktioniert HexLearn?
+            </p>
+            <p className="text-xs text-violet-500/70 dark:text-violet-400/60">
+              Kurzanleitung &amp; KI-Tipp ansehen
+            </p>
+          </div>
+          <ChevronRight
+            size={16}
+            className="ml-auto text-violet-400 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors"
+          />
         </motion.button>
       </div>
     );

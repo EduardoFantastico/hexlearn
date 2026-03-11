@@ -22,12 +22,11 @@ const STEPS = [
         <strong className="text-slate-700 dark:text-slate-300">
           „Katalog manuell erstellen"
         </strong>{" "}
-        um Fragen direkt im Editor einzugeben – oder importiere eine JSON-Datei
-        über{" "}
+        um Fragen direkt im Editor einzugeben. Oder nutze{" "}
         <strong className="text-slate-700 dark:text-slate-300">
-          „Katalog hochladen"
-        </strong>
-        . Beide Optionen findest du auf der Startseite.
+          „Katalog importieren"
+        </strong>{" "}
+        – dort kannst du eine JSON-Datei hochladen oder JSON direkt einfügen.
       </>
     ),
   },
@@ -226,19 +225,21 @@ export default function Tutorial({ onBack }) {
                 durch dein Lernthema.
               </li>
               <li>Füge den Prompt in ChatGPT / Gemini ein und sende ihn ab.</li>
+              <li>Kopiere die Antwort der KI.</li>
               <li>
-                Speichere die Antwort als{" "}
-                <code className="bg-slate-200 dark:bg-slate-700 rounded px-1 text-[10px]">
-                  .json
-                </code>
-                -Datei.
-              </li>
-              <li>
-                Importiere die Datei über{" "}
+                Öffne auf der Startseite{" "}
                 <strong className="text-slate-600 dark:text-slate-300">
-                  „Katalog hochladen"
+                  „Katalog importieren"
                 </strong>{" "}
-                auf der Startseite.
+                und wechsle zum Tab{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „JSON einfügen"
+                </strong>{" "}
+                – füge den Inhalt direkt ein und klicke auf{" "}
+                <strong className="text-slate-600 dark:text-slate-300">
+                  „Katalog importieren"
+                </strong>
+                .
               </li>
             </ol>
 
