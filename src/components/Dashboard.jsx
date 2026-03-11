@@ -9,7 +9,6 @@ import {
   ChevronRight,
   BarChart2,
   Sparkles,
-  ShieldCheck,
   Target,
   Hash,
   Copy,
@@ -167,279 +166,169 @@ export default function Dashboard({
     show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
   };
 
-  // ── Landing page (first visit, no catalogs yet) ─────────────────────
-  if (catalogs.length === 0) {
-    return (
-      <div className="flex flex-col items-center w-full max-w-lg mx-auto px-4 pt-10 pb-[env(safe-area-inset-bottom,24px)]">
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="text-center mb-8"
-        >
-          {/* Hexagon logo */}
-          <div className="w-20 h-20 mx-auto mb-5">
-            <svg
-              viewBox="0 0 100 115"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <polygon
-                points="50,5 96,30 96,85 50,110 4,85 4,30"
-                className="fill-violet-100 dark:fill-violet-950"
-                stroke="rgb(109,40,217)"
-                strokeWidth="3"
-              />
-              <text
-                x="50"
-                y="72"
-                textAnchor="middle"
-                className="fill-violet-700 dark:fill-violet-400"
-                style={{
-                  fontSize: 36,
-                  fontWeight: 800,
-                  fontFamily: "system-ui, sans-serif",
-                }}
-              >
-                Hx
-              </text>
-            </svg>
-          </div>
+  const hasCatalogs = catalogs.length > 0;
 
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-none">
-            HexLearn
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg mt-3 leading-relaxed">
-            Lerne smarter&nbsp;–{" "}
-            <span className="text-violet-600 dark:text-violet-400 font-semibold">
-              mit deinen eigenen Fragen.
-            </span>
-          </p>
-        </motion.div>
-
-        {/* Feature pills */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.12 }}
-          className="flex flex-wrap justify-center gap-2 mb-8"
-        >
-          {[
-            { Icon: Sparkles, label: "Spaced Repetition" },
-            { Icon: ShieldCheck, label: "Lokal · Kein Login" },
-            { Icon: BarChart2, label: "Lernstatistiken" },
-          ].map(({ Icon, label }) => (
-            <span
-              key={label}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 font-medium"
-            >
-              <Icon size={12} />
-              {label}
-            </span>
-          ))}
-        </motion.div>
-
-        {/* Two entry-point cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="w-full flex flex-col gap-3 mb-4"
-        >
-          {/* Option A – manual editor */}
+  // ── Shared import panel (used in both empty + returning states) ──────
+  const importPanel = (
+    <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+      <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
+        {[
+          { id: "file", label: "Datei" },
+          { id: "paste", label: "JSON" },
+          { id: "qr", label: "QR-Code", Icon: QrCode },
+        ].map((tab) => (
           <button
-            onClick={onManageCatalogs}
-            className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
+              activeTab === tab.id
+                ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm"
+                : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            }`}
           >
-            <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
-              <BookOpen
-                size={16}
-                className="text-violet-600 dark:text-violet-400"
-              />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
-                Katalog manuell erstellen
-              </p>
-              <p className="text-xs text-slate-500">
-                Fragen direkt im Editor eingeben
-              </p>
-            </div>
-            <ChevronRight
-              size={16}
-              className="ml-auto text-slate-400 group-hover:text-violet-500 transition-colors"
-            />
+            {tab.Icon && <tab.Icon size={11} />}
+            {tab.label}
           </button>
-
-          {/* Option B – Import (tabbed: paste / file) */}
-          <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
-            {/* Card header */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-                <Plus
-                  size={14}
-                  className="text-violet-600 dark:text-violet-400"
-                />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                  Katalog importieren
-                </p>
-                <p className="text-xs text-slate-500">
-                  Datei hochladen oder JSON einfügen
-                </p>
-              </div>
-            </div>
-
-            {/* Tab switcher */}
-            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
-              {[
-                { id: "file", label: "Datei" },
-                { id: "paste", label: "JSON" },
-                { id: "qr", label: "QR-Code", Icon: QrCode },
-              ].map((tab) => (
+        ))}
+      </div>
+      {activeTab === "file" && (
+        <>
+          <FileUploader onCatalogAdded={onCatalogAdded} />
+          <details className="mt-3 group">
+            <summary className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
+              <ChevronRight
+                size={12}
+                className="transition-transform duration-200 group-open:rotate-90"
+              />
+              JSON-Format anzeigen
+            </summary>
+            <div className="mt-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Beispiel
+                </span>
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
-                    activeTab === tab.id
-                      ? "bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  onClick={copyJsonTemplate}
+                  className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-all ${
+                    jsonCopied
+                      ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30"
                   }`}
                 >
-                  {tab.Icon && <tab.Icon size={11} />}
-                  {tab.label}
+                  {jsonCopied ? <Check size={11} /> : <Copy size={11} />}
+                  {jsonCopied ? "Kopiert!" : "Kopieren"}
                 </button>
-              ))}
+              </div>
+              <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">
+                {JSON_TEMPLATE}
+              </pre>
             </div>
+          </details>
+        </>
+      )}
+      {activeTab === "paste" && (
+        <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
+      )}
+      {activeTab === "qr" && (
+        <QRScannerImporter
+          onCatalogAdded={onCatalogAdded}
+          onClose={() => setActiveTab("file")}
+        />
+      )}
+    </div>
+  );
 
-            {/* Tab content */}
-            {activeTab === "file" && (
-              <>
-                <FileUploader onCatalogAdded={onCatalogAdded} />
-                {/* JSON format hint */}
-                <details className="mt-3 group">
-                  <summary className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 cursor-pointer transition-colors select-none list-none">
-                    <ChevronRight
-                      size={12}
-                      className="transition-transform duration-200 group-open:rotate-90"
-                    />
-                    JSON-Format anzeigen
-                  </summary>
-                  <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Beispiel
-                      </span>
-                      <button
-                        onClick={copyJsonTemplate}
-                        className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg transition-all ${
-                          jsonCopied
-                            ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
-                            : "bg-slate-200 dark:bg-slate-800 text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30"
-                        }`}
-                      >
-                        {jsonCopied ? <Check size={11} /> : <Copy size={11} />}
-                        {jsonCopied ? "Kopiert!" : "Kopieren"}
-                      </button>
-                    </div>
-                    <pre className="text-[11px] text-violet-600 dark:text-violet-300 font-mono leading-relaxed overflow-x-auto">
-                      {JSON_TEMPLATE}
-                    </pre>
-                  </div>
-                </details>
-              </>
-            )}
-            {activeTab === "paste" && (
-              <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
-            )}
-            {activeTab === "qr" && (
-              <QRScannerImporter
-                onCatalogAdded={onCatalogAdded}
-                onClose={() => setActiveTab("file")}
-              />
-            )}
-          </div>
-        </motion.div>
-
-        {/* Tutorial card */}
-        <motion.button
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          onClick={onOpenTutorial}
-          className="w-full flex items-center gap-4 bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-violet-200 dark:border-violet-800/60 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
-        >
-          <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
-            <Sparkles
-              size={16}
-              className="text-violet-600 dark:text-violet-400"
-            />
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-semibold text-violet-700 dark:text-violet-300 group-hover:text-violet-800 dark:group-hover:text-violet-200 transition-colors">
-              Wie funktioniert HexLearn?
-            </p>
-            <p className="text-xs text-violet-500/70 dark:text-violet-400/60">
-              Kurzanleitung &amp; KI-Tipp ansehen
-            </p>
-          </div>
-          <ChevronRight
-            size={16}
-            className="ml-auto text-violet-400 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors"
-          />
-        </motion.button>
-      </div>
-    );
-  }
-
-  // ── Dashboard (returning user with catalogs) ────────────────────────
+  // ── Single unified layout ────────────────────────────────────────────
   return (
     <div className="flex flex-col min-h-0 w-full max-w-2xl mx-auto px-4 pb-[env(safe-area-inset-bottom,24px)] pt-2">
-      {/* Hero */}
+      {/* ── Header ────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.35 }}
         className="mb-6"
       >
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
-          Hallo! 👋
-          <br />
-          <span className="text-violet-600 dark:text-violet-400">
-            Bereit zum Lernen?
-          </span>
-        </h1>
-
-        {/* Streak + today badge row */}
-        <div className="flex items-center gap-3 mt-3 flex-wrap">
-          <div
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
-              streak > 0
-                ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-700/50"
-                : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
-            }`}
-          >
-            <Flame size={13} />
-            {streak > 0 ? `${streak} Tage Streak` : "Noch kein Streak"}
+        {hasCatalogs ? (
+          /* Returning user */
+          <>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
+              Hallo! 👋
+              <br />
+              <span className="text-violet-600 dark:text-violet-400">
+                Bereit zum Lernen?
+              </span>
+            </h1>
+            <div className="flex items-center gap-3 mt-3 flex-wrap">
+              <div
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                  streak > 0
+                    ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-700/50"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
+                }`}
+              >
+                <Flame size={13} />
+                {streak > 0 ? `${streak} Tage Streak` : "Noch kein Streak"}
+              </div>
+              <div
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                  todayCount > 0
+                    ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700/50"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
+                }`}
+              >
+                <CheckCircle2 size={13} />
+                {todayCount > 0
+                  ? `${todayCount} Fragen heute`
+                  : "Heute noch nichts gelernt"}
+              </div>
+            </div>
+          </>
+        ) : (
+          /* First visit – compact hero */
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 flex-shrink-0">
+              <svg
+                viewBox="0 0 100 115"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <polygon
+                  points="50,5 96,30 96,85 50,110 4,85 4,30"
+                  className="fill-violet-100 dark:fill-violet-950"
+                  stroke="rgb(109,40,217)"
+                  strokeWidth="3"
+                />
+                <text
+                  x="50"
+                  y="72"
+                  textAnchor="middle"
+                  className="fill-violet-700 dark:fill-violet-400"
+                  style={{
+                    fontSize: 36,
+                    fontWeight: 800,
+                    fontFamily: "system-ui, sans-serif",
+                  }}
+                >
+                  Hx
+                </text>
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight">
+                HexLearn
+              </h1>
+              <p className="text-sm text-slate-500 mt-0.5">
+                Lerne smarter –{" "}
+                <span className="text-violet-600 dark:text-violet-400 font-semibold">
+                  mit deinen eigenen Fragen.
+                </span>
+              </p>
+            </div>
           </div>
-          <div
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
-              todayCount > 0
-                ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700/50"
-                : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
-            }`}
-          >
-            <CheckCircle2 size={13} />
-            {todayCount > 0
-              ? `${todayCount} Fragen heute`
-              : "Heute noch nichts gelernt"}
-          </div>
-        </div>
+        )}
       </motion.div>
 
-      {/* Aggregate stats row */}
+      {/* ── Stats (only when there's data) ────────────────────── */}
       {totalAnswered > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -461,7 +350,7 @@ export default function Dashboard({
               value: overallPct !== null ? `${overallPct} %` : "–",
               sub:
                 overallPct !== null
-                  ? `${uniqueAttempted} / ${totalQuestionsAcrossAll} Fragen versucht`
+                  ? `${uniqueAttempted} / ${totalQuestionsAcrossAll} versucht`
                   : "keine Daten",
               color:
                 overallPct === null
@@ -502,8 +391,8 @@ export default function Dashboard({
         </motion.div>
       )}
 
-      {/* Weekly activity mini-chart */}
-      {weeklyData.length > 0 && (
+      {/* ── Weekly chart (only when there's activity) ─────────── */}
+      {hasCatalogs && weeklyData.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -547,10 +436,7 @@ export default function Dashboard({
                         : "bg-slate-300 dark:bg-slate-700"
                     }`}
                     style={{
-                      height: `${Math.max(
-                        (day.count / maxCount) * 56,
-                        day.count > 0 ? 6 : 3,
-                      )}px`,
+                      height: `${Math.max((day.count / maxCount) * 56, day.count > 0 ? 6 : 3)}px`,
                     }}
                     initial={{ scaleY: 0, originY: 1 }}
                     animate={{ scaleY: 1 }}
@@ -560,11 +446,7 @@ export default function Dashboard({
                     }}
                   />
                   <span
-                    className={`text-[9px] font-medium ${
-                      isToday
-                        ? "text-violet-500 dark:text-violet-400 font-bold"
-                        : "text-slate-400 dark:text-slate-600"
-                    }`}
+                    className={`text-[9px] font-medium ${isToday ? "text-violet-500 dark:text-violet-400 font-bold" : "text-slate-400 dark:text-slate-600"}`}
                   >
                     {day.label}
                   </span>
@@ -572,25 +454,15 @@ export default function Dashboard({
               );
             })}
           </div>
-
-          {/* Streak + today summary inside chart card */}
           <div className="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex-wrap">
             <div
-              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                streak > 0
-                  ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400"
-                  : "text-slate-500"
-              }`}
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${streak > 0 ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400" : "text-slate-500"}`}
             >
               <Flame size={11} />
               {streak > 0 ? `${streak} Tage Streak` : "Noch kein Streak"}
             </div>
             <div
-              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                todayCount > 0
-                  ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400"
-                  : "text-slate-500"
-              }`}
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${todayCount > 0 ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-400" : "text-slate-500"}`}
             >
               <CheckCircle2 size={11} />
               {todayCount > 0 ? `${todayCount} heute` : "Heute noch nichts"}
@@ -599,20 +471,22 @@ export default function Dashboard({
         </motion.div>
       )}
 
-      {/* Catalog section header */}
+      {/* ── Catalog section ───────────────────────────────────── */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <BookOpen size={14} />
-          Meine Kataloge
+          {hasCatalogs ? "Meine Kataloge" : "Erste Schritte"}
         </h2>
         <div className="flex items-center gap-2">
-          <button
-            onClick={onOpenStats}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-          >
-            <BarChart2 size={11} />
-            Statistiken
-          </button>
+          {hasCatalogs && (
+            <button
+              onClick={onOpenStats}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            >
+              <BarChart2 size={11} />
+              Statistiken
+            </button>
+          )}
           <button
             onClick={onOpenTutorial}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
@@ -620,157 +494,215 @@ export default function Dashboard({
             <Sparkles size={11} />
             Hilfe
           </button>
-          <button
-            onClick={onManageCatalogs}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-          >
-            <BookOpen size={11} />
-            Verwalten
-          </button>
+          {hasCatalogs && (
+            <button
+              onClick={onManageCatalogs}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            >
+              <BookOpen size={11} />
+              Verwalten
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Catalog grid */}
-      <motion.ul
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4"
-      >
-        {catalogs.map((catalog) => {
-          const acc = catalogAccuracy(catalog);
-          const accuracyPct = acc?.accuracyPct ?? null;
-          const coveragePct = acc?.coveragePct ?? null;
-          const barColor =
-            accuracyPct === null
-              ? "bg-slate-300 dark:bg-slate-700"
-              : accuracyPct >= 70
-                ? "bg-emerald-500"
-                : accuracyPct >= 40
-                  ? "bg-amber-400"
-                  : "bg-red-500";
-
-          return (
-            <motion.li
-              key={catalog.id}
-              variants={cardVariant}
-            >
-              <button
-                onClick={() => onOpenConfig([catalog.id])}
-                className="w-full text-left bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group"
+      {/* Catalog grid (when populated) */}
+      {hasCatalogs && (
+        <motion.ul
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4"
+        >
+          {catalogs.map((catalog) => {
+            const acc = catalogAccuracy(catalog);
+            const accuracyPct = acc?.accuracyPct ?? null;
+            const coveragePct = acc?.coveragePct ?? null;
+            const barColor =
+              accuracyPct === null
+                ? "bg-slate-300 dark:bg-slate-700"
+                : accuracyPct >= 70
+                  ? "bg-emerald-500"
+                  : accuracyPct >= 40
+                    ? "bg-amber-400"
+                    : "bg-red-500";
+            return (
+              <motion.li
+                key={catalog.id}
+                variants={cardVariant}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
-                      {catalog.name}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {catalog.questions.length} Fragen
+                <button
+                  onClick={() => onOpenConfig([catalog.id])}
+                  className="w-full text-left bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
+                        {catalog.name}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        {catalog.questions.length} Fragen
+                      </span>
+                    </div>
+                    {accuracyPct !== null && (
+                      <span
+                        className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
+                          accuracyPct >= 70
+                            ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
+                            : accuracyPct >= 40
+                              ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
+                              : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"
+                        }`}
+                      >
+                        {accuracyPct} %
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-1.5">
+                      <motion.div
+                        className={`h-1.5 rounded-full ${barColor}`}
+                        initial={{ width: 0 }}
+                        animate={{
+                          width:
+                            coveragePct !== null ? `${coveragePct}%` : "0%",
+                        }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500">
+                      {acc === null
+                        ? "Noch nicht geübt"
+                        : acc.coveragePct < 100
+                          ? `${acc.attempted} / ${acc.totalQuestions} Fragen versucht`
+                          : accuracyPct >= 70
+                            ? "Alle geübt · Stark"
+                            : accuracyPct >= 40
+                              ? "Alle geübt · Im Aufbau"
+                              : "Alle geübt · Mehr üben!"}
                     </span>
                   </div>
-                  {accuracyPct !== null && (
-                    <span
-                      className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
-                        accuracyPct >= 70
-                          ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
-                          : accuracyPct >= 40
-                            ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
-                            : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"
-                      }`}
-                    >
-                      {accuracyPct} %
-                    </span>
+                  {acc && acc.total >= 5 && (
+                    <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                      <TrendingUp size={10} />
+                      {acc.total} Antworten gesamt
+                    </div>
                   )}
-                </div>
+                </button>
+              </motion.li>
+            );
+          })}
+        </motion.ul>
+      )}
 
-                {/* Progress bar — width = coverage (attempted/total), colour = accuracy */}
-                <div className="flex flex-col gap-1">
-                  <div className="w-full bg-slate-300 dark:bg-slate-700 rounded-full h-1.5">
-                    <motion.div
-                      className={`h-1.5 rounded-full ${barColor}`}
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: coveragePct !== null ? `${coveragePct}%` : "0%",
-                      }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
-                    />
-                  </div>
-                  <span className="text-[10px] text-slate-500">
-                    {acc === null
-                      ? "Noch nicht geübt"
-                      : acc.coveragePct < 100
-                        ? `${acc.attempted} / ${acc.totalQuestions} Fragen versucht`
-                        : accuracyPct >= 70
-                          ? "Alle geübt · Stark"
-                          : accuracyPct >= 40
-                            ? "Alle geübt · Im Aufbau"
-                            : "Alle geübt · Mehr üben!"}
-                  </span>
-                </div>
-
-                {/* Trend info */}
-                {acc && acc.total >= 5 && (
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
-                    <TrendingUp size={10} />
-                    {acc.total} Antworten gesamt
-                  </div>
-                )}
-              </button>
-            </motion.li>
-          );
-        })}
-      </motion.ul>
-
-      {/* Add new catalog */}
+      {/* ── Add / first catalog ───────────────────────────────── */}
       <motion.div
         ref={fileUploaderRef}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-        className="mb-2"
+        transition={{ duration: 0.3, delay: 0.15 }}
+        className="mb-4"
       >
-        <details className="group">
-          <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-3 text-sm text-slate-500 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
-            <Plus size={16} />
-            Neuen Katalog hinzufügen
-          </summary>
-          <div className="mt-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
-            {/* Tab switcher */}
-            <div className="flex gap-1 p-1 bg-slate-200 dark:bg-slate-700/60 rounded-xl mb-4">
-              {[
-                { id: "file", label: "Datei" },
-                { id: "paste", label: "JSON" },
-                { id: "qr", label: "QR-Code", Icon: QrCode },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
-                    activeTab === tab.id
-                      ? "bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                  }`}
-                >
-                  {tab.Icon && <tab.Icon size={11} />}
-                  {tab.label}
-                </button>
-              ))}
+        {hasCatalogs ? (
+          /* Returning user: collapsible add-more */
+          <details className="group">
+            <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-3 text-sm text-slate-500 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
+              <Plus size={16} />
+              Katalog hinzufügen
+            </summary>
+            <div className="mt-3">
+              {/* Manually create */}
+              <button
+                onClick={onManageCatalogs}
+                className="w-full flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-4 py-3 mb-3 transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              >
+                <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center flex-shrink-0">
+                  <BookOpen
+                    size={13}
+                    className="text-violet-600 dark:text-violet-400"
+                  />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
+                    Manuell erstellen
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Fragen im Editor eingeben
+                  </p>
+                </div>
+                <ChevronRight
+                  size={14}
+                  className="ml-auto text-slate-400 group-hover:text-violet-500 transition-colors"
+                />
+              </button>
+              {importPanel}
             </div>
-            {activeTab === "file" && (
-              <FileUploader onCatalogAdded={onCatalogAdded} />
-            )}
-            {activeTab === "paste" && (
-              <JsonPasteImporter onCatalogAdded={onCatalogAdded} />
-            )}
-            {activeTab === "qr" && (
-              <QRScannerImporter
-                onCatalogAdded={onCatalogAdded}
-                onClose={() => setActiveTab("file")}
+          </details>
+        ) : (
+          /* First visit: always-visible onboarding */
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={onManageCatalogs}
+              className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+            >
+              <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+                <BookOpen
+                  size={16}
+                  className="text-violet-600 dark:text-violet-400"
+                />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
+                  Katalog manuell erstellen
+                </p>
+                <p className="text-xs text-slate-500">
+                  Fragen direkt im Editor eingeben
+                </p>
+              </div>
+              <ChevronRight
+                size={16}
+                className="ml-auto text-slate-400 group-hover:text-violet-500 transition-colors"
               />
-            )}
+            </button>
+            <div className="flex items-center gap-3 px-1">
+              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                oder importieren
+              </span>
+              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+            </div>
+            {importPanel}
           </div>
-        </details>
+        )}
       </motion.div>
+
+      {/* ── Tutorial link ─────────────────────────────────────── */}
+      <motion.button
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        onClick={onOpenTutorial}
+        className="w-full flex items-center gap-4 bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-violet-200 dark:border-violet-800/60 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 mb-2 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+      >
+        <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+          <Sparkles
+            size={16}
+            className="text-violet-600 dark:text-violet-400"
+          />
+        </div>
+        <div className="text-left">
+          <p className="text-sm font-semibold text-violet-700 dark:text-violet-300 group-hover:text-violet-800 dark:group-hover:text-violet-200 transition-colors">
+            Wie funktioniert HexLearn?
+          </p>
+          <p className="text-xs text-violet-500/70 dark:text-violet-400/60">
+            Kurzanleitung &amp; KI-Tipp ansehen
+          </p>
+        </div>
+        <ChevronRight
+          size={16}
+          className="ml-auto text-violet-400 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors"
+        />
+      </motion.button>
     </div>
   );
 }
