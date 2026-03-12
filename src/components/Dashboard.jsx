@@ -471,12 +471,12 @@ export default function Dashboard({
       )}
 
       {/* ── Catalog section ───────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-y-2 mb-3">
         <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <BookOpen size={14} />
           {hasCatalogs ? "Meine Kataloge" : "Erste Schritte"}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {hasCatalogs && (
             <button
               onClick={onOpenStats}

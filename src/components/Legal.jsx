@@ -1,6 +1,16 @@
+import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 
 export default function Legal({ section = "impressum", onBack }) {
+  useEffect(() => {
+    const el = document.getElementById(section);
+    if (el) {
+      el.scrollIntoView({ behavior: "instant" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [section]);
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-10 flex flex-col gap-10">
       <button

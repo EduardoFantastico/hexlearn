@@ -36,6 +36,7 @@ function smartShuffle(questions, srWeightFn) {
 
 export default function App() {
   const [view, setView] = useState("dashboard");
+  const [legalSection, setLegalSection] = useState("impressum");
   const [configInitialIds, setConfigInitialIds] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -686,7 +687,10 @@ export default function App() {
               className="flex-1 flex flex-col py-6"
               {...pageProps()}
             >
-              <Legal onBack={() => setView("dashboard")} />
+              <Legal
+                section={legalSection}
+                onBack={() => setView("dashboard")}
+              />
             </motion.div>
           )}
 
@@ -727,14 +731,20 @@ export default function App() {
           </a>
           <span className="text-slate-300 dark:text-slate-700">·</span>
           <button
-            onClick={() => setView("legal")}
+            onClick={() => {
+              setLegalSection("impressum");
+              setView("legal");
+            }}
             className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
           >
             Impressum
           </button>
           <span className="text-slate-300 dark:text-slate-700">·</span>
           <button
-            onClick={() => setView("legal")}
+            onClick={() => {
+              setLegalSection("datenschutz");
+              setView("legal");
+            }}
             className="text-xs text-slate-400 dark:text-slate-600 hover:text-violet-500 dark:hover:text-violet-400 transition-colors underline underline-offset-2"
           >
             Datenschutz
