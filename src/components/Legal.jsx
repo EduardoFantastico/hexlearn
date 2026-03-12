@@ -138,11 +138,16 @@ export default function Legal({ section = "impressum", onBack }) {
             </h2>
             <p>
               Die optionale Teilen-Funktion überträgt den ausgewählten Katalog
-              temporär an einen Server, um einen QR-Code zu ermöglichen. Die
-              Daten werden ausschließlich für die gewählte Dauer (maximal{" "}
-              <strong>10 Minuten</strong>) gespeichert und danach{" "}
-              <strong>automatisch und unwiderruflich gelöscht</strong>. Es wird
-              kein Account benötigt. Der Zugriff ist nur über die zufällig
+              temporär an einen Server, um einen QR-Code zu ermöglichen. Nach
+              Ablauf der gewählten Dauer (maximal <strong>10 Minuten</strong>)
+              ist der Katalog <strong>sofort nicht mehr abrufbar</strong>. Die
+              physische Löschung vom Server erfolgt{" "}
+              <strong>
+                automatisch und unwiderruflich spätestens innerhalb von 24
+                Stunden
+              </strong>{" "}
+              durch einen regelmäßigen automatischen Bereinigungsprozess. Es
+              wird kein Account benötigt. Der Zugriff ist nur über die zufällig
               generierte Kurz-ID möglich. Die Übertragung erfolgt verschlüsselt
               (HTTPS). Es findet keine dauerhafte Speicherung oder
               Nutzerprofilierung statt.
@@ -198,9 +203,10 @@ export default function Legal({ section = "impressum", onBack }) {
             <p className="mt-2">
               Die HexShare-Funktion speichert Katalogdaten temporär in{" "}
               <strong>Vercel Blob</strong>, einem integrierten Speicherdienst
-              von Vercel Inc. Die Daten werden ausschließlich für die vom Nutzer
-              gewählte Dauer (maximal 10 Minuten) gespeichert und danach
-              automatisch gelöscht. Der Zugriff ist nur über eine
+              von Vercel Inc. Nach Ablauf der vom Nutzer gewählten Dauer
+              (maximal 10 Minuten) sind die Daten sofort nicht mehr abrufbar und
+              werden spätestens innerhalb von 24 Stunden automatisch und
+              unwiderruflich gelöscht. Der Zugriff ist nur über eine
               zufallsgenerierte ID möglich; es findet keine Nutzerprofilierung
               statt. Weitere Informationen findest du in der{" "}
               <a
