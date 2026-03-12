@@ -64,4 +64,8 @@ Catalogs can be imported via the app's built-in paste importer or by uploading a
 
 ## Privacy
 
-All data stays on the user's device. No external requests are made. Crawling is disallowed via `robots.txt`.
+All data stays on the user's device. The optional HexShare feature temporarily transfers a catalog to Vercel Blob (max. 10 minutes, auto-deleted). No tracking, no analytics. Crawling is disallowed via `robots.txt`.
+
+## License
+
+[Business Source License 1.1](LICENSE) — free for personal and non-commercial use. Commercial use requires a separate agreement with the author. Converts to MIT on 2030-03-12.

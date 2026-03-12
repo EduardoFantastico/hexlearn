@@ -2,7 +2,7 @@
   "name": "hexlearn",
   "private": true,
   "version": "0.0.1",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
