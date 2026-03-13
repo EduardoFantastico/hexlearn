@@ -103,7 +103,37 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              2. Erhebung und Verarbeitung personenbezogener Daten
+              2. Externes Hosting und Content Delivery Network (CDN)
+            </h2>
+            <p>
+              Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133, Walnut,
+              CA 91789, USA (im Folgenden "Vercel") gehostet. Vercel sammelt
+              Logdateien über den Zugriff auf die Website, einschließlich
+              IP-Adressen. Diese Daten werden zur Analyse von Traffic und zur
+              Erkennung von Sicherheitsproblemen verwendet.
+            </p>
+            <p className="mt-2">
+              Zusätzlich nutzen wir das Content Delivery Network (CDN) von
+              Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA
+              (im Folgenden "Cloudflare"), um die Sicherheit und
+              Auslieferungsgeschwindigkeit unserer Website zu erhöhen. Bei jedem
+              Aufruf unserer Website werden Daten über das Netzwerk von
+              Cloudflare geleitet, wobei technische Informationen wie
+              IP-Adresse, Browsertyp und Betriebssystem erfasst werden können.
+            </p>
+            <p className="mt-2">
+              Die Nutzung dieser Dienste erfolgt auf Grundlage unseres
+              berechtigten Interesses an einer sicheren, schnellen und
+              effizienten Bereitstellung unseres Online-Angebots gemäß Art. 6
+              Abs. 1 lit. f DSGVO. Sowohl Vercel als auch Cloudflare sind unter
+              dem EU-US-Datenschutzrahmen zertifiziert, wodurch ein angemessenes
+              Datenschutzniveau gewährleistet wird.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
+              3. Erhebung und Verarbeitung personenbezogener Daten
             </h2>
             <p>
               HexLearn erhebt, verarbeitet oder übermittelt{" "}
@@ -115,7 +145,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              3. Lokale Datenspeicherung (localStorage)
+              4. Lokale Datenspeicherung (localStorage)
             </h2>
             <p>
               Zur Bereitstellung der App-Funktionen (Fragenkataloge,
@@ -134,7 +164,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              4. Katalog-Sharing via QR-Code (HexShare)
+              5. Katalog-Sharing via QR-Code (HexShare)
             </h2>
             <p>
               Die optionale Teilen-Funktion überträgt den ausgewählten Katalog
@@ -156,7 +186,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              5. Cookies
+              6. Cookies
             </h2>
             <p>
               Diese Website verwendet keine Cookies. Die App-Daten werden
@@ -167,7 +197,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              6. Externe Dienste &amp; Drittanbieter
+              7. Externe Dienste &amp; Drittanbieter
             </h2>
             <p>
               Es werden keine Analyse-Tools, Tracking-Skripte oder
@@ -181,7 +211,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              7. Hosting
+              8. Hosting
             </h2>
             <p>
               Diese App wird über <strong>Vercel</strong> (Vercel Inc., 340 Pine
@@ -223,7 +253,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              8. Deine Rechte
+              9. Deine Rechte
             </h2>
             <p>
               Du hast das Recht auf Auskunft, Berichtigung, Löschung und
@@ -241,7 +271,7 @@ export default function Legal({ section = "impressum", onBack }) {
 
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              9. Beschwerderecht
+              10. Beschwerderecht
             </h2>
             <p>
               Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu
