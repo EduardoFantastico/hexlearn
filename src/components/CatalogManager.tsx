@@ -87,11 +87,11 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
     <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
       {/* Row header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-700/50">
-        <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-lg bg-violet-900/50 text-violet-400 text-xs font-bold">
+        <span className="w-6 h-6 shrink-0 flex items-center justify-center rounded-lg bg-violet-900/50 text-violet-400 text-xs font-bold">
           {index + 1}
         </span>
         <span
-          className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
+          className={`shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${
             {
               "multiple-choice":
                 "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400",
@@ -145,7 +145,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
               Fragentyp
             </label>
             <select
-              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
               value={question.type ?? "multiple-choice"}
               onChange={(e) => {
                 const t = e.target.value;
@@ -198,7 +198,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
               Fragetext
             </label>
             <textarea
-              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
               rows={2}
               placeholder="Wie lautet die Frage?"
               value={question.question}
@@ -218,7 +218,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                 </label>
                 <input
                   type="text"
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                   placeholder="z.B. 42"
                   value={question.answer ?? ""}
                   onChange={(e) =>
@@ -234,7 +234,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                   </span>
                 </label>
                 <textarea
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 resize-none focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                   rows={2}
                   placeholder={"zweiundvierzig\nforty-two"}
                   value={(question.acceptedAnswers ?? []).join("\n")}
@@ -292,7 +292,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                   >
                     <input
                       type="text"
-                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                       placeholder="Begriff"
                       value={pair.left}
                       onChange={(e) => {
@@ -301,12 +301,12 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                         onChange({ ...question, pairs: next });
                       }}
                     />
-                    <span className="text-slate-400 text-sm flex-shrink-0">
+                    <span className="text-slate-400 text-sm shrink-0">
                       →
                     </span>
                     <input
                       type="text"
-                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                       placeholder="Antwort"
                       value={pair.right}
                       onChange={(e) => {
@@ -324,7 +324,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                           );
                           onChange({ ...question, pairs: next });
                         }}
-                        className="flex-shrink-0 p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-900/20 transition-colors"
+                        className="shrink-0 p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-900/20 transition-colors"
                         aria-label="Paar löschen"
                       >
                         <Trash2 size={13} />
@@ -369,7 +369,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                       onClick={() =>
                         onChange({ ...question, correctAnswerIndex: oi })
                       }
-                      className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                      className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                         question.correctAnswerIndex === oi
                           ? "border-emerald-500 bg-emerald-500"
                           : "border-slate-600 hover:border-slate-400"
@@ -384,7 +384,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                     </button>
                     <input
                       type="text"
-                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
+                      className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
                       placeholder={`Option ${String.fromCharCode(65 + oi)}`}
                       value={opt}
                       onChange={(e) => {
@@ -513,7 +513,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
           type="button"
           onClick={() => canSave && onSave({ name: name.trim(), questions })}
           disabled={!canSave}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ${
             canSave
               ? "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/40"
               : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
@@ -531,7 +531,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
         </label>
         <input
           type="text"
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors font-semibold"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors font-semibold"
           placeholder="z.B. JavaScript Grundlagen"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -663,7 +663,7 @@ export default function CatalogManager({
         </h1>
         <button
           onClick={() => setEditing("new")}
-          className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-violet-900/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+          className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-violet-900/30 transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
         >
           <Plus size={14} />
           Neu
@@ -722,7 +722,7 @@ export default function CatalogManager({
               </div>
 
               {/* Action buttons */}
-              <div className="flex items-center gap-1 flex-shrink-0">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   onClick={() => setSharingCatalog(catalog)}
                   className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -778,7 +778,7 @@ export default function CatalogManager({
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-[env(safe-area-inset-bottom,24px)] sm:pb-0"
           >
             <div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-xs"
               onClick={() => setConfirmDelete(null)}
             />
             <motion.div

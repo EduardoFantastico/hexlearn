@@ -150,7 +150,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
   const continueBtn = (
     <button
       onClick={handleAdvance}
-      className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+      className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
     >
       {isLast ? "Ergebnis anzeigen" : "Nächste Frage →"}
     </button>
@@ -200,7 +200,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 <span key={i}>
                   {part}
                   {i < arr.length - 1 && (
-                    <span className="inline-block border-b-2 border-blue-500 dark:border-blue-400 mx-1 min-w-[3rem]">
+                    <span className="inline-block border-b-2 border-blue-500 dark:border-blue-400 mx-1 min-w-12">
                       &nbsp;
                     </span>
                   )}
@@ -226,10 +226,10 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                   disabled={
                     selected !== null && i !== correct && i !== selected
                   }
-                  className={`w-full text-left flex items-center gap-4 rounded-2xl border-2 px-5 py-4 text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${optionStyle(i)}`}
+                  className={`w-full text-left flex items-center gap-4 rounded-2xl border-2 px-5 py-4 text-sm font-medium transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ${optionStyle(i)}`}
                 >
                   <span
-                    className={`w-7 h-7 flex-shrink-0 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-colors duration-200 ${optionBadgeStyle(i)}`}
+                    className={`w-7 h-7 shrink-0 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-colors duration-200 ${optionBadgeStyle(i)}`}
                   >
                     {selected !== null && i === correct ? (
                       <CheckIcon />
@@ -268,7 +268,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
               const isSelected = selected === val;
               const isTheCorrect = val === question.answer;
               let cls =
-                "flex-1 py-5 rounded-2xl border-2 font-bold text-base transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ";
+                "flex-1 py-5 rounded-2xl border-2 font-bold text-base transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ";
               if (selected === null) {
                 cls +=
                   "border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:border-violet-400 dark:hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300 cursor-pointer active:scale-95";
@@ -326,7 +326,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
             disabled={submitted}
             placeholder="Antwort eingeben…"
             autoFocus
-            className={`w-full rounded-2xl border-2 px-5 py-4 text-sm font-medium focus:outline-none transition-all duration-200 ${
+            className={`w-full rounded-2xl border-2 px-5 py-4 text-sm font-medium focus:outline-hidden transition-all duration-200 ${
               submitted
                 ? textCorrect
                   ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
@@ -344,7 +344,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 flex-shrink-0 text-emerald-500"
+                  className="h-4 w-4 shrink-0 text-emerald-500"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -371,7 +371,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 transition={{ duration: 0.15 }}
                 onClick={() => inputValue.trim() && setSubmitted(true)}
                 disabled={!inputValue.trim()}
-                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-600 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 disabled:shadow-none"
+                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-600 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400 disabled:shadow-none"
               >
                 Antwort prüfen
               </motion.button>
@@ -383,7 +383,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.15 }}
                 onClick={handleAdvance}
-                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
               >
                 {isLast ? "Ergebnis anzeigen" : "Nächste Frage →"}
               </motion.button>
@@ -407,7 +407,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 <span className="flex-1 min-w-0 text-sm font-medium text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 truncate">
                   {pair.left}
                 </span>
-                <span className="text-slate-400 flex-shrink-0 text-sm">→</span>
+                <span className="text-slate-400 shrink-0 text-sm">→</span>
                 {/* Right selector */}
                 <div className="flex-1 min-w-0 relative">
                   <select
@@ -418,7 +418,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                       next[i] = e.target.value;
                       setMatchingSelections(next);
                     }}
-                    className={`w-full rounded-xl border-2 px-3 py-2.5 text-sm font-medium focus:outline-none transition-all duration-200 appearance-none ${
+                    className={`w-full rounded-xl border-2 px-3 py-2.5 text-sm font-medium focus:outline-hidden transition-all duration-200 appearance-none ${
                       !submitted
                         ? sel
                           ? "border-violet-400 dark:border-violet-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
@@ -442,7 +442,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 {/* Result icon */}
                 {submitted && (
                   <span
-                    className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                    className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                       res
                         ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
                         : "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400"
@@ -492,7 +492,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 transition={{ duration: 0.15 }}
                 onClick={() => allMatchingFilled && setSubmitted(true)}
                 disabled={!allMatchingFilled}
-                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-600 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 disabled:shadow-none"
+                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-600 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400 disabled:shadow-none"
               >
                 Zuordnung prüfen
               </motion.button>
@@ -504,7 +504,7 @@ export default function QuizCard({ question, index, total, onNext, onFinish }) {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.15 }}
                 onClick={handleAdvance}
-                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
               >
                 {isLast ? "Ergebnis anzeigen" : "Nächste Frage →"}
               </motion.button>

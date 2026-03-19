@@ -181,7 +181,7 @@ export default function Dashboard({
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1 ${
               activeTab === tab.id
-                ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-sm"
+                ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-300 shadow-xs"
                 : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
             }`}
           >
@@ -285,7 +285,7 @@ export default function Dashboard({
         ) : (
           /* First visit – compact hero */
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 flex-shrink-0">
+            <div className="w-12 h-12 shrink-0">
               <svg
                 viewBox="0 0 100 115"
                 fill="none"
@@ -427,7 +427,7 @@ export default function Dashboard({
                     </span>
                   )}
                   <motion.div
-                    className={`w-full rounded-sm ${
+                    className={`w-full rounded-xs ${
                       day.count > 0
                         ? isToday
                           ? "bg-violet-500"
@@ -480,7 +480,7 @@ export default function Dashboard({
           {hasCatalogs && (
             <button
               onClick={onOpenStats}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
             >
               <BarChart2 size={11} />
               Statistiken
@@ -488,7 +488,7 @@ export default function Dashboard({
           )}
           <button
             onClick={onOpenTutorial}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             <Sparkles size={11} />
             Hilfe
@@ -496,7 +496,7 @@ export default function Dashboard({
           {hasCatalogs && (
             <button
               onClick={onManageCatalogs}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-violet-700 dark:hover:text-violet-300 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
             >
               <BookOpen size={11} />
               Verwalten
@@ -532,7 +532,7 @@ export default function Dashboard({
               >
                 <button
                   onClick={() => onOpenConfig([catalog.id])}
-                  className="w-full text-left bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group"
+                  className="w-full text-left bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-500 dark:hover:border-violet-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-[0.98] rounded-2xl px-5 py-4 flex flex-col gap-3 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 group"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-col gap-0.5 min-w-0">
@@ -545,7 +545,7 @@ export default function Dashboard({
                     </div>
                     {accuracyPct !== null && (
                       <span
-                        className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
+                        className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
                           accuracyPct >= 70
                             ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
                             : accuracyPct >= 40
@@ -604,7 +604,7 @@ export default function Dashboard({
         {hasCatalogs ? (
           /* Returning user: collapsible add-more */
           <details className="group">
-            <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-3 text-sm text-slate-500 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
+            <summary className="flex items-center justify-center gap-2 w-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-3 text-sm text-slate-500 hover:border-violet-500 dark:hover:border-violet-600 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer list-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500">
               <Plus size={16} />
               Katalog hinzufügen
             </summary>
@@ -612,9 +612,9 @@ export default function Dashboard({
               {/* Manually create */}
               <button
                 onClick={onManageCatalogs}
-                className="w-full flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-4 py-3 mb-3 transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                className="w-full flex items-center gap-3 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-4 py-3 mb-3 transition-all group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
               >
-                <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center flex-shrink-0">
+                <div className="w-7 h-7 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
                   <BookOpen
                     size={13}
                     className="text-violet-600 dark:text-violet-400"
@@ -641,9 +641,9 @@ export default function Dashboard({
           <div className="flex flex-col gap-3">
             <button
               onClick={onManageCatalogs}
-              className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+              className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
             >
-              <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors shrink-0">
                 <BookOpen
                   size={16}
                   className="text-violet-600 dark:text-violet-400"
@@ -680,9 +680,9 @@ export default function Dashboard({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
         onClick={onOpenTutorial}
-        className="w-full flex items-center gap-4 bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-violet-200 dark:border-violet-800/60 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 mb-2 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
+        className="w-full flex items-center gap-4 bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/30 border border-violet-200 dark:border-violet-800/60 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 mb-2 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
       >
-        <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors shrink-0">
           <Sparkles
             size={16}
             className="text-violet-600 dark:text-violet-400"

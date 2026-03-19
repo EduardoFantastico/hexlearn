@@ -146,7 +146,7 @@ export default function Tutorial({ onBack }) {
                 key={title}
                 className="flex gap-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4"
               >
-                <div className="flex-shrink-0 flex flex-col items-center gap-1.5 pt-0.5">
+                <div className="shrink-0 flex flex-col items-center gap-1.5 pt-0.5">
                   <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
                     <Icon
                       size={15}
@@ -267,7 +267,7 @@ export default function Tutorial({ onBack }) {
             <div className="flex gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/40 rounded-xl px-3 py-2.5">
               <QrCode
                 size={13}
-                className="text-amber-500 flex-shrink-0 mt-0.5"
+                className="text-amber-500 shrink-0 mt-0.5"
               />
               <p className="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
                 Die Daten werden nur für max.{" "}
@@ -302,7 +302,7 @@ export default function Tutorial({ onBack }) {
             <ol className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4 list-decimal list-inside space-y-1 pl-1">
               <li>
                 Kopiere den Prompt unten und ersetze{" "}
-                <code className="bg-slate-200 dark:bg-slate-700 rounded px-1 text-[10px]">
+                <code className="bg-slate-200 dark:bg-slate-700 rounded-sm px-1 text-[10px]">
                   [THEMA]
                 </code>{" "}
                 durch dein Lernthema.

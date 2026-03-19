@@ -101,7 +101,7 @@ export default function Results({
                     </p>
                     {histPct !== null && (
                       <span
-                        className={`flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${histPct >= 70 ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : histPct >= 40 ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"}`}
+                        className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${histPct >= 70 ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : histPct >= 40 ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400"}`}
                       >
                         {histPct} % gesamt
                       </span>
@@ -110,7 +110,7 @@ export default function Results({
                   <div className="flex flex-col gap-1.5">
                     {/* Wrong chosen answer */}
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="flex-shrink-0 w-4 h-4 rounded-full bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-600 flex items-center justify-center">
+                      <span className="shrink-0 w-4 h-4 rounded-full bg-red-100 dark:bg-red-900/50 border border-red-400 dark:border-red-600 flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-2.5 w-2.5 text-red-600 dark:text-red-400"
@@ -159,7 +159,7 @@ export default function Results({
                     </div>
                     {/* Correct answer */}
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="flex-shrink-0 w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-500 dark:border-emerald-600 flex items-center justify-center">
+                      <span className="shrink-0 w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-500 dark:border-emerald-600 flex items-center justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400"
@@ -212,19 +212,19 @@ export default function Results({
       <div className="flex flex-col gap-3">
         <button
           onClick={onPlayNext}
-          className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+          className="w-full py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all duration-150 shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
         >
           Weiter →
         </button>
         <button
           onClick={onPlaySameAgain}
-          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
         >
           Nochmal gleiches Quiz
         </button>
         <button
           onClick={onGoHome}
-          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+          className="w-full py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-300 font-medium text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
         >
           Hauptmenü
         </button>

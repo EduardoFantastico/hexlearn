@@ -252,7 +252,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                 key={label}
                 className="flex items-center gap-1.5"
               >
-                <span className={`w-3 h-3 rounded-sm inline-block ${cls}`} />
+                <span className={`w-3 h-3 rounded-xs inline-block ${cls}`} />
                 {label}
               </span>
             ))}
@@ -277,11 +277,11 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                   {/* Catalog header row */}
                   <button
                     onClick={() => setExpanded(isOpen ? null : catalog.id)}
-                    className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-slate-200/50 dark:hover:bg-slate-700/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500"
+                    className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-slate-200/50 dark:hover:bg-slate-700/40 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500"
                   >
                     <BookOpen
                       size={14}
-                      className="text-violet-500 flex-shrink-0"
+                      className="text-violet-500 shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">
@@ -296,14 +296,14 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                     </div>
                     {accPct !== null && (
                       <span
-                        className={`text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${accBadge(accPct)}`}
+                        className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${accBadge(accPct)}`}
                       >
                         {accPct} %
                       </span>
                     )}
                     <ChevronDown
                       size={14}
-                      className={`text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                      className={`text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                     />
                   </button>
 
@@ -385,7 +385,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 flex items-center gap-3"
                           >
                             <span
-                              className={`text-xs font-bold w-10 text-right flex-shrink-0 ${
+                              className={`text-xs font-bold w-10 text-right shrink-0 ${
                                 errorRate >= 0.6
                                   ? "text-red-500 dark:text-red-400"
                                   : "text-amber-500 dark:text-amber-400"
@@ -396,7 +396,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                             <span className="text-xs text-slate-700 dark:text-slate-300 flex-1 line-clamp-2 leading-snug">
                               {q.question}
                             </span>
-                            <span className="text-[10px] text-slate-400 flex-shrink-0">
+                            <span className="text-[10px] text-slate-400 shrink-0">
                               {attempts}×
                             </span>
                           </div>

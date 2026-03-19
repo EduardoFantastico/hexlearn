@@ -77,15 +77,15 @@ export default function Flashcards({ questions, onFinish, onBack }) {
         >
           {/* Front */}
           <div className="col-start-1 row-start-1 backface-hidden bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl p-6 md:p-8 flex flex-col items-center shadow-lg min-h-[350px]">
-            <span className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-4 flex-shrink-0">
+            <span className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-4 shrink-0">
               Frage
             </span>
             <div className="flex-1 w-full flex items-center justify-center py-4">
-              <h2 className="text-xl md:text-2xl font-bold text-center text-slate-800 dark:text-slate-100 whitespace-pre-wrap break-words">
+              <h2 className="text-xl md:text-2xl font-bold text-center text-slate-800 dark:text-slate-100 whitespace-pre-wrap wrap-break-word">
                 {question.question}
               </h2>
             </div>
-            <div className="mt-auto pt-4 text-sm text-slate-400 flex items-center gap-2 flex-shrink-0">
+            <div className="mt-auto pt-4 text-sm text-slate-400 flex items-center gap-2 shrink-0">
               <RefreshCcw size={14} /> Tippen zum Wenden
             </div>
           </div>
@@ -95,15 +95,15 @@ export default function Flashcards({ questions, onFinish, onBack }) {
             className="col-start-1 row-start-1 backface-hidden bg-violet-50 dark:bg-violet-900/30 border-2 border-violet-200 dark:border-violet-800 rounded-3xl p-6 md:p-8 flex flex-col items-center shadow-lg min-h-[350px]"
             style={{ transform: "rotateY(180deg)" }}
           >
-            <span className="text-xs uppercase tracking-widest text-violet-500 dark:text-violet-400 font-bold mb-4 flex-shrink-0">
+            <span className="text-xs uppercase tracking-widest text-violet-500 dark:text-violet-400 font-bold mb-4 shrink-0">
               Antwort
             </span>
             <div className="flex-1 w-full flex items-center justify-center py-4">
-              <h2 className="text-xl md:text-2xl font-bold text-center text-violet-800 dark:text-violet-100 whitespace-pre-wrap break-words">
+              <h2 className="text-xl md:text-2xl font-bold text-center text-violet-800 dark:text-violet-100 whitespace-pre-wrap wrap-break-word">
                 {correctAnswer}
               </h2>
             </div>
-            <div className="mt-auto pt-4 text-sm text-violet-400/80 flex items-center gap-2 flex-shrink-0">
+            <div className="mt-auto pt-4 text-sm text-violet-400/80 flex items-center gap-2 shrink-0">
               <Check size={16} /> Lösung
             </div>
           </div>

@@ -78,7 +78,7 @@ export default function ShareCatalogModal({ catalog, onClose }) {
       >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/70 backdrop-blur-xs"
           onClick={onClose}
         />
 
@@ -93,7 +93,7 @@ export default function ShareCatalogModal({ catalog, onClose }) {
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-            <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center shrink-0">
               <Share2
                 size={15}
                 className="text-violet-600 dark:text-violet-400"
@@ -318,7 +318,7 @@ export default function ShareCatalogModal({ catalog, onClose }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-white dark:bg-slate-950 px-8"
+          className="fixed inset-0 z-60 flex flex-col items-center justify-center bg-white dark:bg-slate-950 px-8"
           onClick={() => setFullscreen(false)}
         >
           <button

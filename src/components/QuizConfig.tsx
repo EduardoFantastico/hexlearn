@@ -126,7 +126,7 @@ export default function QuizConfig({
                   show: { opacity: 1, x: 0, transition: { duration: 0.2 } },
                 }}
                 onClick={() => toggle(catalog.id)}
-                className={`w-full text-left rounded-2xl px-4 py-3.5 border-2 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+                className={`w-full text-left rounded-2xl px-4 py-3.5 border-2 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ${
                   selected
                     ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20"
                     : "border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600"
@@ -135,7 +135,7 @@ export default function QuizConfig({
                 <div className="flex items-center gap-3">
                   {/* Checkbox dot */}
                   <div
-                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                    className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                       selected
                         ? "border-violet-500 bg-violet-500"
                         : "border-slate-300 dark:border-slate-600"
@@ -165,7 +165,7 @@ export default function QuizConfig({
 
                   {pct !== null && (
                     <span
-                      className={`flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
+                      className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${
                         pct >= 70
                           ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
                           : pct >= 40
@@ -191,7 +191,7 @@ export default function QuizConfig({
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => setMode("quiz")}
-            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ${
               mode === "quiz"
                 ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
                 : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
@@ -205,7 +205,7 @@ export default function QuizConfig({
           </button>
           <button
             onClick={() => setMode("flashcards")}
-            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 ${
               mode === "flashcards"
                 ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
                 : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
@@ -292,7 +292,7 @@ export default function QuizConfig({
       <button
         onClick={() => canStart && onStart(selectedIds, effectiveCount, mode)}
         disabled={!canStart}
-        className="w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-base shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 active:scale-[0.98] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:shadow-none bg-violet-600 hover:bg-violet-500 text-white shadow-violet-900/40"
+        className="w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-base shadow-lg transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400 active:scale-[0.98] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:shadow-none bg-violet-600 hover:bg-violet-500 text-white shadow-violet-900/40"
       >
         <Play
           size={18}

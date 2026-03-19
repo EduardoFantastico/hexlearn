@@ -122,7 +122,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Katalogname (optional)"
-        className="w-full px-3 py-2 rounded-xl text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 transition"
+        className="w-full px-3 py-2 rounded-xl text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500 transition"
       />
 
       {/* JSON textarea */}
@@ -132,7 +132,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
         placeholder={'[\n  { "id": 1, "type": "multiple-choice", ... }\n]'}
         spellCheck={false}
         rows={7}
-        className="w-full px-3 py-2.5 rounded-xl text-[12px] font-mono bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-violet-600 dark:text-violet-300 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 transition resize-none leading-relaxed"
+        className="w-full px-3 py-2.5 rounded-xl text-[12px] font-mono bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-violet-600 dark:text-violet-300 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500 transition resize-none leading-relaxed"
       />
 
       {/* Validation bar */}
@@ -155,7 +155,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           <>
             <CheckCircle2
               size={13}
-              className="flex-shrink-0"
+              className="shrink-0"
             />
             <span>
               <strong>{validation.count}</strong>{" "}
@@ -167,7 +167,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           <>
             <AlertCircle
               size={13}
-              className="flex-shrink-0"
+              className="shrink-0"
             />
             <span>{validation.error}</span>
           </>
@@ -179,7 +179,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
         <button
           onClick={handleImport}
           disabled={!canImport}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all focus:outline-hidden focus:ring-2 focus:ring-violet-500 ${
             imported
               ? "bg-emerald-500 text-white"
               : canImport
@@ -193,7 +193,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           onClick={handleDownload}
           disabled={!validation?.valid}
           title="Als JSON-Datei herunterladen"
-          className={`flex items-center justify-center px-3.5 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+          className={`flex items-center justify-center px-3.5 rounded-xl transition-all focus:outline-hidden focus:ring-2 focus:ring-violet-500 ${
             validation?.valid
               ? "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
               : "bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed"

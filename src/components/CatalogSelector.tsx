@@ -59,7 +59,7 @@ export default function CatalogSelector({
                 aria-pressed={selected}
                 className={`
                   w-full flex items-center justify-between rounded-2xl px-5 py-4 text-left
-                  border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500
+                  border-2 transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500
                   ${
                     selected
                       ? "border-violet-500 bg-violet-50 dark:bg-violet-900/30 text-slate-900 dark:text-slate-100"
@@ -86,7 +86,7 @@ export default function CatalogSelector({
                   </div>
                 </div>
                 <span
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selected ? "border-violet-400 bg-violet-500" : "border-slate-300 dark:border-slate-600"}`}
+                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selected ? "border-violet-400 bg-violet-500" : "border-slate-300 dark:border-slate-600"}`}
                 >
                   {selected && (
                     <svg
@@ -134,7 +134,7 @@ export default function CatalogSelector({
         onClick={onStart}
         disabled={!canStart}
         className={`
-          w-full py-4 rounded-2xl font-bold text-base transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500
+          w-full py-4 rounded-2xl font-bold text-base transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500
           ${
             canStart
               ? "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/40"

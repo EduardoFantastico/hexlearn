@@ -351,7 +351,7 @@ export default function App() {
               <button
                 onClick={() => setShowPauseModal(true)}
                 aria-label="Quiz pausieren"
-                className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
               >
                 <Pause size={18} />
               </button>
@@ -365,14 +365,14 @@ export default function App() {
                 ? "In den Hellmodus wechseln"
                 : "In den Dunkelmodus wechseln"
             }
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             onClick={() => setShowSettings(true)}
             aria-label="Einstellungen öffnen"
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             <Settings size={19} />
           </button>
@@ -391,7 +391,7 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-[env(safe-area-inset-bottom,24px)] sm:pb-0"
           >
             <div
-              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"
               onClick={() => setShowSettings(false)}
             />
             <motion.div
@@ -407,7 +407,7 @@ export default function App() {
                 </h2>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+                  className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden"
                   aria-label="Schließen"
                 >
                   <X size={18} />
@@ -458,7 +458,7 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   <button
                     onClick={handleExport}
-                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-500 font-semibold text-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
                   >
                     <Download size={15} />
                     Exportieren
@@ -468,7 +468,7 @@ export default function App() {
                       setImportError(null);
                       importRef.current?.click();
                     }}
-                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-400 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                    className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-400 font-semibold text-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500"
                   >
                     <Upload size={15} />
                     Importieren
@@ -485,7 +485,7 @@ export default function App() {
 
               <button
                 onClick={handleClearData}
-                className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500"
               >
                 Alle Daten l&ouml;schen
               </button>
@@ -517,7 +517,7 @@ export default function App() {
               {shareImportToast.status === "loading" && (
                 <Loader2
                   size={14}
-                  className="animate-spin flex-shrink-0"
+                  className="animate-spin shrink-0"
                 />
               )}
               <span>{shareImportToast.msg}</span>
@@ -538,7 +538,7 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-center justify-center px-4"
           >
             <div
-              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs"
               onClick={() => setShowPauseModal(false)}
             />
             <motion.div
@@ -565,13 +565,13 @@ export default function App() {
               <div className="flex flex-col gap-3 w-full">
                 <button
                   onClick={() => setShowPauseModal(false)}
-                  className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all shadow-lg shadow-violet-900/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                  className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-bold text-base transition-all shadow-lg shadow-violet-900/40 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-400"
                 >
                   Weiter →
                 </button>
                 <button
                   onClick={handleQuitQuiz}
-                  className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                  className="w-full py-3 rounded-2xl border-2 border-red-700 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-500 font-semibold text-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500"
                 >
                   Quiz beenden
                 </button>
