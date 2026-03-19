@@ -6,19 +6,35 @@
 ---
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'weekly'
+      interval: "weekly"
     labels:
-      - 'dependencies'
+      - "dependencies"
     open-pull-requests-limit: 10
 
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: 'weekly'
+      interval: "weekly"
     versioning-strategy: increase
     labels:
-      - 'dependencies'
+      - "dependencies"
     open-pull-requests-limit: 10
+    groups:
+      eslint:
+        patterns:
+          - "eslint"
+          - "@eslint/js"
+          - "@eslint-community/*"
+          - "eslint-plugin-*"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/plugin-react"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "autoprefixer"
