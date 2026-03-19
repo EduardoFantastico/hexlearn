@@ -9,6 +9,8 @@ import {
   Save,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   TrendingUp,
   Share2,
 } from "lucide-react";
@@ -412,8 +414,21 @@ function CatalogEditor({ initial, onSave, onCancel }) {
     initial?.questions?.length ? initial.questions : [emptyQuestion()],
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const QUESTIONS_PER_PAGE = 5;
+
+  const totalPages = Math.max(1, Math.ceil(questions.length / QUESTIONS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+
+  const startIndex = (safePage - 1) * QUESTIONS_PER_PAGE;
+  const currentQuestions = questions.slice(startIndex, startIndex + QUESTIONS_PER_PAGE);
+
   function handleAddQuestion() {
-    setQuestions((qs) => [...qs, emptyQuestion()]);
+    setQuestions((qs) => {
+      const newQs = [...qs, emptyQuestion()];
+      setCurrentPage(Math.ceil(newQs.length / QUESTIONS_PER_PAGE));
+      return newQs;
+    });
     // Scroll to bottom after render
     setTimeout(() => window.scrollTo({ top: 999999, behavior: "smooth" }), 50);
   }
@@ -535,15 +550,43 @@ function CatalogEditor({ initial, onSave, onCancel }) {
       </div>
 
       <div className="flex flex-col gap-3 pb-8">
-        {questions.map((q, i) => (
-          <QuestionEditor
-            key={q.id}
-            question={q}
-            index={i}
-            onChange={(updated) => handleChangeQuestion(i, updated)}
-            onDelete={() => handleDeleteQuestion(i)}
-          />
-        ))}
+        {currentQuestions.map((q, i) => {
+          const globalIndex = startIndex + i;
+          return (
+            <QuestionEditor
+              key={q.id}
+              question={q}
+              index={globalIndex}
+              onChange={(updated) => handleChangeQuestion(globalIndex, updated)}
+              onDelete={() => handleDeleteQuestion(globalIndex)}
+            />
+          );
+        })}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 py-4">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="p-2 rounded-lg text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Vorherige Seite"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Seite {safePage} von {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="p-2 rounded-lg text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Nächste Seite"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
 
         <button
           type="button"
