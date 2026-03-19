@@ -1,6 +1,13 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Play, Minus, Plus } from "lucide-react";
+import {
+  ArrowLeft,
+  Play,
+  Minus,
+  Plus,
+  LayoutGrid,
+  BrainCircuit,
+} from "lucide-react";
 
 /**
  * QuizConfig
@@ -9,7 +16,7 @@ import { ArrowLeft, Play, Minus, Plus } from "lucide-react";
  *   catalogs     – full catalog list from useCatalogs
  *   stats        – question stats map from useQuestionStats
  *   initialIds   – catalog IDs pre-selected when this screen opens
- *   onStart      – (catalogIds: string[], count: number) => void
+ *   onStart      – (catalogIds: string[], count: number, mode: string) => void
  *   onBack       – () => void
  */
 export default function QuizConfig({
@@ -27,6 +34,7 @@ export default function QuizConfig({
         : [],
   );
   const [count, setCount] = useState(10);
+  const [mode, setMode] = useState("quiz"); // 'quiz' or 'flashcards'
 
   // Unique questions available across selected catalogs (deduplicated by id/text)
   const totalAvailable = useMemo(() => {
@@ -175,6 +183,45 @@ export default function QuizConfig({
         </motion.div>
       </div>
 
+      {/* ── Learning Mode ──────────────────────────────────── */}
+      <div className="mb-6">
+        <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+          Lernmodus
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => setMode("quiz")}
+            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+              mode === "quiz"
+                ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
+                : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
+            }`}
+          >
+            <LayoutGrid
+              size={24}
+              className={mode === "quiz" ? "text-violet-500" : "text-slate-400"}
+            />
+            <span className="font-semibold text-sm">Prüfungsmodus</span>
+          </button>
+          <button
+            onClick={() => setMode("flashcards")}
+            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 ${
+              mode === "flashcards"
+                ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-300"
+                : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600"
+            }`}
+          >
+            <BrainCircuit
+              size={24}
+              className={
+                mode === "flashcards" ? "text-violet-500" : "text-slate-400"
+              }
+            />
+            <span className="font-semibold text-sm">Karteikarten</span>
+          </button>
+        </div>
+      </div>
+
       {/* ── Question count ─────────────────────────────────── */}
       <div className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl px-5 py-5 mb-6">
         <div className="flex items-center justify-between mb-5">
@@ -243,7 +290,7 @@ export default function QuizConfig({
 
       {/* ── Start button ───────────────────────────────────── */}
       <button
-        onClick={() => canStart && onStart(selectedIds, effectiveCount)}
+        onClick={() => canStart && onStart(selectedIds, effectiveCount, mode)}
         disabled={!canStart}
         className="w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-base shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 active:scale-[0.98] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:shadow-none bg-violet-600 hover:bg-violet-500 text-white shadow-violet-900/40"
       >

@@ -417,11 +417,17 @@ function CatalogEditor({ initial, onSave, onCancel }) {
   const [currentPage, setCurrentPage] = useState(1);
   const QUESTIONS_PER_PAGE = 5;
 
-  const totalPages = Math.max(1, Math.ceil(questions.length / QUESTIONS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(questions.length / QUESTIONS_PER_PAGE),
+  );
   const safePage = Math.min(currentPage, totalPages);
 
   const startIndex = (safePage - 1) * QUESTIONS_PER_PAGE;
-  const currentQuestions = questions.slice(startIndex, startIndex + QUESTIONS_PER_PAGE);
+  const currentQuestions = questions.slice(
+    startIndex,
+    startIndex + QUESTIONS_PER_PAGE,
+  );
 
   function handleAddQuestion() {
     setQuestions((qs) => {

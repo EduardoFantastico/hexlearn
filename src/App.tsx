@@ -18,6 +18,7 @@ import { useCatalogs } from "./hooks/useCatalogs";
 import { useStreak } from "./hooks/useStreak";
 import CatalogManager from "./components/CatalogManager";
 import QuizConfig from "./components/QuizConfig";
+import Flashcards from "./components/Flashcards";
 import Tutorial from "./components/Tutorial";
 import Legal from "./components/Legal";
 import StatsPage from "./components/StatsPage";
@@ -160,7 +161,7 @@ export default function App() {
     setView("config");
   }
 
-  function handleStartQuiz(catalogIds, count = 10) {
+  function handleStartQuiz(catalogIds, count = 10, mode = "quiz") {
     const seen = new Set();
     const pooled = catalogs
       .filter((c) => catalogIds.includes(c.id))
@@ -181,7 +182,7 @@ export default function App() {
     setQuestions(batch);
     setCurrentIndex(0);
     setAnswers([]);
-    setView("quiz");
+    setView(mode === "flashcards" ? "flashcards" : "quiz");
   }
 
   function handleNext(chosenIndex) {
@@ -620,6 +621,23 @@ export default function App() {
                 total={questions.length}
                 onNext={handleNext}
                 onFinish={handleFinish}
+              />
+            </motion.div>
+          )}
+
+          {view === "flashcards" && (
+            <motion.div
+              className="flex-1 flex flex-col justify-center py-8"
+              key="flashcards"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.22, ease: "easeInOut" }}
+            >
+              <Flashcards
+                questions={questions}
+                onFinish={() => setView("dashboard")}
+                onBack={() => setView("dashboard")}
               />
             </motion.div>
           )}
