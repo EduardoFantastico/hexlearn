@@ -301,9 +301,7 @@ function QuestionEditor({ question, index, onChange, onDelete }) {
                         onChange({ ...question, pairs: next });
                       }}
                     />
-                    <span className="text-slate-400 text-sm shrink-0">
-                      →
-                    </span>
+                    <span className="text-slate-400 text-sm shrink-0">→</span>
                     <input
                       type="text"
                       className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-hidden focus:border-violet-600 focus:ring-1 focus:ring-violet-600 transition-colors"
@@ -650,14 +648,12 @@ export default function CatalogManager({
   return (
     <div className="w-full max-w-2xl mx-auto px-4 pt-2 pb-[env(safe-area-inset-bottom,24px)]">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={onBack}
-          className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          aria-label="Zurück"
-        >
-          <ArrowLeft size={16} />
-        </button>
+      <div className="flex items-center gap-4 mb-6">
+        <img
+          src="/assets/hexlearnlogo.svg"
+          alt="HexLearn Logo"
+          className="w-10 h-10"
+        />
         <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex-1">
           Kataloge verwalten
         </h1>

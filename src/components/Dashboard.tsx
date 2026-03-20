@@ -245,86 +245,16 @@ export default function Dashboard({
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="mb-6"
+        className="mb-6 flex items-center gap-4"
       >
-        {hasCatalogs ? (
-          /* Returning user */
-          <>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
-              Hallo! 👋
-              <br />
-              <span className="text-violet-600 dark:text-violet-400">
-                Bereit zum Lernen?
-              </span>
-            </h1>
-            <div className="flex items-center gap-3 mt-3 flex-wrap">
-              <div
-                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
-                  streak > 0
-                    ? "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-700/50"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
-                }`}
-              >
-                <Flame size={13} />
-                {streak > 0 ? `${streak} Tage Streak` : "Noch kein Streak"}
-              </div>
-              <div
-                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
-                  todayCount > 0
-                    ? "bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700/50"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700"
-                }`}
-              >
-                <CheckCircle2 size={13} />
-                {todayCount > 0
-                  ? `${todayCount} Fragen heute`
-                  : "Heute noch nichts gelernt"}
-              </div>
-            </div>
-          </>
-        ) : (
-          /* First visit – compact hero */
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 shrink-0">
-              <svg
-                viewBox="0 0 100 115"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <polygon
-                  points="50,5 96,30 96,85 50,110 4,85 4,30"
-                  className="fill-violet-100 dark:fill-violet-950"
-                  stroke="rgb(109,40,217)"
-                  strokeWidth="3"
-                />
-                <text
-                  x="50"
-                  y="72"
-                  textAnchor="middle"
-                  className="fill-violet-700 dark:fill-violet-400"
-                  style={{
-                    fontSize: 36,
-                    fontWeight: 800,
-                    fontFamily: "system-ui, sans-serif",
-                  }}
-                >
-                  Hx
-                </text>
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight">
-                HexLearn
-              </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                Lerne smarter –{" "}
-                <span className="text-violet-600 dark:text-violet-400 font-semibold">
-                  mit deinen eigenen Fragen.
-                </span>
-              </p>
-            </div>
-          </div>
-        )}
+        <img
+          src="/assets/hexlearnlogo.svg"
+          alt="HexLearn Logo"
+          className="w-12 h-12"
+        />
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
+          HexLearn
+        </h1>
       </motion.div>
 
       {/* ── Stats (only when there's data) ────────────────────── */}
@@ -643,7 +573,7 @@ export default function Dashboard({
               onClick={onManageCatalogs}
               className="w-full flex items-center gap-4 bg-slate-100 dark:bg-slate-800 hover:bg-violet-50 dark:hover:bg-violet-900/20 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 rounded-2xl px-5 py-4 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500 group active:scale-[0.98]"
             >
-              <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/40 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-900/50 group-hover:bg-violet-200 dark:group-hover:bg-violet-800/60 flex items-center justify-center transition-colors shrink-0">
                 <BookOpen
                   size={16}
                   className="text-violet-600 dark:text-violet-400"

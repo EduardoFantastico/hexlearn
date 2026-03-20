@@ -335,8 +335,13 @@ export default function App() {
         <button
           onClick={() => setView("dashboard")}
           aria-label="Dashboard"
-          className="group"
+          className="group flex items-center gap-2"
         >
+          <img
+            src="/assets/hexlearnlogo.svg"
+            alt="HexLearn Logo"
+            className="w-8 h-8"
+          />
           <span className="text-violet-700 dark:text-violet-400 font-extrabold text-2xl tracking-tight group-hover:text-violet-500 dark:group-hover:text-violet-300 transition-colors">
             HexLearn
           </span>
