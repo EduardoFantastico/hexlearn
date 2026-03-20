@@ -162,7 +162,11 @@ export default function Dashboard({
   };
   const cardVariant = {
     hidden: { opacity: 0, y: 16 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
   };
 
   const hasCatalogs = catalogs.length > 0;
@@ -244,7 +248,7 @@ export default function Dashboard({
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="mb-6 flex items-center gap-4"
       >
         <img
@@ -262,7 +266,7 @@ export default function Dashboard({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.05 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
           className="grid grid-cols-3 gap-3 mb-6"
         >
           {[
@@ -325,7 +329,7 @@ export default function Dashboard({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
           className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-4 mb-6"
         >
           <div className="flex items-center gap-2 mb-4">

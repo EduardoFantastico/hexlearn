@@ -330,7 +330,7 @@ export default function App() {
       <motion.header
         className="sticky top-0 z-30 flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md"
         animate={{ y: headerVisible ? 0 : -100 }}
-        transition={{ duration: 0.25, ease: "easeInOut" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <button
           onClick={() => setView("dashboard")}
@@ -392,7 +392,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-[env(safe-area-inset-bottom,24px)] sm:pb-0"
           >
             <div
@@ -403,7 +403,7 @@ export default function App() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative z-10 w-full max-w-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl px-6 py-8 flex flex-col gap-5 shadow-2xl"
             >
               <div className="flex items-center justify-between">
