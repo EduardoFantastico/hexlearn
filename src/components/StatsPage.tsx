@@ -5,8 +5,8 @@ import {
   BookOpen,
   Target,
   Hash,
-  CheckCircle2,
-  AlertCircle,
+  CircleCheck,
+  CircleAlert,
   ChevronDown,
   Eye,
   EyeOff,
@@ -203,7 +203,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                 color: "text-blue-600 dark:text-blue-400",
               },
               {
-                Icon: CheckCircle2,
+                Icon: CircleCheck,
                 label: "Gemeistert",
                 value: masteredCount,
                 sub: "Fragen ≥ 70 %",
@@ -345,12 +345,12 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                           show: total - seen > 0,
                         },
                         {
-                          Icon: CheckCircle2,
+                          Icon: CircleCheck,
                           label: `${catalog.questions.filter((q) => qStatus(String(q.id ?? q.question), stats) === "good").length} gemeistert`,
                           show: true,
                         },
                         {
-                          Icon: AlertCircle,
+                          Icon: CircleAlert,
                           label: `${catalog.questions.filter((q) => qStatus(String(q.id ?? q.question), stats) === "bad").length} schwierig`,
                           show: true,
                         },
@@ -376,7 +376,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
                         className="flex flex-col gap-2 pt-2 border-t border-slate-200 dark:border-slate-700"
                       >
                         <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1 mt-1">
-                          <AlertCircle size={10} />
+                          <CircleAlert size={10} />
                           Schwierigste Fragen
                         </p>
                         {hard.map(({ q, errorRate, attempts }) => (

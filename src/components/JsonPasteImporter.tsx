@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, AlertCircle, Download } from "lucide-react";
+import { CircleCheck, CircleAlert, Download } from "lucide-react";
 
 const VALID_TYPES = new Set([
   "multiple-choice",
@@ -153,7 +153,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           </span>
         ) : validation.valid ? (
           <>
-            <CheckCircle2
+            <CircleCheck
               size={13}
               className="shrink-0"
             />
@@ -165,7 +165,7 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           </>
         ) : (
           <>
-            <AlertCircle
+            <CircleAlert
               size={13}
               className="shrink-0"
             />

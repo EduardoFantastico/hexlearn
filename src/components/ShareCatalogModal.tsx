@@ -7,9 +7,9 @@ import {
   Minimize2,
   Clock,
   Loader2,
-  AlertCircle,
+  CircleAlert,
 } from "lucide-react";
-import QRCode from "react-qr-code";
+import { QRCode } from "react-qr-code";
 
 const BASE_URL = "https://hexlearn.eddy.rip";
 
@@ -288,7 +288,7 @@ export default function ShareCatalogModal({ catalog, onClose }) {
                 transition={{ duration: 0.2 }}
                 className="px-5 py-10 flex flex-col items-center gap-3 text-center"
               >
-                <AlertCircle
+                <CircleAlert
                   size={24}
                   className="text-red-400"
                 />
