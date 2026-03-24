@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { QRCode } from "react-qr-code";
 
-const BASE_URL = "https://hexlearn.eddy.rip";
+const BASE_URL = "https://hexlearn.app";
 
 function formatCountdown(s) {
   const m = Math.floor(s / 60);

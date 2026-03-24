@@ -1,6 +1,6 @@
 import LZString from "lz-string";
 
-const BASE_URL = "https://hexlearn.eddy.rip";
+const BASE_URL = "https://hexlearn.app";
 
 /**
  * Encodes a catalog object into a share URL.

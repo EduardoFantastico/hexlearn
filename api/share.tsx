@@ -12,7 +12,7 @@ import { randomBytes } from "node:crypto";
 
 const MAX_TTL = 600; // 10 minutes in seconds
 const BLOB_PREFIX = "hexshare/";
-const ALLOWED_ORIGIN = "https://hexlearn.eddy.rip";
+const ALLOWED_ORIGIN = "https://hexlearn.app";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
@@ -43,12 +43,10 @@ export default async function handler(req, res) {
 
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       console.error("BLOB_READ_WRITE_TOKEN is not set.");
-      return res
-        .status(503)
-        .json({
-          error:
-            "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen.",
-        });
+      return res.status(503).json({
+        error:
+          "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen.",
+      });
     }
 
     try {
