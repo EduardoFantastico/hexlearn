@@ -33,7 +33,6 @@ export default [
         "warn",
         { allowConstantExport: true },
       ],
-      "react-hooks/set-state-in-effect": "warn",
       "no-empty": "warn",
       "no-irregular-whitespace": "warn",
       "no-unused-vars": [
