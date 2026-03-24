@@ -159,7 +159,7 @@ export default function StatsPage({ catalogs, stats, onBack }) {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
+        <h1 className="text-2xl font-extrabold text-violet-600 dark:text-violet-400">
           Statistiken
         </h1>
         <p className="text-sm text-slate-500 mt-1">

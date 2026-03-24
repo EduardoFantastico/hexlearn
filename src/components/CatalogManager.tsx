@@ -489,7 +489,7 @@ function CatalogEditor({ initial, onSave, onCancel }) {
         >
           <ArrowLeft size={16} />
         </button>
-        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex-1">
+        <h2 className="text-lg font-bold text-violet-600 dark:text-violet-400 flex-1">
           {initial ? "Katalog bearbeiten" : "Neuer Katalog"}
         </h2>
         {initial && (
@@ -649,12 +649,7 @@ export default function CatalogManager({
     <div className="w-full max-w-2xl mx-auto px-4 pt-2 pb-[env(safe-area-inset-bottom,24px)]">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <img
-          src="/assets/hexlearnlogo.svg"
-          alt="HexLearn Logo"
-          className="w-10 h-10"
-        />
-        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex-1">
+        <h1 className="text-xl font-bold text-violet-600 dark:text-violet-400 flex-1">
           Kataloge verwalten
         </h1>
         <button

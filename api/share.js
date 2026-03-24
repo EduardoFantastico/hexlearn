@@ -43,7 +43,12 @@ export default async function handler(req, res) {
 
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       console.error("BLOB_READ_WRITE_TOKEN is not set.");
-      return res.status(503).json({ error: "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen." });
+      return res
+        .status(503)
+        .json({
+          error:
+            "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen.",
+        });
     }
 
     try {
@@ -54,9 +59,7 @@ export default async function handler(req, res) {
       });
     } catch (err) {
       console.error("Blob PUT error:", err);
-      return res
-        .status(503)
-        .json({ error: `Speicherfehler: ${err.message}` });
+      return res.status(503).json({ error: `Speicherfehler: ${err.message}` });
     }
 
     return res.status(200).json({ id, ttl: safeTtl });

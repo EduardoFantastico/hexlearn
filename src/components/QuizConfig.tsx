@@ -90,7 +90,7 @@ export default function QuizConfig({
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+        <h1 className="text-xl font-bold text-violet-600 dark:text-violet-400">
           Quiz konfigurieren
         </h1>
       </div>

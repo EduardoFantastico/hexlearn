@@ -251,13 +251,8 @@ export default function Dashboard({
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="mb-6 flex items-center gap-4"
       >
-        <img
-          src="/assets/hexlearnlogo.svg"
-          alt="HexLearn Logo"
-          className="w-12 h-12"
-        />
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 leading-snug">
-          HexLearn
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-violet-600 dark:text-violet-400 leading-snug">
+          Ready to learn?
         </h1>
       </motion.div>
 

@@ -734,16 +734,27 @@ export default function App() {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-3 px-6 text-center space-y-1">
-        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-3 px-6 text-center space-y-2">
+        <img
+          src="/assets/hexlearnlogo.svg"
+          alt="HexLearn Logo"
+          className="w-8 h-8 mx-auto"
+        />
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           HexLearn · Lokal. Privat. Dein Wissen.
         </p>
-        <p className="text-xs text-slate-400 dark:text-slate-600 max-w-sm mx-auto leading-relaxed">
+
+        <p className="text-sm text-slate-400 dark:text-slate-600">
           Diese App erhebt, speichert oder überträgt keinerlei personenbezogene
-          Daten. Alle Inhalte verbleiben ausschließlich lokal auf deinem Gerät
+          Daten.
+        </p>
+
+        <p className="text-sm text-slate-400 dark:text-slate-600">
+          Alle Inhalte verbleiben ausschließlich lokal auf deinem Gerät
           (localStorage).
         </p>
-        <div className="flex items-center justify-center gap-4 pt-2">
+
+        <div className="flex items-center justify-center gap-4">
           <a
             href="https://github.com/EduardoFantastico"
             target="_blank"
