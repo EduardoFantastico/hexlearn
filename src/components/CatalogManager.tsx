@@ -15,6 +15,7 @@ import {
   Share2,
 } from "lucide-react";
 import ShareCatalogModal from "./ShareCatalogModal";
+import JsonPasteImporter from "./JsonPasteImporter";
 
 // ── Utilities ──────────────────────────────────────────────────────────
 
@@ -616,6 +617,7 @@ export default function CatalogManager({
   const [editing, setEditing] = useState(null); // null | 'new' | catalogId
   const [confirmDelete, setConfirmDelete] = useState(null); // null | catalogId
   const [sharingCatalog, setSharingCatalog] = useState(null); // null | catalog
+  const [editorView, setEditorView] = useState<"manual" | "json">("manual");
 
   const editingCatalog =
     editing && editing !== "new"
@@ -631,15 +633,71 @@ export default function CatalogManager({
     setEditing(null);
   }
 
+  function handleImportedCatalog({ name, questions }) {
+    if (editing === "new") {
+      onUpdate(null, { name, questions });
+    } else {
+      onUpdate(editing, { name, questions });
+    }
+    setEditing(null);
+  }
+
   // Editor view
   if (editing !== null) {
     return (
       <div className="w-full max-w-2xl mx-auto px-4 pt-2 pb-[env(safe-area-inset-bottom,24px)]">
-        <CatalogEditor
-          initial={editingCatalog}
-          onSave={handleSave}
-          onCancel={() => setEditing(null)}
-        />
+        {/* Toggle between manual editor and JSON view */}
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            type="button"
+            onClick={() => setEditorView("manual")}
+            className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              editorView === "manual"
+                ? "bg-violet-600 text-white"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-600"
+            }`}
+          >
+            Manuell
+          </button>
+          <button
+            type="button"
+            onClick={() => setEditorView("json")}
+            className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              editorView === "json"
+                ? "bg-violet-600 text-white"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-600"
+            }`}
+          >
+            JSON
+          </button>
+        </div>
+
+        {editorView === "manual" ? (
+          <CatalogEditor
+            initial={editingCatalog}
+            onSave={handleSave}
+            onCancel={() => setEditing(null)}
+          />
+        ) : (
+          <div>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              JSON importiert den kompletten Fragen-Block und ersetzt die
+              aktuelle Auswahl.
+            </p>
+            <JsonPasteImporter
+              onCatalogAdded={handleImportedCatalog}
+              initialCatalog={editingCatalog ?? undefined}
+            />
+            <div className="mt-4">
+              <button
+                onClick={() => setEditorView("manual")}
+                className="text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              >
+                Zurück zur manuellen Ansicht
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

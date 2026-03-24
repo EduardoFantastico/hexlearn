@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CircleCheck, CircleAlert, Download } from "lucide-react";
+import { CircleCheck, CircleAlert, Download, Clipboard } from "lucide-react";
 
 const VALID_TYPES = new Set([
   "multiple-choice",
@@ -74,11 +74,22 @@ function validateQuestions(text) {
   };
 }
 
-export default function JsonPasteImporter({ onCatalogAdded }) {
+export default function JsonPasteImporter({ onCatalogAdded, initialCatalog }) {
   const [name, setName] = useState("");
   const [json, setJson] = useState("");
   const [validation, setValidation] = useState(null);
   const [imported, setImported] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // Initialize with provided catalog when switching to JSON view
+  useEffect(() => {
+    if (initialCatalog && Array.isArray(initialCatalog.questions)) {
+      const text = JSON.stringify(initialCatalog.questions, null, 2);
+      setName(initialCatalog.name ?? "");
+      setJson(text);
+      setValidation(validateQuestions(text));
+    }
+  }, [initialCatalog]);
 
   useEffect(() => {
     if (!json.trim()) {
@@ -110,6 +121,19 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
       .toLowerCase()}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function handleCopy() {
+    if (!validation?.valid) return;
+    try {
+      await navigator.clipboard.writeText(
+        JSON.stringify(validation.questions, null, 2),
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      // ignore
+    }
   }
 
   const canImport = validation?.valid && !imported;
@@ -188,6 +212,27 @@ export default function JsonPasteImporter({ onCatalogAdded }) {
           }`}
         >
           {imported ? "✓ Importiert!" : "Katalog importieren"}
+        </button>
+        <button
+          onClick={handleCopy}
+          disabled={!validation?.valid}
+          title="In Zwischenablage kopieren"
+          className={`flex items-center justify-center gap-2 px-3.5 rounded-xl transition-all focus:outline-hidden focus:ring-2 focus:ring-violet-500 ${
+            validation?.valid
+              ? copied
+                ? "bg-emerald-500 text-white"
+                : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
+              : "bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed"
+          }`}
+        >
+          {copied ? (
+            <>
+              <CircleCheck size={14} />
+              <span className="text-sm font-semibold">Kopiert!</span>
+            </>
+          ) : (
+            <Clipboard size={15} />
+          )}
         </button>
         <button
           onClick={handleDownload}
