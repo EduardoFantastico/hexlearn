@@ -137,7 +137,11 @@ export default function App() {
         const res = await fetch(`/api/share?id=${encodeURIComponent(shareId)}`);
         const data = await parseResponse(res);
         if (!res.ok) {
-          const msg = data?.error ?? data?.__text ?? res.statusText ?? "Ungültiger oder abgelaufener Link.";
+          const msg =
+            data?.error ??
+            data?.__text ??
+            res.statusText ??
+            "Ungültiger oder abgelaufener Link.";
           throw new Error(msg);
         }
 

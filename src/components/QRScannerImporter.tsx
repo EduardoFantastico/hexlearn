@@ -72,7 +72,11 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
         const res = await fetch(`/api/share?id=${encodeURIComponent(shareId)}`);
         const data = await parseResponse(res);
         if (!res.ok) {
-          const msg = data?.error ?? data?.__text ?? res.statusText ?? "Fehler beim Laden.";
+          const msg =
+            data?.error ??
+            data?.__text ??
+            res.statusText ??
+            "Fehler beim Laden.";
           throw new Error(msg);
         }
 

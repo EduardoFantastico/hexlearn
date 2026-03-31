@@ -67,7 +67,11 @@ export default function ShareCatalogModal({ catalog, onClose }) {
       });
       const data = await parseResponse(res);
       if (!res.ok) {
-        const msg = data?.error ?? data?.__text ?? res.statusText ?? "Unbekannter Fehler.";
+        const msg =
+          data?.error ??
+          data?.__text ??
+          res.statusText ??
+          "Unbekannter Fehler.";
         throw new Error(msg);
       }
       setShareId(data.id);
