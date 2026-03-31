@@ -15,7 +15,7 @@ const ALLOWED_ORIGIN = "https://hexlearn.app";
 
 // Helper for random ID (8 hex chars to match frontend validation)
 function generateId() {
-  return Math.random().toString(16).slice(2, 10).padEnd(8, '0');
+  return Math.random().toString(16).slice(2, 10).padEnd(8, "0");
 }
 
 export default async function handler(req, res) {
@@ -30,10 +30,12 @@ export default async function handler(req, res) {
     // ── POST /api/share — store catalog ──────────────────────────────
     if (req.method === "POST") {
       let bodyData = req.body;
-      if (typeof bodyData === 'string') {
-        try { bodyData = JSON.parse(bodyData); } catch (e) {}
+      if (typeof bodyData === "string") {
+        try {
+          bodyData = JSON.parse(bodyData);
+        } catch (e) {}
       }
-      
+
       const { catalog, ttl } = bodyData ?? {};
 
       if (
@@ -42,7 +44,11 @@ export default async function handler(req, res) {
         Array.isArray(catalog) ||
         !Array.isArray(catalog.questions ?? catalog)
       ) {
-        return res.status(400).json({ error: "Ungültiger Katalog. Das Format wird nicht unterstützt." });
+        return res
+          .status(400)
+          .json({
+            error: "Ungültiger Katalog. Das Format wird nicht unterstützt.",
+          });
       }
 
       const safeTtl = Math.max(
@@ -55,7 +61,8 @@ export default async function handler(req, res) {
       if (!process.env.BLOB_READ_WRITE_TOKEN) {
         console.error("BLOB_READ_WRITE_TOKEN is not set.");
         return res.status(503).json({
-          error: "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen.",
+          error:
+            "Serverkonfiguration fehlt (BLOB_READ_WRITE_TOKEN). Bitte Vercel-Projekt neu deployen.",
         });
       }
 
@@ -79,7 +86,9 @@ export default async function handler(req, res) {
       const { blobs } = await list({ prefix: `${BLOB_PREFIX}${id}` });
 
       if (blobs.length === 0) {
-        return res.status(404).json({ error: "QR-Code nicht gefunden oder abgelaufen." });
+        return res
+          .status(404)
+          .json({ error: "QR-Code nicht gefunden oder abgelaufen." });
       }
 
       const blobRes = await fetch(blobs[0].url);
@@ -89,7 +98,9 @@ export default async function handler(req, res) {
 
       if (Date.now() > expiresAt) {
         del(blobs[0].url).catch(() => {}); // async cleanup, don't await
-        return res.status(404).json({ error: "Dieser QR-Code ist abgelaufen." });
+        return res
+          .status(404)
+          .json({ error: "Dieser QR-Code ist abgelaufen." });
       }
 
       return res.status(200).json({ catalog });
@@ -98,8 +109,8 @@ export default async function handler(req, res) {
     return res.status(405).end();
   } catch (err) {
     console.error("Uncaught API Error:", err);
-    return res.status(500).json({ 
-      error: `Interner Serverfehler${err && err.message ? `: ${err.message}` : ''}` 
+    return res.status(500).json({
+      error: `Interner Serverfehler${err && err.message ? `: ${err.message}` : ""}`,
     });
   }
 }
