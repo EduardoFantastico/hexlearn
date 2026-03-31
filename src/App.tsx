@@ -36,6 +36,17 @@ function smartShuffle(questions, srWeightFn) {
 }
 
 export default function App() {
+  // Parse a fetch Response defensively: prefer JSON, fall back to text.
+  async function parseResponse(res) {
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("application/json")) return await res.json();
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { __text: text };
+    }
+  }
   const [view, setView] = useState("dashboard");
   const [legalSection, setLegalSection] = useState("impressum");
   const [configInitialIds, setConfigInitialIds] = useState([]);
@@ -124,9 +135,11 @@ export default function App() {
       setShareImportToast({ status: "loading", msg: "Katalog wird geladen…" });
       try {
         const res = await fetch(`/api/share?id=${encodeURIComponent(shareId)}`);
-        const data = await res.json();
-        if (!res.ok)
-          throw new Error(data.error || "Ungültiger oder abgelaufener Link.");
+        const data = await parseResponse(res);
+        if (!res.ok) {
+          const msg = data?.error ?? data?.__text ?? res.statusText ?? "Ungültiger oder abgelaufener Link.";
+          throw new Error(msg);
+        }
 
         const questions = Array.isArray(data.catalog)
           ? data.catalog

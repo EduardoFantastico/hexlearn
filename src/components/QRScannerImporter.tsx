@@ -28,6 +28,17 @@ function validateCatalog(data) {
 }
 
 export default function QRScannerImporter({ onCatalogAdded, onClose }) {
+  // Parse a fetch Response defensively: prefer JSON, fall back to text.
+  async function parseResponse(res) {
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("application/json")) return await res.json();
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { __text: text };
+    }
+  }
   const [scanStatus, setScanStatus] = useState("init"); // init | scanning | fetching | success | error
   const [errorMsg, setErrorMsg] = useState(null);
   const [importedName, setImportedName] = useState(null);
@@ -59,8 +70,11 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
       setScanStatus("fetching");
       try {
         const res = await fetch(`/api/share?id=${encodeURIComponent(shareId)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Fehler beim Laden.");
+        const data = await parseResponse(res);
+        if (!res.ok) {
+          const msg = data?.error ?? data?.__text ?? res.statusText ?? "Fehler beim Laden.";
+          throw new Error(msg);
+        }
 
         const validated = validateCatalog(data.catalog);
         if (!validated) throw new Error("Ungültiges Katalog-Format.");

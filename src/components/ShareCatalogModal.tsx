@@ -20,6 +20,17 @@ function formatCountdown(s) {
 }
 
 export default function ShareCatalogModal({ catalog, onClose }) {
+  // Parse a fetch Response defensively: prefer JSON, fall back to text.
+  async function parseResponse(res) {
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("application/json")) return await res.json();
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { __text: text };
+    }
+  }
   const [ttlMinutes, setTtlMinutes] = useState(5);
   const [status, setStatus] = useState("idle"); // idle | loading | success | expired | error
   const [shareId, setShareId] = useState(null);
@@ -54,8 +65,11 @@ export default function ShareCatalogModal({ catalog, onClose }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ catalog, ttl: ttlMinutes * 60 }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Unbekannter Fehler.");
+      const data = await parseResponse(res);
+      if (!res.ok) {
+        const msg = data?.error ?? data?.__text ?? res.statusText ?? "Unbekannter Fehler.";
+        throw new Error(msg);
+      }
       setShareId(data.id);
       setStatus("success");
     } catch (err) {
