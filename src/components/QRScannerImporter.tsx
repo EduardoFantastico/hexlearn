@@ -165,7 +165,7 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
       {/* Close button — top-right overlay */}
       <button
         onClick={onClose}
-        className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-xl bg-black/40 hover:bg-black/60 text-white/80 hover:text-white transition-colors z-10"
+        className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-xl bg-black/40 hover:bg-black/60 text-white/80 hover:text-white z-10"
       >
         <X size={15} />
       </button>
@@ -207,7 +207,7 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
             </p>
             <button
               onClick={onClose}
-              className="mt-1 px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition-all"
+              className="mt-1 px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold"
             >
               Fertig
             </button>
@@ -231,7 +231,7 @@ export default function QRScannerImporter({ onCatalogAdded, onClose }) {
               setScanStatus("init");
               setErrorMsg(null);
             }}
-            className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition-all"
+            className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold"
           >
             Erneut versuchen
           </button>

@@ -133,7 +133,7 @@ export default function FileUploader({ onCatalogAdded }) {
         onDrop={onDrop}
         className={`
           w-full rounded-2xl border-2 border-dashed p-10 flex flex-col items-center gap-3 cursor-pointer
-          transition-colors duration-200 select-none
+          select-none
           ${
             dragging
               ? "border-violet-400 bg-violet-50 dark:bg-violet-900/30"
